@@ -6,4 +6,5 @@ typeinfo BrewberryPi.qmltypes
 prefer :/qt/qml/BrewberryPi/
 singleton Constants 1.0 Constants.qml
 singleton AppSettings 1.0 AppSettings.qml
+singleton BreweryValues 1.0 BreweryValues.qml
 

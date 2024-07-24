@@ -2,6 +2,7 @@
   <qresource prefix="/qt/qml/BrewberryPi/">
     <file alias="Constants.qml">/Users/cradoumis/Qt Projects/BrewberryPi/imports/BrewberryPi/Constants.qml</file>
     <file alias="AppSettings.qml">/Users/cradoumis/Qt Projects/BrewberryPi/imports/BrewberryPi/AppSettings.qml</file>
+    <file alias="BreweryValues.qml">/Users/cradoumis/Qt Projects/BrewberryPi/imports/BrewberryPi/BreweryValues.qml</file>
   </qresource>
 </RCC>
 

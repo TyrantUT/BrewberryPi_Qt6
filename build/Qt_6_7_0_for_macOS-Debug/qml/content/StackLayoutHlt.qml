@@ -37,7 +37,7 @@ Item {
                 dialWidth: Constants.dialWidth
                 minValue: Constants.minVal
                 maxValue: Constants.maxVal
-                pointValue: Constants.setpointHLTVal
+                pointValue: BreweryValues.setpointHLTVal
                 value: 150
                 suffixText: Constants.tempBarSuffix
                 textFont {
@@ -72,12 +72,12 @@ Item {
                 orientation: Qt.Horizontal
                 from: Constants.minVal
                 to: Constants.maxVal
-                value: Constants.setpointHLTVal
+                value: BreweryValues.setpointHLTVal
                 stepSize: 0.5
 
                 onValueChanged: {
-                    if (value !== Constants.setpointHLTVal) {
-                        Constants.setpointHLTVal = value;
+                    if (value !== BreweryValues.setpointHLTVal) {
+                        BreweryValues.setpointHLTVal = value;
                     }
                 }
 
