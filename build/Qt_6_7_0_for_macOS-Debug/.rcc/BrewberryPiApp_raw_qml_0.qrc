@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt/qml/Main/">
+    <file alias="main.qml">/Users/cradoumis/Qt Projects/BrewberryPi/main.qml</file>
+  </qresource>
+</RCC>
+

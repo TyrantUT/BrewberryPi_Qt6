@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="/qt/qml/content/">
+    <file alias="App.qml">/Users/cradoumis/Qt Projects/BrewberryPi/content/App.qml</file>
+    <file alias="SwipeViewPage1.qml">/Users/cradoumis/Qt Projects/BrewberryPi/content/SwipeViewPage1.qml</file>
+    <file alias="SwipeViewPage2.qml">/Users/cradoumis/Qt Projects/BrewberryPi/content/SwipeViewPage2.qml</file>
+    <file alias="StackLayoutHlt.qml">/Users/cradoumis/Qt Projects/BrewberryPi/content/StackLayoutHlt.qml</file>
+    <file alias="StackLayoutMash.qml">/Users/cradoumis/Qt Projects/BrewberryPi/content/StackLayoutMash.qml</file>
+    <file alias="StackLayoutBoil.qml">/Users/cradoumis/Qt Projects/BrewberryPi/content/StackLayoutBoil.qml</file>
+    <file alias="fonts/fonts.txt">/Users/cradoumis/Qt Projects/BrewberryPi/content/fonts/fonts.txt</file>
+  </qresource>
+</RCC>
+

@@ -1,0 +1,47 @@
+cmake_minimum_required(VERSION 3.21)
+
+project(BrewberryPiApp LANGUAGES CXX)
+
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Qml Quick QuickControls2 Widgets)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+qt_standard_project_setup(REQUIRES 6.5)
+
+qt_add_executable(BrewberryPiApp src/main.cpp)
+
+qt_add_resources(BrewberryPiApp "configuration"
+    PREFIX "/"
+    FILES
+        qtquickcontrols2.conf
+)
+
+
+target_link_libraries(BrewberryPiApp PRIVATE
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Qml
+    Qt6::Quick
+    Qt6::Widgets
+    Qt6::QuickControls2
+)
+
+set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/qml)
+set(QML_IMPORT_PATH ${QT_QML_OUTPUT_DIRECTORY}
+    CACHE STRING "Import paths for Qt Creator's code model"
+    FORCE
+)
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/qmlmodules)
+
+
+#include(GNUInstallDirs)
+install(TARGETS BrewberryPiApp
+    BUNDLE DESTINATION .
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+# make IDEs aware of the QML import path
+set(QML_IMPORT_PATH ${PROJECT_BINARY_DIR}/qml CACHE PATH
+    "Path to the custom QML components defined by the project")

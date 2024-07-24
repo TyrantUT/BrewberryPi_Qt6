@@ -1,0 +1,8 @@
+module BrewberryPiCustomControls
+linktarget BrewberryPiCustomControlsplugin
+optional plugin BrewberryPiCustomControlsplugin
+classname BrewberryPiCustomControlsPlugin
+typeinfo BrewberryPiCustomControls.qmltypes
+prefer :/qt/qml/BrewberryPiCustomControls/
+CountdownTimer 1.0 CountdownTimer.qml
+
