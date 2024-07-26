@@ -3,23 +3,23 @@ import QtQuick
 
 QtObject {
     // Current Temperature Values
-    property real tempMax_HLT: 0.0
-    property real tempMax_Mash: 0.0
-    property real tempMax_Boil: 0.0
+    property real currentTemp_HLT: 0.0
+    property real currentTemp_Mash: 0.0
+    property real currentTemp_Boil: 0.0
 
     // Setpoint Values
-    property real setpointHLTVal: 0.0
-    property real setpointMashVal: 0.0
-    property real setpointBoilVal: 0.0
-    property bool setpointManualHLT: false
-    property bool setpointManualMash: false
-    property bool setpointManualBoil: false
+    property real setpoint_HLT: 0.0
+    property real setpoint_Mash: 0.0
+    property real setpoint_Boil: 0.0
+    property bool setpintManual_HLT: false
+    property bool setpintManual_Mash: false
+    property bool setpintManual_Boil: false
 
     // Element Control
-    property bool elementHLT_ON: false
-    property bool elementBOIL_ON: false
+    property bool elementOn_HLT: false
+    property bool elementOn_Boil: false
 
     // Pump Control
-    property bool pumpWORT_ON: false
-    property bool pumpWATER_ON: false
+    property bool pumpOn_Wort: false
+    property bool pumpOn_Water: false
 }

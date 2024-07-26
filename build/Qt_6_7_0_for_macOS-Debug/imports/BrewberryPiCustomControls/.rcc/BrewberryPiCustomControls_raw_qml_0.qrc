@@ -1,6 +1,7 @@
 <RCC>
   <qresource prefix="/qt/qml/BrewberryPiCustomControls/">
     <file alias="CountdownTimer.qml">/Users/cradoumis/Qt Projects/BrewberryPi/imports/BrewberryPiCustomControls/CountdownTimer.qml</file>
+    <file alias="TemperatureBar.qml">/Users/cradoumis/Qt Projects/BrewberryPi/imports/BrewberryPiCustomControls/TemperatureBar.qml</file>
   </qresource>
 </RCC>
 

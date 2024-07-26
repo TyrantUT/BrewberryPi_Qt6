@@ -36,6 +36,11 @@ Project {
 
     Files {
         filter: "qmldir"
+        directory: "imports/BrewberryPi"
+    }
+
+    Files {
+        filter: "qmldir"
         directory: "imports/BrewberryPiCustomControls"
     }
 

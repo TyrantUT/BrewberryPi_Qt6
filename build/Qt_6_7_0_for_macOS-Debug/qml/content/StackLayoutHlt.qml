@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import BrewberryPi
 import BrewberryPiCustomControls
 
-Item {
+Page {
     id: stackLayoutHlt
     height: Constants.height
     width: Constants.width
@@ -37,7 +37,7 @@ Item {
                 dialWidth: Constants.dialWidth
                 minValue: Constants.minVal
                 maxValue: Constants.maxVal
-                pointValue: BreweryValues.setpointHLTVal
+                pointValue: BreweryValues.setpoint_HLT
                 value: 150
                 suffixText: Constants.tempBarSuffix
                 textFont {
@@ -72,12 +72,12 @@ Item {
                 orientation: Qt.Horizontal
                 from: Constants.minVal
                 to: Constants.maxVal
-                value: BreweryValues.setpointHLTVal
+                value: BreweryValues.setpoint_HLT
                 stepSize: 0.5
 
                 onValueChanged: {
-                    if (value !== BreweryValues.setpointHLTVal) {
-                        BreweryValues.setpointHLTVal = value;
+                    if (value !== BreweryValues.setpoint_HLT) {
+                        BreweryValues.setpoint_HLT = value;
                     }
                 }
 

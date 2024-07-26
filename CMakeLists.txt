@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.21)
 
 project(BrewberryPiApp LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Qml Quick QuickControls2 Widgets)
-set(CMAKE_AUTOMOC ON)
+find_package(Qt6 6.7 REQUIRED COMPONENTS Core Gui Qml Quick QuickControls2 Widgets)
+#set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-qt_standard_project_setup(REQUIRES 6.5)
+qt_standard_project_setup(REQUIRES 6.7)
 
 qt_add_executable(BrewberryPiApp src/main.cpp)
 
@@ -15,7 +15,6 @@ qt_add_resources(BrewberryPiApp "configuration"
     FILES
         qtquickcontrols2.conf
 )
-
 
 target_link_libraries(BrewberryPiApp PRIVATE
     Qt6::Core

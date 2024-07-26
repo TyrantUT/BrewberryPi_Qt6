@@ -3,7 +3,5 @@ import QtQuick.Controls
 import BrewberryPi
 
 Page {
-    Rectangle {
-        color:  Constants.backgroundColor
-    }
+    id: stackLayoutMash
 }

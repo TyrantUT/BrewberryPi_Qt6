@@ -5,4 +5,5 @@ classname BrewberryPiCustomControlsPlugin
 typeinfo BrewberryPiCustomControls.qmltypes
 prefer :/qt/qml/BrewberryPiCustomControls/
 CountdownTimer 1.0 CountdownTimer.qml
+TemperatureBar 1.0 TemperatureBar.qml
 
