@@ -11,9 +11,9 @@ QtObject {
     property real setpoint_HLT: 0.0
     property real setpoint_Mash: 0.0
     property real setpoint_Boil: 0.0
-    property bool setpintManual_HLT: false
-    property bool setpintManual_Mash: false
-    property bool setpintManual_Boil: false
+    property bool setpointManual_HLT: false
+    property bool setpointManual_Mash: false
+    property bool setpointManual_Boil: false
 
     // Element Control
     property bool elementOn_HLT: false

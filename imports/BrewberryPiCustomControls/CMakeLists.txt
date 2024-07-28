@@ -8,6 +8,5 @@ qt6_add_qml_module(BrewberryPiCustomControls
     QML_FILES
         CountdownTimer.qml
         TemperatureBar.qml
-    SOURCES
-        radialbar.cpp radialbar.h
+        TemperatureGauge.qml
 )

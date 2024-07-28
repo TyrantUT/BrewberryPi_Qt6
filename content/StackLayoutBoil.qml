@@ -22,7 +22,13 @@ Page {
             stepSize: 1
             startAngle: -140
             endAngle: 140
-            currentTemp: 150
+            currentTemp: BreweryValues.currentTemp_Boil
+
+            onValueChangedAndReleased: (setpointValue) => {
+                if (BreweryValues.setpoint_Boil !== setpointValue) {
+                    BreweryValues.setpoint_Boil = setpointValue;
+                }
+            }
         }
     }
 }

@@ -1,86 +1,33 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
 import BrewberryPi
 import BrewberryPiCustomControls
 
 Page {
-    id: stackLayoutHlt
-    height: Constants.height
-    width: Constants.width
+    id: stackLayoutHLT
 
     Rectangle {
         id: mainRectangle
         anchors.fill: parent
         color: Constants.backgroundColor
 
-        Rectangle {
-            id: subParent
-            height: parent.height
-            width: parent.width / 2
+        TemperatureBar {
+            id: temperatureBar
+            anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: parent.color
+            width: parent.width / 2
+            height: width
+            from: 0
+            to: 220
+            stepSize: 1
+            startAngle: -140
+            endAngle: 140
+            currentTemp: BreweryValues.currentTemp_HLT
 
-            RadialBar {
-                id: radialHLT
-                width: parent.width
-                height: parent.height
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
-                penStyle: Qt.RoundCap
-                progressColor: Constants.progressColor
-                backgroundColor: Constants.backgroundColor
-                foregroundColor: Constants.foregroundColor
-                setPointTextColor: Constants.setPointTextColor
-                setPointBarColor: Constants.setPointBarColor
-                dialWidth: Constants.dialWidth
-                minValue: Constants.minVal
-                maxValue: Constants.maxVal
-                pointValue: BreweryValues.setpoint_HLT
-                value: 150
-                suffixText: Constants.tempBarSuffix
-                textFont {
-                    family: "Helvetica"
-                    italic: false
-                    pointSize: Constants.degSize + 24
+            onValueChangedAndReleased: (setpointValue) => {
+                if (BreweryValues.setpoint_HLT !== setpointValue) {
+                    BreweryValues.setpoint_HLT = setpointValue;
                 }
-                textColor: Constants.tempColor
-            }
-        }
-
-        Rectangle {
-            width: parent.width / 3
-            height: 25
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 50
-            anchors.horizontalCenter: parent.horizontalCenter
-            radius: 16
-
-            Label {
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.bottom: slider_HLTSetPoint.top
-                anchors.bottomMargin: 10
-                font.pointSize: Constants.labelSize + 10
-                color: Constants.radialBarLabelColor
-                text: qsTr("Target Temperature")
-            }
-
-            Slider {
-                id: slider_HLTSetPoint
-                anchors.fill: parent
-                orientation: Qt.Horizontal
-                from: Constants.minVal
-                to: Constants.maxVal
-                value: BreweryValues.setpoint_HLT
-                stepSize: 0.5
-
-                onValueChanged: {
-                    if (value !== BreweryValues.setpoint_HLT) {
-                        BreweryValues.setpoint_HLT = value;
-                    }
-                }
-
             }
         }
     }

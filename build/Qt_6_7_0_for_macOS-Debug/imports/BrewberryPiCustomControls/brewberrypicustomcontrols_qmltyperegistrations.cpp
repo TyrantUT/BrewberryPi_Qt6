@@ -7,7 +7,6 @@
 #include <QtQml/qqml.h>
 #include <QtQml/qqmlmoduleregistration.h>
 
-#include <radialbar.h>
 
 
 #if !defined(QT_STATIC)
@@ -17,7 +16,6 @@
 #endif
 Q_QMLTYPE_EXPORT void qml_register_types_BrewberryPiCustomControls()
 {
-    qmlRegisterTypesAndRevisions<RadialBar>("BrewberryPiCustomControls", 1);
     qmlRegisterModule("BrewberryPiCustomControls", 1, 0);
 }
 
