@@ -1,4 +1,3 @@
 Module BrewberryPiCustomControls
 CountdownTimer 1.0 CountdownTimer.qml
-TemperatureBar 1.0 TemperatureBar.qml
 TemperatureGauge 1.0 TemperatureGauge.qml

@@ -8,9 +8,9 @@ QtObject {
     property real currentTemp_Boil: 0.0
 
     // Setpoint Values
-    property real setpoint_HLT: 0.0
-    property real setpoint_Mash: 0.0
-    property real setpoint_Boil: 0.0
+    property real setpointTemp_HLT: 0.0
+    property real setpointTemp_Mash: 0.0
+    property real setpointTemp_Boil: 0.0
     property bool setpointManual_HLT: false
     property bool setpointManual_Mash: false
     property bool setpointManual_Boil: false

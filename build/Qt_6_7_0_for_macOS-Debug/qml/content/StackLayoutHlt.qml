@@ -11,8 +11,8 @@ Page {
         anchors.fill: parent
         color: Constants.backgroundColor
 
-        TemperatureBar {
-            id: temperatureBar
+        TemperatureGauge {
+            id: temperatureGauge
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width / 2
@@ -25,8 +25,8 @@ Page {
             currentTemp: BreweryValues.currentTemp_HLT
 
             onValueChangedAndReleased: (setpointValue) => {
-                if (BreweryValues.setpoint_HLT !== setpointValue) {
-                    BreweryValues.setpoint_HLT = setpointValue;
+                if (BreweryValues.setpointTemp_HLT !== setpointValue) {
+                    BreweryValues.setpointTemp_HLT = setpointValue;
                 }
             }
         }
