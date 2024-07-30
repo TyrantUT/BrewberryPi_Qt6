@@ -47,6 +47,20 @@ namespace _qt_qml_content_StackLayoutBoil_qml {
         reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
     };
 }
+namespace _qt_qml_content_Page1MainTop_qml { 
+    extern const unsigned char qmlData[];
+    extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
+    const QQmlPrivate::CachedQmlUnit unit = {
+        reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
+    };
+}
+namespace _qt_qml_content_Page1MainBottom_qml { 
+    extern const unsigned char qmlData[];
+    extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
+    const QQmlPrivate::CachedQmlUnit unit = {
+        reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
+    };
+}
 
 }
 namespace {
@@ -67,6 +81,8 @@ Registry::Registry() {
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/content/StackLayoutHlt.qml"), &QmlCacheGeneratedCode::_qt_qml_content_StackLayoutHlt_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/content/StackLayoutMash.qml"), &QmlCacheGeneratedCode::_qt_qml_content_StackLayoutMash_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/content/StackLayoutBoil.qml"), &QmlCacheGeneratedCode::_qt_qml_content_StackLayoutBoil_qml::unit);
+    resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/content/Page1MainTop.qml"), &QmlCacheGeneratedCode::_qt_qml_content_Page1MainTop_qml::unit);
+    resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/content/Page1MainBottom.qml"), &QmlCacheGeneratedCode::_qt_qml_content_Page1MainBottom_qml::unit);
     QQmlPrivate::RegisterQmlUnitCacheHook registration;
     registration.structVersion = 0;
     registration.lookupCachedQmlUnit = &lookupCachedUnit;

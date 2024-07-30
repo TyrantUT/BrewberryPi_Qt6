@@ -12,13 +12,6 @@ namespace _qt_qml_BrewberryPi_Constants_qml {
         reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
     };
 }
-namespace _qt_qml_BrewberryPi_AppSettings_qml { 
-    extern const unsigned char qmlData[];
-    extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
-    const QQmlPrivate::CachedQmlUnit unit = {
-        reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
-    };
-}
 namespace _qt_qml_BrewberryPi_BreweryValues_qml { 
     extern const unsigned char qmlData[];
     extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
@@ -41,7 +34,6 @@ Q_GLOBAL_STATIC(Registry, unitRegistry)
 
 Registry::Registry() {
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/BrewberryPi/Constants.qml"), &QmlCacheGeneratedCode::_qt_qml_BrewberryPi_Constants_qml::unit);
-    resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/BrewberryPi/AppSettings.qml"), &QmlCacheGeneratedCode::_qt_qml_BrewberryPi_AppSettings_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/BrewberryPi/BreweryValues.qml"), &QmlCacheGeneratedCode::_qt_qml_BrewberryPi_BreweryValues_qml::unit);
     QQmlPrivate::RegisterQmlUnitCacheHook registration;
     registration.structVersion = 0;

@@ -3,9 +3,7 @@ import QtQuick.Controls
 import BrewberryPi
 import BrewberryPiCustomControls
 
-Page {
-    id: stackLayoutBoil
-
+Item {
     Rectangle {
         id: mainRectangle
         anchors.fill: parent
@@ -17,16 +15,22 @@ Page {
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width / 2
             height: width
-            from: 0
-            to: 220
-            stepSize: 1
-            startAngle: -140
-            endAngle: 140
             currentTemp: BreweryValues.currentTemp_Boil
+            setpointValue: BreweryValues.setpointManual_Boil ? BreweryValues.setpointPercent_Boil : BreweryValues.setpointTemp_Boil
+            labelText: qsTr("Boil")
+            setManualMode: BreweryValues.setpointManual_Boil
+            color: Constants.textColor
+            enabled: true
 
             onValueChangedAndReleased: (setpointValue) => {
-                if (BreweryValues.setpointTemp_Boil !== setpointValue) {
-                    BreweryValues.setpointTemp_Boil = setpointValue;
+                if (BreweryValues.setpointManual_Boil) {
+                    if (BreweryValues.setpointPercent_Boil !== setpointValue) {
+                        BreweryValues.setpointPercent_Boil = setpointValue;
+                    }
+                } else {
+                    if (BreweryValues.setpointTemp_Boil !== setpointValue) {
+                       BreweryValues.setpointTemp_Boil = setpointValue;
+                    }
                 }
             }
         }

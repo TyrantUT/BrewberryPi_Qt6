@@ -16,13 +16,18 @@ QtObject {
                                                   family: Qt.application.font.family,
                                                   pixelSize: Qt.application.font.pixelSize * 1.6
                                               })
+    property bool isDarkTheme: true
+    readonly property color primaryColor: "#3B71CA"
+    readonly property color secondaryColor: "#9FA6B2"
+    readonly property color successColor: "#14A44D"
+    readonly property color dangerColor: "#DC4C64"
+    readonly property color warningColor: "#E4A11B"
+    readonly property color infoColor: "#54B4D3"
+    readonly property color lightColor: "#FBFBFB"
+    readonly property color darkColor: "#332D2D"
 
-    readonly property color backgroundColor: AppSettings.isDarkTheme ? "#FFFFFF" : "#000000"
-    readonly property color accentColor: AppSettings.isDarkTheme ? "#002125" : "#FFFFFF"
-    readonly property color primaryTextColor: AppSettings.isDarkTheme ? "#FFFFFF" : "#000000"
-    readonly property color accentTextColor: AppSettings.isDarkTheme ? "#D9D9D9" : "#898989"
-    readonly property color iconColor: AppSettings.isDarkTheme ? "#D9D9D9" : "#00414A"
-
+    readonly property color backgroundColor: isDarkTheme ? darkColor : lightColor
+    readonly property color textColor: isDarkTheme ? secondaryColor : primaryColor
 
     // Radial Bar
     readonly property int labelSize: 12

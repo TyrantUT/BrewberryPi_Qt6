@@ -17,16 +17,22 @@ Page {
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width / 2
             height: width
-            from: 0
-            to: 220
-            stepSize: 1
-            startAngle: -140
-            endAngle: 140
             currentTemp: BreweryValues.currentTemp_HLT
+            setpointValue: BreweryValues.setpointManual_HLT ? BreweryValues.setpointPercent_HLT : BreweryValues.setpointTemp_HLT
+            labelText: qsTr("Hot Liquor Tank")
+            setManualMode: BreweryValues.setpointManual_HLT
+            color: Constants.textColor
+            enabled: true
 
             onValueChangedAndReleased: (setpointValue) => {
-                if (BreweryValues.setpointTemp_HLT !== setpointValue) {
-                    BreweryValues.setpointTemp_HLT = setpointValue;
+                if (BreweryValues.setpointManual_HLT) {
+                    if (BreweryValues.setpointPercent_HLT !== setpointValue) {
+                        BreweryValues.setpointPercent_HLT = setpointValue;
+                    }
+                } else {
+                    if (BreweryValues.setpointTemp_HLT !== setpointValue) {
+                       BreweryValues.setpointTemp_HLT = setpointValue;
+                    }
                 }
             }
         }

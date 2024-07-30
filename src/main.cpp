@@ -29,11 +29,9 @@ int main(int argc, char *argv[]) {
     // Allow file reads inside the qrc files
     qputenv("QML_XHR_ALLOW_FILE_READ", QByteArray("1"));
 
-    set_qt_environment(); 
+    set_qt_environment();
 
     QApplication app(argc, argv);
-    //QApplication::setApplicationName("BrewberryPiApp");
-    //QApplication::setOrganizationName("Home");
 
     QQmlApplicationEngine engine;
     const QUrl url(u"qrc:/qt/qml/Main/main.qml"_qs);
@@ -47,8 +45,6 @@ int main(int argc, char *argv[]) {
         },
         Qt::QueuedConnection);
 
-
-    //qmlRegisterType<RadialBar>("RadialBar", 1, 0, "RadialBar");
     engine.load(url);
 
     if (engine.rootObjects().isEmpty()) {

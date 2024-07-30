@@ -7,11 +7,6 @@ set_source_files_properties(Constants.qml
         QT_QML_SINGLETON_TYPE true
     )
 
-set_source_files_properties(AppSettings.qml
-    PROPERTIES
-        QT_QML_SINGLETON_TYPE true
-    )
-
 set_source_files_properties(BreweryValues.qml
     PROPERTIES
         QT_QML_SINGLETON_TYPE true
@@ -22,6 +17,5 @@ qt6_add_qml_module(BrewberryPi
     VERSION 1.0
     QML_FILES
         Constants.qml
-        AppSettings.qml
         BreweryValues.qml
 )

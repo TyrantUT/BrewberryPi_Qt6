@@ -17,18 +17,11 @@ Page {
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width / 2
             height: width
-            from: 0
-            to: 220
-            stepSize: 1
-            startAngle: -140
-            endAngle: 140
             currentTemp: BreweryValues.currentTemp_Mash
-
-            onValueChangedAndReleased: (setpointValue) => {
-                if (BreweryValues.setpointTemp_Mash !== setpointValue) {
-                    BreweryValues.setpointTemp_Mash = setpointValue;
-                }
-            }
+            setpointValue: BreweryValues.setpointTemp_Mash
+            labelText: qsTr("Mash")
+            color: Constants.textColor
+            enabled: false
         }
     }
 }

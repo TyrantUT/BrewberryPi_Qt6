@@ -7,34 +7,45 @@ import BrewberryPi
 pragma ComponentBehavior: Bound
 
 Dial {
+    id: control
+
+    property color color: '#000000'
+    property alias dialColor: control.color
+    property real currentTemp: 0.0
+    property string labelText: ''
+    property bool setManualMode: false
+    property alias setpointValue: control.value
 
     property int capStyle: Qt.RoundCap
     property color trackColor: "#505050"
     property color progressColor: "#3a4ec4"
     property color handleColor: "#fefefe"
-    property real currentTemp: 0.0
 
     property real currentAngle: startAngle + (endAngle - startAngle) * (currentTemp - from) / (to - from)
     property color gradientColor: Qt.rgba((currentAngle - startAngle) / (endAngle - startAngle), 0, 1 - (currentAngle - startAngle) / (endAngle - startAngle), 1)
     property real currentAngleSetPoint: startAngle + (endAngle - startAngle) * (value - from) / (to - from)
     property color currentColorSetPoint: Qt.rgba((currentAngleSetPoint - startAngle) / (endAngle - startAngle), 0, 1 - (currentAngleSetPoint - startAngle) / (endAngle - startAngle), 1)
 
-    property alias setpointValue: control.value
+
+    readonly property string suffixText: setManualMode ? "%" : "°"
     signal valueChangedAndReleased(real setpointValue)
 
-    id: control
     visible: true
     antialiasing: true
 
     // Defaults
     from: 0
-    to: 220
+    to: setManualMode ? 100 : 220
     stepSize: 1
     startAngle: -140
     endAngle: 140
 
     background: Rectangle {
-        // No background
+        color: 'transparent'
+    }
+
+    onSetManualModeChanged: {
+        canvas.requestPaint()
     }
 
     onPressedChanged: {
@@ -58,28 +69,29 @@ Dial {
 
     handle: Item {
         id: handleItem
-        width: 30
-        height: height
+        width: 20
+        height: width * 2
         anchors.centerIn: parent
         visible: enabled
 
         // Shadow effect
         Rectangle {
             width: handleItem.width / 2
-            height: width
-            radius: width / 2
+            height: width * 2
+            radius: 5
             anchors.centerIn: parent
-            color: control.pressed ? '#FFFFFF' : '#000000'
             border.width: 0
             z: 1
+            color: Constants.backgroundColor
         }
 
         Rectangle {
             id: handleShadow
             width: handleItem.width
-            height: width
-            radius: width / 2
-            color: currentColorSetPoint
+            height: width * 2
+            radius: 10
+            //color: currentColorSetPoint
+            color: 'steelblue'
             anchors.centerIn: parent
             border.width: 0
 
@@ -92,7 +104,7 @@ Dial {
                     name: "pressed"
                     PropertyChanges {
                         target: handleShadow
-                        opacity: 0.5
+                        opacity: 1.0
                     }
                 },
                 State {
@@ -135,7 +147,7 @@ Dial {
 
         transform: [
             Translate {
-                y: -Math.min(control.background.width, control.background.height) * 0.3 + handleItem.height / 2
+                y: -Math.min(control.background.width, control.background.height) * 0.5 + handleItem.height / 2
             },
             Rotation {
                 angle: control.angle
@@ -162,10 +174,10 @@ Dial {
             var smallTickLength = 7;  // Length of small tick marks
             var labelRadius = radius - largeTickLength - 20; // Radius for the labels
 
-            var minAngle = -140; // Start angle in degrees
-            var maxAngle = 140; // End angle in degrees
-            var minValue = 0; // Start value
-            var maxValue = 220; // End value
+            var minAngle = control.startAngle; // Start angle in degrees
+            var maxAngle = control.endAngle; // End angle in degrees
+            var minValue = control.from; // Start value
+            var maxValue = control.to; // End value
 
             // Draw tick marks and labels
             for (var value = minValue; value <= maxValue; value += 5) {
@@ -183,14 +195,14 @@ Dial {
                 ctx.moveTo(xStart, yStart);
                 ctx.lineTo(xEnd, yEnd);
                 ctx.lineWidth = 2;
-                ctx.strokeStyle = "black";
+                ctx.strokeStyle = dialColor;
                 ctx.stroke();
 
                 // Draw labels for large tick marks
                 if (value % 20 === 0) {
                     var labelX = centerX + labelRadius * Math.cos(rad);
                     var labelY = centerY + labelRadius * Math.sin(rad);
-                    ctx.fillStyle = "black";
+                    ctx.fillStyle = dialColor;
                     ctx.font = "bold 14px sans-serif";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
@@ -251,58 +263,79 @@ Dial {
         }
     }
 
-    // Set Temperature Label
-    Label {
-        anchors.horizontalCenter: control.horizontalCenter
-        anchors.verticalCenter: control.verticalCenter
-        font {
-            family: "Helvetica"
-            italic: false
-            pointSize: Constants.degSize + 24
+    Item {
+        width: parent.width / 2
+        height: parent.height / 2
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            verticalCenter: parent.verticalCenter
         }
-        text: control.value + "°"
-        color: control.progressColor
 
-        Label {
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.top
-            anchors.bottomMargin: 10
-            font {
-                family: "Helvetica"
-                italic: false
-                pointSize: Constants.degSize
+        Column {
+            width: parent.width
+            height: parent.height / 2
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: 5
+
+            // Current Temperature Label
+            Item {
+                width: parent.width
+                height: parent.height / 2
+
+                Label {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalAlignment
+                    height: parent.height
+                    font {
+                        family: "Helvetica"
+                        italic: false
+                        pixelSize: height
+                    }
+                    fontSizeMode: Text.Fit
+                    text: Math.round(currentTemp * 100 / 100) + "°"
+                    color: control.gradientColor
+                }
             }
-            text: "Target"
-            color: "black"
+
+            // Setpoint Temperature Label
+            Rectangle {
+                width: parent.width
+                height: parent.height / 2
+                color: 'transparent'
+
+                Label {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalAlignment
+                    height: parent.height
+                    font {
+                        family: "Helvetica"
+                        italic: false
+                        pixelSize: height
+                    }
+                    fontSizeMode: Text.Fit
+                    text: Math.round(control.value * 100 / 100) + suffixText
+                    color: control.currentColorSetPoint
+                }
+            }
         }
     }
 
-    // Current Temperature Label
-    Label {
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 10
-        font {
-            family: "Helvetica"
-            italic: false
-            pointSize: Constants.degSize + 24
+    Item {
+        width: parent.width / 2
+        height: parent.height / 20
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            bottom: parent.bottom
+            bottomMargin: 30
         }
-        text: Math.round(currentTemp * 100 / 100) + "°"
-        color: control.gradientColor
-
         Label {
+            height: parent.height
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.top
-            anchors.bottomMargin: 10
-            font {
-                family: "Helvetica"
-                italic: false
-                pointSize: Constants.degSize
-            }
-            text: "Current"
-            color: "black"
+            anchors.bottom:  parent.bottom
+            text: control.labelText
+            color: Constants.textColor
+            font.bold: true
+            font.pixelSize: height
         }
     }
-
-
 }
