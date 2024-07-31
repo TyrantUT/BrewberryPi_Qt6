@@ -9,6 +9,7 @@ Item {
         width: parent.width
         color: Constants.backgroundColor
     }
+
     Row {
         spacing: 2
         width: parent.width / 3
@@ -29,49 +30,239 @@ Item {
 
                     Column {
                         width: parent.width
-                        height: parent.height
-                        spacing: 15
+                        height: parent.height / 2
 
-                        Text {
-                            text: 'PID Mode'
-                            anchors.horizontalCenter: switch_setpointManual_HLT.horizontalCenter
-                            color: Constants.textColor
-                            font.pixelSize: height
-                            font.bold: true
-                        }
-
-                        Switch {
-                            id: switch_setpointManual_HLT
+                        Item {
                             width: parent.width
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            rotation: -90
-                            checked: BreweryValues.setpointManual_HLT
-
-                            onCheckedChanged: {
-                                if (BreweryValues.setpointManual_HLT !== checked) {
-                                    BreweryValues.setpointManual_HLT = checked;
-                                }
+                            height: parent.height
+                            Text {
+                                text: 'PID Mode'
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                color: Constants.textColor
+                                font.pixelSize: height
+                                font.bold: true
                             }
                         }
 
-                        Text {
-                            text: switch_setpointManual_HLT.checked ? 'Manual' : 'Automatic'
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            color: Constants.textColor
-                            font.pixelSize: height
-                            font.bold: true
+                        Item {
+                            width: parent.width
+                            height: parent.height / 2
+
+                            CustomToggleSwitch {
+                                width: parent.width / 2
+                                height: parent.height
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: checked ? "Manual" : "Automatic"
+                                checked: BreweryValues.setpointManual_HLT
+                                onCheckedChanged: BreweryValues.setpointManual_HLT = checked
+                            }
                         }
                     }
                 }
 
                 Item {
-                    width: parent.width / 2
+                    width: parent.width
                     height: parent.height
 
-                    CustomDelayButton {
+                    Column {
                         width: parent.width
                         height: parent.height
-                        anchors.left: parent.left
+
+                        Text {
+                            text: 'Element Power'
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: Constants.textColor
+                            font.pixelSize: height
+                            font.bold: true
+                        }
+
+                        Item {
+                            width: parent.width
+                            height: parent.height
+
+                            CustomDelayButton {
+                                width: parent.width * .75
+                                height: parent.height * .75
+                                anchors.centerIn: parent
+                                checked: BreweryValues.elementOn_HLT
+                                enabled: !BreweryValues.elementOn_Boil
+                                onCheckedChanged: BreweryValues.elementOn_HLT = checked
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Center Column
+        Column {
+            width: parent.width
+            height: parent.height
+
+            Row {
+                id: row_centerTop
+                width: parent.width / 2
+                height: parent.height / 2
+
+                Item {
+                    width: parent.width
+                    height: parent.height
+
+                    Column {
+                        width: parent.width
+                        height: parent.height / 2
+
+                        Item {
+                            width: parent.width
+                            height: parent.height
+                            Text {
+                                text: 'Water Pump'
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                color: Constants.textColor
+                                font.pixelSize: height
+                                font.bold: true
+                            }
+                        }
+
+                        Item {
+                            width: parent.width
+                            height: parent.height
+                            CustomToggleSwitch {
+                                width: parent.width / 2
+                                height: parent.height / 2
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: checked ? "On" : "Off"
+                                checked: BreweryValues.pumpOn_Water
+                                onCheckedChanged: BreweryValues.pumpOn_Water = checked
+                            }
+                        }
+                    }
+
+                }
+
+                Item {
+                    width: parent.width
+                    height: parent.height
+
+                    Column {
+                        width: parent.width
+                        height: parent.height / 2
+
+                        Item {
+                            width: parent.width
+                            height: parent.height
+                            Text {
+                                text: 'Wort Pump'
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                color: Constants.textColor
+                                font.pixelSize: height
+                                font.bold: true
+                            }
+                        }
+
+                        Item {
+                            width: parent.width
+                            height: parent.height
+                            CustomToggleSwitch {
+                                width: parent.width / 2
+                                height: parent.height / 2
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: checked ? "On" : "Off"
+                                checked: BreweryValues.pumpOn_Wort
+                                onCheckedChanged: BreweryValues.pumpOn_Wort = checked
+                            }
+                        }
+                    }
+                }
+            }
+
+            Row {
+                width: parent.width
+                height: parent.height / 2
+
+                CountdownTimer {
+                    width: parent.width
+                    height: parent.height
+                    remainingTime: BreweryValues.breweryTimer
+                }
+            }
+
+        }
+
+        // Boil Column
+        Column {
+            width: parent.width
+            height: parent.height
+
+            Row {
+                width: parent.width / 2
+                height: parent.height
+
+                Item {
+                    width: parent.width
+                    height: parent.height
+
+                    Column {
+                        width: parent.width
+                        height: parent.height
+
+                        Text {
+                            text: 'Element Power'
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: Constants.textColor
+                            font.pixelSize: height
+                            font.bold: true
+                        }
+
+                        Item {
+                            width: parent.width
+                            height: parent.height
+
+                            CustomDelayButton {
+                                width: parent.width * .75
+                                height: parent.height * .75
+                                anchors.centerIn: parent
+                                checked: BreweryValues.elementOn_Boil
+                                enabled: !BreweryValues.elementOn_HLT
+                                onCheckedChanged: BreweryValues.elementOn_Boil = checked
+                            }
+                        }
+                    }
+                }
+
+                Item {
+                    width: parent.width
+                    height: parent.height
+
+                    Column {
+                        width: parent.width
+                        height: parent.height / 2
+
+                        Item {
+                            width: parent.width
+                            height: parent.height
+                            Text {
+                                text: 'PID Mode'
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                color: Constants.textColor
+                                font.pixelSize: height
+                                font.bold: true
+                            }
+                        }
+
+                        Item {
+                            width: parent.width
+                            height: parent.height / 2
+
+                            CustomToggleSwitch {
+                                width: parent.width / 2
+                                height: parent.height
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: checked ? "Manual" : "Automatic"
+                                checked: BreweryValues.setpointManual_Boil
+                                onCheckedChanged: BreweryValues.setpointManual_Boil = checked
+                            }
+                        }
                     }
                 }
             }

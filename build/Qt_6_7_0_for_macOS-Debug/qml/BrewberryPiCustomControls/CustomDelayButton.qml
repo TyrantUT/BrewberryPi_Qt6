@@ -16,23 +16,32 @@ T.DelayButton {
           text: control.text
           font: control.font
           opacity: enabled ? 1.0 : 0.3
-          color: "white"
+          color: Constants.lightColor
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter
           elide: Text.ElideMiddle
       }
 
+      Rectangle {
+          width: Math.min(control.width, control.height) + 2
+          height: width
+          anchors.centerIn: parent
+          radius: width / 2
+          color: Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor
+          opacity: 0.2
+          z: -5
+      }
+
       background: Rectangle {
 
-          readonly property real size: Math.min(control.width, control.height)
           opacity: enabled ? 1 : 0.3
-          color: control.down ? "#17a81a" : (control.checked ? "#f4362b" : "#21be2b")
-          radius: size / 2
+          color: control.down ? Constants.warningColor : (control.checked ? Constants.dangerColor : Constants.successColor)
 
-          width: size
-          height: size
+
+          width: Math.min(control.width, control.height) - 2
+          height: width
+          radius: width / 2
           anchors.centerIn: parent
-
           Canvas {
               id: canvas
               anchors.fill: parent
@@ -40,7 +49,7 @@ T.DelayButton {
                   var ctx = getContext("2d")
                   ctx.clearRect(0, 0, width, height)
                   ctx.strokeStyle = "white"
-                  ctx.lineWidth = parent.size / 20
+                  ctx.lineWidth = parent.width / 20
                   ctx.beginPath()
                   var startAngle = Math.PI / 5 * 3
                   var endAngle = startAngle + control.progress * Math.PI / 5 * 9

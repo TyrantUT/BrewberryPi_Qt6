@@ -16,7 +16,7 @@ QtObject {
                                                   family: Qt.application.font.family,
                                                   pixelSize: Qt.application.font.pixelSize * 1.6
                                               })
-    property bool isDarkTheme: true
+    property bool isDarkTheme: false
     readonly property color primaryColor: "#3B71CA"
     readonly property color secondaryColor: "#9FA6B2"
     readonly property color successColor: "#14A44D"
@@ -27,7 +27,7 @@ QtObject {
     readonly property color darkColor: "#332D2D"
 
     readonly property color backgroundColor: isDarkTheme ? darkColor : lightColor
-    readonly property color textColor: isDarkTheme ? secondaryColor : primaryColor
+    readonly property color textColor: isDarkTheme ? secondaryColor : darkColor
 
     // Radial Bar
     readonly property int labelSize: 12

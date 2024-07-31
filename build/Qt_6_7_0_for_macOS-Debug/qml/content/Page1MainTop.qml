@@ -45,6 +45,7 @@ Item {
                 Item {
                     width: parent.width
                     height: parent.height
+
                     TemperatureGauge {
                         width: Math.min(parent.width, parent.height)
                         height: Math.min(parent.width, parent.height)

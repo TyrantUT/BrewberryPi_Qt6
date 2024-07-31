@@ -26,4 +26,7 @@ QtObject {
     // Pump Control
     property bool pumpOn_Wort: false
     property bool pumpOn_Water: false
+
+    // Brewery Value
+    property int breweryTimer: 0
 }
