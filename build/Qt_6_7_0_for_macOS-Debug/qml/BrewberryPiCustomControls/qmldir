@@ -6,4 +6,5 @@ typeinfo BrewberryPiCustomControls.qmltypes
 prefer :/qt/qml/BrewberryPiCustomControls/
 CountdownTimer 1.0 CountdownTimer.qml
 TemperatureGauge 1.0 TemperatureGauge.qml
+CustomDelayButton 1.0 CustomDelayButton.qml
 

@@ -18,14 +18,14 @@ Page {
             width: parent.width / 2
             height: width
             currentTemp: BreweryValues.currentTemp_HLT
-            setpointValue: BreweryValues.setpointManual_HLT ? BreweryValues.setpointPercent_HLT : BreweryValues.setpointTemp_HLT
+            setpointValue: setManualMode ? BreweryValues.setpointPercent_HLT : BreweryValues.setpointTemp_HLT
             labelText: qsTr("Hot Liquor Tank")
             setManualMode: BreweryValues.setpointManual_HLT
             color: Constants.textColor
             enabled: true
 
             onValueChangedAndReleased: (setpointValue) => {
-                if (BreweryValues.setpointManual_HLT) {
+                if (setManualMode) {
                     if (BreweryValues.setpointPercent_HLT !== setpointValue) {
                         BreweryValues.setpointPercent_HLT = setpointValue;
                     }

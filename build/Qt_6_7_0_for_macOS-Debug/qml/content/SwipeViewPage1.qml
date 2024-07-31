@@ -12,12 +12,12 @@ Page {
 
         Page1MainTop {
             width: parent.width
-            height: parent.height / 1.5
+            height: parent.height * 2/3
         }
 
         Page1MainBottom {
             width: parent.width
-            height: parent.height / 2.5
+            height: parent.height * 1/3
         }
     }
 }

@@ -5,7 +5,6 @@ import BrewberryPiCustomControls
 
 Item {
     property int headerHeight: 50
-    property int columnWidth: width / 2
 
     Column {
         anchors.fill: parent
@@ -51,21 +50,21 @@ Item {
                         height: Math.min(parent.width, parent.height)
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
-                        currentTemp: 150
-                        setpointValue: BreweryValues.setpointManual_HLT ? BreweryValues.setpointPercent_HLT : BreweryValues.setpointTemp_HLT
+                        currentTemp: BreweryValues.currentTemp_HLT
+                        setpointValue: setManualMode ? BreweryValues.setpointPercent_HLT : BreweryValues.setpointTemp_HLT
                         color: Constants.textColor
                         labelText: qsTr("Hot Liquor Tank")
                         setManualMode: BreweryValues.setpointManual_HLT
                         enabled: true
 
                         onValueChangedAndReleased: (setpointValue) => {
-                            if (BreweryValues.setpointManual_HLT) {
+                            if (setManualMode) {
                                 if (BreweryValues.setpointPercent_HLT !== setpointValue) {
                                     BreweryValues.setpointPercent_HLT = setpointValue;
                                 }
                             } else {
                                 if (BreweryValues.setpointTemp_HLT !== setpointValue) {
-                                   BreweryValues.setpointTemp_HLT = setpointValue;
+                                    BreweryValues.setpointTemp_HLT = setpointValue;
                                 }
                             }
                         }
@@ -99,13 +98,14 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                         currentTemp: BreweryValues.currentTemp_Boil
-                        setpointValue: BreweryValues.setpointManual_Boil ? BreweryValues.setpointPercent_Boil : BreweryValues.setpointTemp_Boil
+                        setpointValue: setManualMode ? BreweryValues.setpointPercent_Boil : BreweryValues.setpointTemp_Boil
+                        setManualMode: BreweryValues.setpointManual_Boil
                         color: Constants.textColor
                         labelText: qsTr("Boil")
                         enabled: true
 
                         onValueChangedAndReleased: (setpointValue) => {
-                            if (BreweryValues.setpointManual_Boil) {
+                            if (setManualMode) {
                                 if (BreweryValues.setpointPercent_Boil !== setpointValue) {
                                     BreweryValues.setpointPercent_Boil = setpointValue;
                                 }

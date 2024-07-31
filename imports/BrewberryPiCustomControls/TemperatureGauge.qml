@@ -57,13 +57,7 @@ Dial {
         }
 
         if (!pressed) {
-            valueChangedAndReleased(value)
-        }
-    }
-
-    onValueChanged: {
-        if (!pressed) {
-            valueChangedAndReleased(value)
+            valueChangedAndReleased(control.value)
         }
     }
 
@@ -90,7 +84,6 @@ Dial {
             width: handleItem.width
             height: width * 2
             radius: 10
-            //color: currentColorSetPoint
             color: 'steelblue'
             anchors.centerIn: parent
             border.width: 0
@@ -216,6 +209,7 @@ Dial {
     Shape {
         id: outer
         antialiasing: true
+        visible: !setManualMode
 
         ShapePath {
             fillColor: "transparent"

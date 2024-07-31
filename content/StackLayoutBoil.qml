@@ -16,14 +16,14 @@ Item {
             width: parent.width / 2
             height: width
             currentTemp: BreweryValues.currentTemp_Boil
-            setpointValue: BreweryValues.setpointManual_Boil ? BreweryValues.setpointPercent_Boil : BreweryValues.setpointTemp_Boil
+            setpointValue: setManualMode ? BreweryValues.setpointPercent_Boil : BreweryValues.setpointTemp_Boil
             labelText: qsTr("Boil")
             setManualMode: BreweryValues.setpointManual_Boil
             color: Constants.textColor
             enabled: true
 
             onValueChangedAndReleased: (setpointValue) => {
-                if (BreweryValues.setpointManual_Boil) {
+                if (setManualMode) {
                     if (BreweryValues.setpointPercent_Boil !== setpointValue) {
                         BreweryValues.setpointPercent_Boil = setpointValue;
                     }

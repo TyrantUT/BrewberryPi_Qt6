@@ -20,35 +20,58 @@ Item {
             height: parent.height
 
             Row {
-                width: parent.width
+                width: parent.width / 2
                 height: parent.height
 
                 Item {
-                    height: parent.height
                     width: parent.width
+                    height: parent.height
 
-                    Switch {
-                        id: switch_setpointManual_HLT
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        rotation: -90
-                        checked: BreweryValues.setpointManual_HLT
+                    Column {
+                        width: parent.width
+                        height: parent.height
+                        spacing: 15
 
-                        onCheckedChanged: {
-                            if (BreweryValues.setpointManual_HLT !== checked) {
-                                BreweryValues.setpointManual_HLT = checked;
+                        Text {
+                            text: 'PID Mode'
+                            anchors.horizontalCenter: switch_setpointManual_HLT.horizontalCenter
+                            color: Constants.textColor
+                            font.pixelSize: height
+                            font.bold: true
+                        }
+
+                        Switch {
+                            id: switch_setpointManual_HLT
+                            width: parent.width
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            rotation: -90
+                            checked: BreweryValues.setpointManual_HLT
+
+                            onCheckedChanged: {
+                                if (BreweryValues.setpointManual_HLT !== checked) {
+                                    BreweryValues.setpointManual_HLT = checked;
+                                }
                             }
                         }
-                    }
 
-                    Text {
-                        text: switch_setpointManual_HLT.checked ? 'Manual' : 'Automatic'
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.top: switch_setpointManual_HLT.bottom
-                        anchors.topMargin: 20
-                        color: Constants.textColor
-                        font.pixelSize: height
-                        font.bold: true
+                        Text {
+                            text: switch_setpointManual_HLT.checked ? 'Manual' : 'Automatic'
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: Constants.textColor
+                            font.pixelSize: height
+                            font.bold: true
+                        }
+                    }
+                }
+
+                Item {
+                    width: parent.width / 2
+                    height: parent.height
+
+                    CustomDelayButton {
+                        width: parent.width
+                        height: parent.height
+                        anchors.left: parent.left
                     }
                 }
             }
