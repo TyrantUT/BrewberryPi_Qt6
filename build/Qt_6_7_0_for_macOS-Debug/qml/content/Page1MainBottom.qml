@@ -180,7 +180,7 @@ Item {
                         height: parent.height
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
-                        remainingTime: BreweryValues.breweryTimer
+                        countdownTime: BreweryValues.breweryTimer
                     }
                 }
             }

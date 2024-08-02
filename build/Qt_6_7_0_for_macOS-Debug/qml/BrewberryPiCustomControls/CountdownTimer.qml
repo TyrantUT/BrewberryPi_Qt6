@@ -6,18 +6,16 @@ pragma ComponentBehavior: Bound
 
 Item {
 
-    property int countdownTime: 60 // Set the countdown time in seconds
-    property int remainingTime: countdownTime
+    property int countdownTime: 0
 
     Timer {
         id: timer
-        interval: 1000 // 1 second interval
+        interval: 1000 // 1 second
         repeat: true
         running: false
         onTriggered: {
-            if (remainingTime > 0) {
-                remainingTime -= 1
-            } else {
+            countdownTime--;
+            if (countdownTime == 0) {
                 timer.stop()
             }
         }
@@ -38,7 +36,12 @@ Item {
                 Text {
                     height: parent.height
                     width: parent.width
-                    text: Qt.formatTime(new Date(remainingTime * 1000), "mm:ss")
+                    text: {
+                        var date = new Date(countdownTime * 60 * 1000)
+                        date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
+                        return date.toLocaleString(Qt.locale(), "hh:mm")
+                    }
+
                     color: Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor
                     font.pixelSize: parent.height
                     elide: Qt.ElideMiddle
@@ -70,7 +73,10 @@ Item {
                             height: parent.height / 2
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
-                            text: qsTr("Mash")
+                            text: qsTr("60")
+
+                            onClicked: countdownTime = 60
+
                         }
                     }
 
@@ -83,7 +89,9 @@ Item {
                             height: parent.height / 2
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
-                            text: qsTr("Boil")
+                            text: qsTr("90")
+
+                            onClicked: countdownTime = 90
                         }
                     }
                 }
@@ -103,6 +111,8 @@ Item {
                     height: parent.height
                     anchors.horizontalCenter: parent.horizontalCenter
                     arrow: "up"
+
+                    onClicked: countdownTime += 1
                 }
             }
 
@@ -114,7 +124,9 @@ Item {
                     width: parent.width
                     height: parent.height
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: qsTr("Start")
+                    text: timer.running ? qsTr("Stop") : qsTr("Start")
+
+                    onClicked: timer.running ? timer.stop() : timer.start()
                 }
             }
 
@@ -127,6 +139,8 @@ Item {
                     height: parent.height
                     anchors.horizontalCenter: parent.horizontalCenter
                     arrow: "down"
+
+                    onClicked: countdownTime -= 1
                 }
             }
         }
