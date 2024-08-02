@@ -30,6 +30,7 @@ Dial {
     readonly property string suffixText: setManualMode ? "%" : "°"
     signal valueChangedAndReleased(real setpointValue)
 
+
     visible: true
     antialiasing: true
 
@@ -43,6 +44,14 @@ Dial {
     background: Rectangle {
         color: 'transparent'
     }
+
+    Connections {
+        target: Constants
+        function onIsDarkThemeChanged() {
+            canvas.requestPaint()
+        }
+    }
+
 
     onSetManualModeChanged: {
         canvas.requestPaint()

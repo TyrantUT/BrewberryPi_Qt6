@@ -4,10 +4,12 @@ import BrewberryPi
 import BrewberryPiCustomControls
 
 Item {
+    id: control
+
     Rectangle {
         height: parent.height
         width: parent.width
-        color: Constants.backgroundColor
+        color: Constants.isDarkTheme ? Constants.lightDarkColor : Constants.lightColor
     }
 
     Row {
@@ -23,10 +25,9 @@ Item {
             Row {
                 width: parent.width / 2
                 height: parent.height
-
                 Item {
                     width: parent.width
-                    height: parent.height
+                    height: parent.height                    
 
                     Column {
                         width: parent.width
@@ -100,77 +101,67 @@ Item {
             height: parent.height
 
             Row {
-                id: row_centerTop
                 width: parent.width / 2
-                height: parent.height / 2
+                height: parent.height / 2.2
 
-                Item {
+
+                Column {
                     width: parent.width
-                    height: parent.height
+                    height: parent.height / 2
 
-                    Column {
+                    Item {
                         width: parent.width
-                        height: parent.height / 2
-
-                        Item {
-                            width: parent.width
-                            height: parent.height
-                            Text {
-                                text: 'Water Pump'
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                color: Constants.textColor
-                                font.pixelSize: height
-                                font.bold: true
-                            }
-                        }
-
-                        Item {
-                            width: parent.width
-                            height: parent.height
-                            CustomToggleSwitch {
-                                width: parent.width / 2
-                                height: parent.height / 2
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                text: checked ? "On" : "Off"
-                                checked: BreweryValues.pumpOn_Water
-                                onCheckedChanged: BreweryValues.pumpOn_Water = checked
-                            }
+                        height: parent.height - 10
+                        Text {
+                            text: 'Water Pump'
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: Constants.textColor
+                            font.pixelSize: height
+                            font.bold: true
                         }
                     }
 
+                    Item {
+                        width: parent.width
+                        height: parent.height
+
+                        CustomToggleSwitch {
+                            width: parent.width / 2
+                            height: parent.height / 2 + 10
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: checked ? "On" : "Off"
+                            checked: BreweryValues.pumpOn_Water
+                            onCheckedChanged: BreweryValues.pumpOn_Water = checked
+                        }
+                    }
                 }
 
-                Item {
+                Column {
                     width: parent.width
-                    height: parent.height
+                    height: parent.height / 2
 
-                    Column {
+                    Item {
                         width: parent.width
-                        height: parent.height / 2
-
-                        Item {
-                            width: parent.width
-                            height: parent.height
-                            Text {
-                                text: 'Wort Pump'
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                color: Constants.textColor
-                                font.pixelSize: height
-                                font.bold: true
-                            }
+                        height: parent.height - 10
+                        Text {
+                            text: 'Wort Pump'
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: Constants.textColor
+                            font.pixelSize: height
+                            font.bold: true
                         }
+                    }
 
-                        Item {
-                            width: parent.width
-                            height: parent.height
-                            CustomToggleSwitch {
-                                width: parent.width / 2
-                                height: parent.height / 2
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                text: checked ? "On" : "Off"
-                                checked: BreweryValues.pumpOn_Wort
-                                onCheckedChanged: BreweryValues.pumpOn_Wort = checked
-                            }
+                    Item {
+                        width: parent.width
+                        height: parent.height
+                        CustomToggleSwitch {
+                            width: parent.width / 2
+                            height: parent.height / 2 + 10
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: checked ? "On" : "Off"
+                            checked: BreweryValues.pumpOn_Wort
+                            onCheckedChanged: BreweryValues.pumpOn_Wort = checked
                         }
                     }
                 }
@@ -180,13 +171,19 @@ Item {
                 width: parent.width
                 height: parent.height / 2
 
-                CountdownTimer {
+                Item {
                     width: parent.width
                     height: parent.height
-                    remainingTime: BreweryValues.breweryTimer
+
+                    CountdownTimer {
+                        width: parent.width
+                        height: parent.height
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        remainingTime: BreweryValues.breweryTimer
+                    }
                 }
             }
-
         }
 
         // Boil Column

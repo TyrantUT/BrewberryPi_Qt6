@@ -33,6 +33,13 @@ namespace _qt_qml_BrewberryPiCustomControls_CustomToggleSwitch_qml {
         reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
     };
 }
+namespace _qt_qml_BrewberryPiCustomControls_CustomButton_qml { 
+    extern const unsigned char qmlData[];
+    extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
+    const QQmlPrivate::CachedQmlUnit unit = {
+        reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
+    };
+}
 
 }
 namespace {
@@ -51,6 +58,7 @@ Registry::Registry() {
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/BrewberryPiCustomControls/TemperatureGauge.qml"), &QmlCacheGeneratedCode::_qt_qml_BrewberryPiCustomControls_TemperatureGauge_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/BrewberryPiCustomControls/CustomDelayButton.qml"), &QmlCacheGeneratedCode::_qt_qml_BrewberryPiCustomControls_CustomDelayButton_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/BrewberryPiCustomControls/CustomToggleSwitch.qml"), &QmlCacheGeneratedCode::_qt_qml_BrewberryPiCustomControls_CustomToggleSwitch_qml::unit);
+    resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/BrewberryPiCustomControls/CustomButton.qml"), &QmlCacheGeneratedCode::_qt_qml_BrewberryPiCustomControls_CustomButton_qml::unit);
     QQmlPrivate::RegisterQmlUnitCacheHook registration;
     registration.structVersion = 0;
     registration.lookupCachedQmlUnit = &lookupCachedUnit;

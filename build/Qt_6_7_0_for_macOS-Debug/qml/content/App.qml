@@ -12,7 +12,6 @@ ApplicationWindow {
     visible: true
 
     SwipeView {
-        id: mainSwipeView
         anchors.fill: parent
 
         SwipeViewPage1 {}

@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import BrewberryPi
 
+pragma ComponentBehavior: Bound
+
 Item {
 
     property int countdownTime: 60 // Set the countdown time in seconds
@@ -21,65 +23,110 @@ Item {
         }
     }
 
-    Column {
-        anchors.centerIn: parent
-        spacing: 20
+    Row {
+        width: parent.width
+        height: parent.height
+        spacing: 2
 
-        Text {
-            id: timeDisplay
-            text: Qt.formatTime(new Date(remainingTime * 1000), "mm:ss")
-            font.pixelSize: 32
-        }
+        Column {
+            width: parent.width * .75
+            height: parent.height / 2
 
-        Button {
-            id: startButton
-            text: "Start"
-            onClicked: {
-                timer.start()
-                startButton.enabled = false
-                stopButton.enabled = true
-                resetButton.enabled = false
+            Item {
+                width: parent.width
+                height: parent.height
+                Text {
+                    height: parent.height
+                    width: parent.width
+                    text: Qt.formatTime(new Date(remainingTime * 1000), "mm:ss")
+                    color: Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor
+                    font.pixelSize: parent.height
+                    elide: Qt.ElideMiddle
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    Rectangle {
+                        width: parent.width - 4
+                        height: 2
+                        color: 'lightblue'
+                        anchors.bottom: parent.bottom
+                    }
+                }
+            }
+            Item {
+                width: parent.width
+                height: parent.height
+
+                Row {
+                    width: parent.width / 2
+                    height: parent.height
+
+                    Item {
+                        width: parent.width
+                        height: parent.height
+
+                        CustomButton {
+                            width: parent.width / 2
+                            height: parent.height / 2
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: qsTr("Mash")
+                        }
+                    }
+
+                    Item {
+                        width: parent.width
+                        height: parent.height
+
+                        CustomButton {
+                            width: parent.width / 2
+                            height: parent.height / 2
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: qsTr("Boil")
+                        }
+                    }
+                }
             }
         }
 
-        Button {
-            id: stopButton
-            text: "Stop"
-            enabled: false
-            onClicked: {
-                timer.stop()
-                startButton.enabled = true
-                stopButton.enabled = false
-                resetButton.enabled = true
-            }
-        }
+        Column {
+            width: parent.width * .25
+            height: parent.height
 
-        Button {
-            id: resetButton
-            text: "Reset"
-            onClicked: {
-                timer.stop()
-                remainingTime = countdownTime
-                startButton.enabled = true
-                stopButton.enabled = false
-            }
-        }
-
-        Row {
-            spacing: 10
-
-            Text {
-                text: "Set Time (seconds):"
+            // Up button
+            Item {
+                width: parent.width
+                height: parent.height / 3
+                CustomButton {
+                    width: parent.width / 2
+                    height: parent.height
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    arrow: "up"
+                }
             }
 
-            SpinBox {
-                id: timeSetter
-                from: 1
-                to: 3600
-                value: countdownTime
-                onValueChanged: {
-                    countdownTime = timeSetter.value
-                    remainingTime = countdownTime
+            // Start Button
+            Item {
+                width: parent.width
+                height: parent.height / 3
+                CustomButton {
+                    width: parent.width
+                    height: parent.height
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: qsTr("Start")
+                }
+            }
+
+            // Up button
+            Item {
+                width: parent.width
+                height: parent.height / 3
+                CustomButton {
+                    width: parent.width / 2
+                    height: parent.height
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    arrow: "down"
                 }
             }
         }

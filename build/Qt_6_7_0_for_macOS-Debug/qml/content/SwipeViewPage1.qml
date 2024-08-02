@@ -6,6 +6,16 @@ import BrewberryPiCustomControls
 Page {
     id: page
 
+    MouseArea {
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        width: 50
+        height: 50
+        onDoubleClicked: {
+            Constants.isDarkTheme = !Constants.isDarkTheme
+        }
+    }
+
     // Main container
     Column {
         anchors.fill: parent

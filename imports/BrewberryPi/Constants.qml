@@ -25,6 +25,7 @@ QtObject {
     readonly property color infoColor: "#54B4D3"
     readonly property color lightColor: "#FBFBFB"
     readonly property color darkColor: "#332D2D"
+    readonly property color lightDarkColor: "#4A4343"
 
     readonly property color backgroundColor: isDarkTheme ? darkColor : lightColor
     readonly property color textColor: isDarkTheme ? secondaryColor : darkColor

@@ -1,10 +1,13 @@
 import QtQuick
-import BrewberryPi
 import QtQuick.Controls as T
+import BrewberryPi
+
+pragma ComponentBehavior: Bound
 
 T.DelayButton {
       id: control
       delay: 2000
+      font.bold: true
       font.pointSize: 22
       text: qsTr("Off")
 
@@ -15,7 +18,7 @@ T.DelayButton {
       contentItem: Text {
           text: control.text
           font: control.font
-          opacity: enabled ? 1.0 : 0.3
+          opacity: enabled ? 1.0 : 0.3          
           color: Constants.lightColor
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter

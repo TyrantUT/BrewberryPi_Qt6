@@ -3,6 +3,8 @@ import QtQuick.Controls as T
 import QtQuick.Controls.Material.impl
 import BrewberryPi
 
+pragma ComponentBehavior: Bound
+
 T.Switch {
     id: control
     anchors.horizontalCenter: control.horizontalCenter
