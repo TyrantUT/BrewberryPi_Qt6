@@ -19,6 +19,13 @@ namespace _qt_qml_BrewberryPi_BreweryValues_qml {
         reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
     };
 }
+namespace _qt_qml_BrewberryPi_BreweryFunctions_js { 
+    extern const unsigned char qmlData[];
+    extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
+    const QQmlPrivate::CachedQmlUnit unit = {
+        reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
+    };
+}
 
 }
 namespace {
@@ -35,6 +42,7 @@ Q_GLOBAL_STATIC(Registry, unitRegistry)
 Registry::Registry() {
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/BrewberryPi/Constants.qml"), &QmlCacheGeneratedCode::_qt_qml_BrewberryPi_Constants_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/BrewberryPi/BreweryValues.qml"), &QmlCacheGeneratedCode::_qt_qml_BrewberryPi_BreweryValues_qml::unit);
+    resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/BrewberryPi/BreweryFunctions.js"), &QmlCacheGeneratedCode::_qt_qml_BrewberryPi_BreweryFunctions_js::unit);
     QQmlPrivate::RegisterQmlUnitCacheHook registration;
     registration.structVersion = 0;
     registration.lookupCachedQmlUnit = &lookupCachedUnit;

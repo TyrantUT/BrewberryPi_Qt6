@@ -52,7 +52,6 @@ Dial {
         }
     }
 
-
     onSetManualModeChanged: {
         canvas.requestPaint()
     }

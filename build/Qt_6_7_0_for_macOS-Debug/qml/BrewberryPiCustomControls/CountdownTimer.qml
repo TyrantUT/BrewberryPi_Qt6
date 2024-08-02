@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import BrewberryPi
+import "../BrewberryPi/BreweryFunctions.js" as BreweryFunctions
 
 pragma ComponentBehavior: Bound
 
@@ -14,8 +15,9 @@ Item {
         repeat: true
         running: false
         onTriggered: {
-            countdownTime--;
-            if (countdownTime == 0) {
+            if (countdownTime !== 0)
+                countdownTime--;
+            if (countdownTime === 0) {
                 timer.stop()
             }
         }
@@ -36,13 +38,9 @@ Item {
                 Text {
                     height: parent.height
                     width: parent.width
-                    text: {
-                        var date = new Date(countdownTime * 60 * 1000)
-                        date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
-                        return date.toLocaleString(Qt.locale(), "hh:mm")
-                    }
+                    text: BreweryFunctions.getIntToTime(countdownTime)
 
-                    color: Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor
+                    color: (!timer.running && countdownTime === 0) ? Constants.dangerColor : (Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor)
                     font.pixelSize: parent.height
                     elide: Qt.ElideMiddle
                     horizontalAlignment: Text.AlignHCenter
@@ -126,7 +124,7 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: timer.running ? qsTr("Stop") : qsTr("Start")
 
-                    onClicked: timer.running ? timer.stop() : timer.start()
+                    onClicked: (!timer.running && countdownTime !== 0) ? timer.start() : timer.stop()
                 }
             }
 
@@ -140,7 +138,10 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     arrow: "down"
 
-                    onClicked: countdownTime -= 1
+                    onClicked: {
+                        if (countdownTime !== 0)
+                            countdownTime -= 1
+                    }
                 }
             }
         }

@@ -181,6 +181,10 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                         countdownTime: BreweryValues.breweryTimer
+
+                        onCountdownTimeChanged: (cuontdownTime) => {
+                            BreweryValues.breweryTimer = countdownTime;
+                        }
                     }
                 }
             }

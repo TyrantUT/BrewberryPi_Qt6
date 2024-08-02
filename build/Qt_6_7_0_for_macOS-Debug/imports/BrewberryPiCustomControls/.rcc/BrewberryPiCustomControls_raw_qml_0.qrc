@@ -5,6 +5,7 @@
     <file alias="CustomDelayButton.qml">/Users/cradoumis/Qt Projects/BrewberryPi/imports/BrewberryPiCustomControls/CustomDelayButton.qml</file>
     <file alias="CustomToggleSwitch.qml">/Users/cradoumis/Qt Projects/BrewberryPi/imports/BrewberryPiCustomControls/CustomToggleSwitch.qml</file>
     <file alias="CustomButton.qml">/Users/cradoumis/Qt Projects/BrewberryPi/imports/BrewberryPiCustomControls/CustomButton.qml</file>
+    <file alias="CustomGraph.qml">/Users/cradoumis/Qt Projects/BrewberryPi/imports/BrewberryPiCustomControls/CustomGraph.qml</file>
   </qresource>
 </RCC>
 

@@ -18,4 +18,5 @@ qt6_add_qml_module(BrewberryPi
     QML_FILES
         Constants.qml
         BreweryValues.qml
+        BreweryFunctions.js
 )
