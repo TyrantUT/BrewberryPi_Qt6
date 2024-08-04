@@ -26,6 +26,9 @@ Dial {
     property real currentAngleSetPoint: startAngle + (endAngle - startAngle) * (value - from) / (to - from)
     property color currentColorSetPoint: Qt.rgba((currentAngleSetPoint - startAngle) / (endAngle - startAngle), 0, 1 - (currentAngleSetPoint - startAngle) / (endAngle - startAngle), 1)
 
+    property int outerHandleSize: {
+        return Math.max(control.handle.width, control.handle.height);
+    }
 
     readonly property string suffixText: setManualMode ? "%" : "°"
     signal valueChangedAndReleased(real setpointValue)
@@ -40,6 +43,8 @@ Dial {
     stepSize: 1
     startAngle: -140
     endAngle: 140
+    inputMode: Dial.Circular
+    wrap: false
 
     background: Rectangle {
         color: 'transparent'
@@ -65,8 +70,13 @@ Dial {
         }
 
         if (!pressed) {
-            valueChangedAndReleased(control.value)
+            valueChangedAndReleased(setpointValue);
         }
+    }
+
+    property var onDoubleClickValueChanged: (foo) => {
+        foo()
+        valueChangedAndReleased(setpointValue);
     }
 
     handle: Item {
@@ -76,7 +86,7 @@ Dial {
         anchors.centerIn: parent
         visible: enabled
 
-        // Shadow effect
+        // Inner open area to show temperature tick
         Rectangle {
             width: handleItem.width / 2
             height: width * 2
@@ -92,7 +102,7 @@ Dial {
             width: handleItem.width
             height: width * 2
             radius: 10
-            color: 'steelblue'
+            color: currentColorSetPoint
             anchors.centerIn: parent
             border.width: 0
 
@@ -105,14 +115,14 @@ Dial {
                     name: "pressed"
                     PropertyChanges {
                         target: handleShadow
-                        opacity: 1.0
+                        opacity: Constants.isDarkTheme ? .9 : .7
                     }
                 },
                 State {
                     name: "unpressed"
                     PropertyChanges {
                         target: handleShadow
-                        opacity: 0.0
+                        opacity: Constants.isDarkTheme ? .6 : .3
                     }
                 }
             ]
@@ -239,6 +249,44 @@ Dial {
         }
     }
 
+    Column {
+        width: parent.width
+        height: parent.height
+
+        // Top Mouse Area
+        Item {
+            width: parent.width
+            height: parent.heigt / 2
+
+            CustomElipse {
+                width: parent.width
+                height: parent.height
+                anchors.horizontalCenter: parent.horizontalCenter
+                outerStrokeArea: outerHandleSize
+                onDoubleClicked: {
+                    onDoubleClickValueChanged(control.increase)
+                }
+            }
+        }
+
+        // Bottom Mouse Area
+        Item {
+            width: parent.width
+            height: parent.height / 2
+
+            CustomElipse {
+                width: parent.width
+                height: parent.height
+                anchors.horizontalCenter: parent.horizontalCenter
+                outerStrokeArea: outerHandleSize
+                flip: true
+                onDoubleClicked: {
+                    onDoubleClickValueChanged(control.decrease)
+                }
+            }
+        }
+    }
+
     // Set Temperature (Inner Dial)
     Shape {
         antialiasing: true
@@ -315,7 +363,7 @@ Dial {
                         pixelSize: height
                     }
                     fontSizeMode: Text.Fit
-                    text: Math.round(control.value * 100 / 100) + suffixText
+                    text: Math.round(setpointValue * 100 / 100) + suffixText
                     color: control.currentColorSetPoint
                 }
             }

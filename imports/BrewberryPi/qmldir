@@ -1,4 +1,4 @@
 Module BrewberryPi
 singleton Constants 1.0 Constants.qml
 singleton BreweryValues 1.0 BreweryValues.qml
-
+singleton CustomElipse 1.0 CustomElipse.qml

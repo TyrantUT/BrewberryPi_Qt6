@@ -10,4 +10,5 @@ CustomDelayButton 1.0 CustomDelayButton.qml
 CustomToggleSwitch 1.0 CustomToggleSwitch.qml
 CustomButton 1.0 CustomButton.qml
 CustomGraph 1.0 CustomGraph.qml
+CustomElipse 1.0 CustomElipse.qml
 

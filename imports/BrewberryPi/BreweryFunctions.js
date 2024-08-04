@@ -1,7 +1,7 @@
 .pragma library
 
 function getIntToTime(value) {
-    var date = new Date(value * 60 * 1000)
-    date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
-    return date.toLocaleString(Qt.locale(), "hh:mm")
+    var date = new Date(null);
+    date.setSeconds(value);
+    return date.toISOString().substr(11, 8);
 }

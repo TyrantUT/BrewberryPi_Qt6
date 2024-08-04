@@ -46,6 +46,21 @@ Item {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     anchors.horizontalCenter: parent.horizontalCenter
+
+                    Item {
+                        anchors.fill: parent
+                        MouseArea {
+                            anchors.fill: parent
+                            onDoubleClicked: {
+                                if (timer.running) {
+                                    timer.stop();
+                                }
+
+                                countdownTime = 0;
+                            }
+                        }
+                    }
+
                     Rectangle {
                         width: parent.width - 4
                         height: 2
@@ -73,7 +88,7 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             text: qsTr("60")
 
-                            onClicked: countdownTime = 60
+                            onClicked: countdownTime = 60 * 60
 
                         }
                     }
@@ -89,7 +104,7 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             text: qsTr("90")
 
-                            onClicked: countdownTime = 90
+                            onClicked: countdownTime = 90 * 60
                         }
                     }
                 }
@@ -110,7 +125,7 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     arrow: "up"
 
-                    onClicked: countdownTime += 1
+                    onClicked: countdownTime += 60
                 }
             }
 
@@ -140,7 +155,7 @@ Item {
 
                     onClicked: {
                         if (countdownTime !== 0)
-                            countdownTime -= 1
+                            countdownTime -= 60
                     }
                 }
             }
