@@ -55,3 +55,6 @@ compile_commands.json
 
 # Ignore Build Directory
 build/
+
+# Ignore Mac files
+.DS_Store
