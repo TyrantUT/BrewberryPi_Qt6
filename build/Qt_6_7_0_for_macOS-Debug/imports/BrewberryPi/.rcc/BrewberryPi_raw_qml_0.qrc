@@ -1,8 +1,0 @@
-<RCC>
-  <qresource prefix="/qt/qml/BrewberryPi/">
-    <file alias="Constants.qml">/Users/cradoumis/Qt Projects/BrewberryPi/imports/BrewberryPi/Constants.qml</file>
-    <file alias="BreweryValues.qml">/Users/cradoumis/Qt Projects/BrewberryPi/imports/BrewberryPi/BreweryValues.qml</file>
-    <file alias="BreweryFunctions.js">/Users/cradoumis/Qt Projects/BrewberryPi/imports/BrewberryPi/BreweryFunctions.js</file>
-  </qresource>
-</RCC>
-

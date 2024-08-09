@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/qt/qml/content">
-    <file alias="qmldir">/Users/cradoumis/Qt Projects/BrewberryPi/build/Qt_6_7_0_for_macOS-Debug/qml/content/qmldir</file>
-  </qresource>
-</RCC>
-
