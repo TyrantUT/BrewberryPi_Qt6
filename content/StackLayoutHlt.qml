@@ -57,17 +57,7 @@ Item {
                     id: graph
                     width: parent.width
                     height: parent.height
-                    setpointTemp: BreweryValues.setpointTemp_HLT
-
-                    Timer {
-                        interval: 1000
-                        running: true
-                        repeat: true
-                        onTriggered: {
-                            graph.currentTemp = Math.random() * 100; // Simulate temperature values
-                        }
-                    }
-
+                    //setpointTemp: BreweryValues.setpointTemp_HLT
                 }
             }
         }

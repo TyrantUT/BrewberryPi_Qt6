@@ -11,6 +11,6 @@ qt6_add_qml_module(BrewberryPiCustomControls
         CustomDelayButton.qml
         CustomToggleSwitch.qml
         CustomButton.qml
-        CustomGraph.qml
         CustomElipse.qml
+        CustomGraph.qml
 )
