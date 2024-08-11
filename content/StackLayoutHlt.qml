@@ -57,11 +57,9 @@ Item {
                     id: graph
                     width: parent.width
                     height: parent.height
-                    //setpointTemp: BreweryValues.setpointTemp_HLT
+                    setpointTemp: BreweryValues.setpointTemp_HLT
                 }
             }
         }
     }
-
-
 }

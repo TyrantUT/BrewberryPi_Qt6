@@ -2,40 +2,52 @@ import QtQuick
 import QtCharts
 import BrewberryPi
 
+pragma ComponentBehavior: Bound
+
 ChartView {
     id: chartView
-    width: 800
-    height: 600
 
     title: "Real-Time Temperature Chart"
     legend.visible: false
     antialiasing: true
+
+    property real setpointTemp: 0.0
+
+    onSetpointTempChanged: {
+        setpointSeries.remove(0); // Remove the oldest point
+        setpointSeries.remove(0); // Remove the oldest point
+        setpointSeries.append(xAxis.min, setpointTemp);
+        setpointSeries.append(new Date(xAxis.min.getTime() + 120000), setpointTemp);
+    }
 
     LineSeries {
         id: lineSeries
         name: "Temperature"
 
         // Define the X and Y axes
-        axisX: ValuesAxis {
+        axisX: DateTimeAxis {
             id: xAxis
-            min: 0
-            max: 120 // Will be updated dynamically
-            tickCount: 6
+            min: new Date(0) // Initial min value; will be updated dynamically
+            max: new Date(120000) // Initial max value; 120 seconds in milliseconds
+            format: "mm:ss" // Format for the labels
+            tickCount: 5
             titleText: "Time (minutes)" // X-axis label
+
         }
 
         axisY: ValuesAxis {
             id: yAxis
             min: 0
             max: 220 // Adjust according to your temperature range
-            tickCount: 10
+            tickCount: 11
             titleText: "Temperature" // Y-axis label
+            labelFormat: "%d &deg;F"
         }
 
         // Function to update the series with new temperature value
-        function addTemperature(value, timeIndex) {
+        function addTemperature(value, timestamp) {
             // Add new value
-            lineSeries.append(timeIndex, value);
+            lineSeries.append(timestamp, value);
 
             // Remove old values if count exceeds 120 points
             if (lineSeries.count > 120) {
@@ -44,11 +56,31 @@ ChartView {
 
             // Update X-axis min and max
             if (lineSeries.count > 0) {
-                xAxis.min = lineSeries.at(0).x; // Set min to the time of the earliest value
-                xAxis.max = xAxis.min + 120; // Set max to 120 seconds ahead of min
+                var firstPointTime = lineSeries.at(0).x;
+                xAxis.min = new Date(firstPointTime);
+                xAxis.max = new Date(xAxis.min.getTime() + 120000); // Set max to 120 seconds ahead of min
             }
         }
     }
+
+    LineSeries {
+            id: setpointSeries
+            name: "Setpoint Temperature"
+            axisX: xAxis
+            axisY: yAxis
+            color: "red" // Set the color to red
+            width: 1 // Line width
+            style: Qt.DashLine // Dashed line style
+
+            // This series will be used to create a dashed line
+            // Initialize with dummy data
+            Component.onCompleted: {
+                // Initialize with dummy data
+                var initialTime = xAxis.min;
+                setpointSeries.append(initialTime, setpointTemp);
+                setpointSeries.append(new Date(initialTime.getTime() + 120000), setpointTemp);
+            }
+        }
 
     Timer {
         id: timer
@@ -60,7 +92,9 @@ ChartView {
 
         onTriggered: {
             var newTemperature = Math.random() * 30 + 10; // Simulate new temperature reading
-            lineSeries.addTemperature(newTemperature, elapsedTime);
+            var currentTime = new Date(); // Current time
+            var timestamp = new Date(elapsedTime * 1000); // Timestamp with elapsed time
+            lineSeries.addTemperature(newTemperature, timestamp);
             elapsedTime++; // Increment the elapsed time
         }
     }

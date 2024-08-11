@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Shapes
 
+pragma ComponentBehavior: Bound
+
 Shape {
     id: control
 
