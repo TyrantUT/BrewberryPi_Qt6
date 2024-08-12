@@ -1,5 +1,6 @@
 Module BrewberryPiCustomControls
 CountdownTimer 1.0 CountdownTimer.qml
+CustomTimerBox 1.0 CustomTimerBox.qml
 TemperatureGauge 1.0 TemperatureGauge.qml
 CustomDelayButton 1.0 CustomDelayButton.qml
 CustomToggleSwitch 1.0 CustomToggleSwitch.qml

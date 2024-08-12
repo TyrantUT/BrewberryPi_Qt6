@@ -21,6 +21,7 @@ Item {
                 timer.stop()
             }
         }
+        onRunningChanged: BreweryValues.breweryTimerRunning = !BreweryValues.breweryTimerRunning
     }
 
     Row {
@@ -35,18 +36,9 @@ Item {
             Item {
                 width: parent.width
                 height: parent.height
-                Text {
+                CustomTimerBox {
                     height: parent.height
                     width: parent.width
-                    text: BreweryFunctions.getIntToTime(countdownTime)
-
-                    color: (!timer.running && countdownTime === 0) ? Constants.dangerColor : (Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor)
-                    font.pixelSize: parent.height
-                    elide: Qt.ElideMiddle
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
-
                     Item {
                         anchors.fill: parent
                         MouseArea {
@@ -59,13 +51,6 @@ Item {
                                 countdownTime = 0;
                             }
                         }
-                    }
-
-                    Rectangle {
-                        width: parent.width - 4
-                        height: 2
-                        color: 'lightblue'
-                        anchors.bottom: parent.bottom
                     }
                 }
             }

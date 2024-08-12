@@ -52,12 +52,20 @@ Item {
 
             Item {
                 width: parent.width
-                height: parent.height
+                height: parent.height / 2
                 CustomGraph {
                     id: graph
                     width: parent.width
                     height: parent.height
                     setpointTemp: BreweryValues.setpointTemp_HLT
+                }
+            }
+            Item {
+                width: parent.width / 2
+                height: parent.height / 12
+                CustomTimerBox {
+                    width: parent.width
+                    height: parent.height
                 }
             }
         }

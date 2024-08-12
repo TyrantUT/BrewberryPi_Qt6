@@ -10,13 +10,16 @@ ChartView {
     title: "Real-Time Temperature Chart"
     legend.visible: false
     antialiasing: true
+    backgroundColor: Constants.backgroundColor
+    titleColor: Constants.textColor
+    //animationOptions: ChartView.SeriesAnimations
 
     property real setpointTemp: 0.0
 
     onSetpointTempChanged: {
         setpointSeries.remove(0); // Remove the oldest point
         setpointSeries.remove(0); // Remove the oldest point
-        setpointSeries.append(xAxis.min, setpointTemp);
+        setpointSeries.append(xAxis20.min, setpointTemp);
         setpointSeries.append(new Date(xAxis.min.getTime() + 120000), setpointTemp);
     }
 
@@ -31,17 +34,24 @@ ChartView {
             max: new Date(120000) // Initial max value; 120 seconds in milliseconds
             format: "mm:ss" // Format for the labels
             tickCount: 5
-            titleText: "Time (minutes)" // X-axis label
-
+            titleText: "Time (minutes)" // X-axis labe
+            labelsColor: Constants.textColor
+            labelsFont: Qt.font({bold: true})
+            gridVisible: false
+            titleBrush: labelsColor
         }
 
         axisY: ValuesAxis {
             id: yAxis
             min: 0
             max: 220 // Adjust according to your temperature range
-            tickCount: 11
+            tickCount: chartView.height / 50
             titleText: "Temperature" // Y-axis label
             labelFormat: "%d &deg;F"
+            labelsColor: Constants.textColor
+            labelsFont: Qt.font({bold: true})
+            gridVisible: false
+            titleBrush: labelsColor
         }
 
         // Function to update the series with new temperature value
@@ -64,23 +74,23 @@ ChartView {
     }
 
     LineSeries {
-            id: setpointSeries
-            name: "Setpoint Temperature"
-            axisX: xAxis
-            axisY: yAxis
-            color: "red" // Set the color to red
-            width: 1 // Line width
-            style: Qt.DashLine // Dashed line style
+        id: setpointSeries
+        name: "Setpoint Temperature"
+        axisX: xAxis
+        axisY: yAxis
+        color: "red" // Set the color to red
+        width: 1 // Line width
+        style: Qt.DashLine // Dashed line style
 
-            // This series will be used to create a dashed line
+        // This series will be used to create a dashed line
+        // Initialize with dummy data
+        Component.onCompleted: {
             // Initialize with dummy data
-            Component.onCompleted: {
-                // Initialize with dummy data
-                var initialTime = xAxis.min;
-                setpointSeries.append(initialTime, setpointTemp);
-                setpointSeries.append(new Date(initialTime.getTime() + 120000), setpointTemp);
-            }
+            var initialTime = xAxis.min;
+            setpointSeries.append(initialTime, setpointTemp);
+            setpointSeries.append(new Date(initialTime.getTime() + 120000), setpointTemp);
         }
+    }
 
     Timer {
         id: timer
