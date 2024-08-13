@@ -10,16 +10,42 @@ ChartView {
     antialiasing: true
     backgroundColor: Constants.backgroundColor
     titleColor: Constants.textColor
-    animationOptions: ChartView.SeriesAnimations
+    //animationOptions: ChartView.SeriesAnimations
     dropShadowEnabled: true
 
+    property int elapsedTime: 0
+    property real currentTemp: 0.0
     property real setpointTemp: 0.0
+
+    function addTemperature(value, timestamp) {
+        // Remove old values if count exceeds 120 points
+        if (lineSeries.count >= 120) {
+           lineSeries.remove(0);
+        }
+
+        // Update X-axis min and max
+        if (lineSeries.count > 0) {
+            var firstPointTime = lineSeries.at(0).x;
+            xAxis.min = new Date(firstPointTime);
+            xAxis.max = new Date(xAxis.min.getTime() + 120000);
+        }
+
+        // Add new value
+        lineSeries.append(timestamp, value);
+    }
 
     onSetpointTempChanged: {
         setpointSeries.remove(0); // Remove the oldest point
         setpointSeries.remove(0); // Remove the oldest point
         setpointSeries.append(xAxis.min, setpointTemp);
         setpointSeries.append(new Date(xAxis.min.getTime() + 120000), setpointTemp);
+    }
+
+    onCurrentTempChanged: {
+        var currentTime = new Date(); // Current time
+        var timestamp = new Date(chartView.elapsedTime * 1000); // Timestamp with elapsed time
+        chartView.addTemperature(currentTemp, timestamp);
+        chartView.elapsedTime++; // Increment the elapsed time
     }
 
     LineSeries {
@@ -52,25 +78,6 @@ ChartView {
             gridVisible: false
             titleBrush: labelsColor
         }
-
-        // Function to update the series with new temperature value
-        function addTemperature(value, timestamp) {
-            // Add new value
-            lineSeries.append(timestamp, value);
-
-            // Remove old values if count exceeds 120 points
-            if (lineSeries.count > 5) {
-                //lineSeries.remove(0); // Remove the oldest value
-                lineSeries.removePoints(0, 1);
-            }
-
-            // Update X-axis min and max
-            if (lineSeries.count > 0) {
-                var firstPointTime = lineSeries.at(0).x;
-                xAxis.min = new Date(firstPointTime);
-                xAxis.max = new Date(xAxis.min.getTime() + 120000); // Set max to 120 seconds ahead of min
-            }
-        }
     }
 
     LineSeries {
@@ -89,23 +96,6 @@ ChartView {
             var initialTime = xAxis.min;
             setpointSeries.append(initialTime, setpointTemp);
             setpointSeries.append(new Date(initialTime.getTime() + 120000), setpointTemp);
-        }
-    }
-
-    Timer {
-        id: timer
-        interval: 1000 // Update every second
-        running: true
-        repeat: true
-
-        property int elapsedTime: 0 // Counter to track elapsed time in seconds
-
-        onTriggered: {
-            var newTemperature = Math.random() * 30 + 10; // Simulate new temperature reading
-            var currentTime = new Date(); // Current time
-            var timestamp = new Date(elapsedTime * 1000); // Timestamp with elapsed time
-            lineSeries.addTemperature(newTemperature, timestamp);
-            elapsedTime++; // Increment the elapsed time
         }
     }
 }

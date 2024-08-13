@@ -55,9 +55,20 @@ Item {
                 width: parent.width
                 height: parent.height / 2
                 CustomGraph {
+                    id: graph
                     width: parent.width
                     height: parent.height
                     setpointTemp: BreweryValues.setpointTemp_HLT
+                    Timer {
+                        id: timer
+                        interval: 1000 // Update every second
+                        running: true
+                        repeat: true
+
+                        onTriggered: {
+                            graph.currentTemp = Math.random() * 30 + 10;
+                        }
+                    }
                 }
             }
 
