@@ -19,7 +19,7 @@ Item {
                 id: temperatureGauge
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                width: parent.width
+                width: parent.width - 50
                 height: width
                 currentTemp: BreweryValues.currentTemp_Mash
                 setpointValue: BreweryValues.setpointTemp_Mash

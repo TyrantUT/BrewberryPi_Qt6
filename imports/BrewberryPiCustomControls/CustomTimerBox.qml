@@ -6,7 +6,7 @@ pragma ComponentBehavior: Bound
 
 Text {
     text: BreweryFunctions.getIntToTime(BreweryValues.breweryTimer)
-    color: (!BreweryValues.breweryTimerRunning && BreweryValues.breweryTimer === 0) ? Constants.dangerColor : (Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor)
+    color: (BreweryValues.breweryTimer === 0) ? Constants.dangerColor : (Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor)
     font.pixelSize: parent.height
     elide: Qt.ElideMiddle
     horizontalAlignment: Text.AlignHCenter

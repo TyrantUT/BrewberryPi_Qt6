@@ -28,6 +28,5 @@ QtObject {
     property bool pumpOn_Water: false
 
     // Brewery Timer
-    property bool breweryTimerRunning: false
     property int breweryTimer: 0
 }

@@ -21,7 +21,6 @@ Item {
                 timer.stop()
             }
         }
-        onRunningChanged: BreweryValues.breweryTimerRunning = !BreweryValues.breweryTimerRunning
     }
 
     Row {

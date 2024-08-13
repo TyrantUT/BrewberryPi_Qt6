@@ -30,7 +30,7 @@ T.DelayButton {
           height: width
           anchors.centerIn: parent
           radius: width / 2
-          color: Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor
+          color: Constants.backgroundColor
           opacity: 0.2
           z: -5
       }

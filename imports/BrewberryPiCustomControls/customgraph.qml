@@ -6,20 +6,19 @@ pragma ComponentBehavior: Bound
 
 ChartView {
     id: chartView
-
-    title: "Real-Time Temperature Chart"
     legend.visible: false
     antialiasing: true
     backgroundColor: Constants.backgroundColor
     titleColor: Constants.textColor
-    //animationOptions: ChartView.SeriesAnimations
+    animationOptions: ChartView.SeriesAnimations
+    dropShadowEnabled: true
 
     property real setpointTemp: 0.0
 
     onSetpointTempChanged: {
         setpointSeries.remove(0); // Remove the oldest point
         setpointSeries.remove(0); // Remove the oldest point
-        setpointSeries.append(xAxis20.min, setpointTemp);
+        setpointSeries.append(xAxis.min, setpointTemp);
         setpointSeries.append(new Date(xAxis.min.getTime() + 120000), setpointTemp);
     }
 
@@ -60,8 +59,9 @@ ChartView {
             lineSeries.append(timestamp, value);
 
             // Remove old values if count exceeds 120 points
-            if (lineSeries.count > 120) {
-                lineSeries.remove(0); // Remove the oldest value
+            if (lineSeries.count > 5) {
+                //lineSeries.remove(0); // Remove the oldest value
+                lineSeries.removePoints(0, 1);
             }
 
             // Update X-axis min and max

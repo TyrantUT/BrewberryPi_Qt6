@@ -18,7 +18,7 @@ Item {
             TemperatureGauge {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                width: parent.width
+                width: parent.width - 50
                 height: width
                 currentTemp: BreweryValues.currentTemp_Boil
                 setpointValue: setManualMode ? BreweryValues.setpointPercent_Boil : BreweryValues.setpointTemp_Boil

@@ -19,10 +19,11 @@ Item {
             Item {
                 width: parent.width
                 height: parent.height
+
                 TemperatureGauge {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
-                    width: parent.width
+                    width: parent.width - 50
                     height: width
                     currentTemp: BreweryValues.currentTemp_HLT
                     setpointValue: setManualMode ? BreweryValues.setpointPercent_HLT : BreweryValues.setpointTemp_HLT
@@ -54,19 +55,26 @@ Item {
                 width: parent.width
                 height: parent.height / 2
                 CustomGraph {
-                    id: graph
                     width: parent.width
                     height: parent.height
                     setpointTemp: BreweryValues.setpointTemp_HLT
                 }
             }
+
             Item {
-                width: parent.width / 2
-                height: parent.height / 12
-                CustomTimerBox {
+                width: parent.width
+                height: parent.height / 2
+                Item {
                     width: parent.width
-                    height: parent.height
+                    height: parent.height / 4
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 10
+                    CustomTimerBox {
+                        width: parent.width
+                        height: parent.height
+                    }
                 }
+
             }
         }
     }
