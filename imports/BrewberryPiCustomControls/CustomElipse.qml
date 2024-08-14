@@ -5,16 +5,13 @@ pragma ComponentBehavior: Bound
 
 Shape {
     id: control
-
-    property int outerStrokeArea: 0
-    property bool flip: false
-
-    signal doubleClicked()
-
     containsMode: Shape.FillContains
 
+    property int outerStrokeArea: 0
+    signal clicked()
+
     TapHandler {
-        onDoubleTapped: control.doubleClicked()
+        onTapped: control.clicked()
     }
 
     ShapePath {
@@ -27,8 +24,8 @@ Shape {
             centerY: centerX
             radiusX: (control.width / 2) - outerStrokeArea
             radiusY: radiusX
-            startAngle: flip ? 0 : -180
-            sweepAngle: 180
+            startAngle: 0
+            sweepAngle: 360
         }
     }
 }

@@ -50,7 +50,6 @@ ChartView {
 
     LineSeries {
         id: lineSeries
-        name: "Temperature"
 
         // Define the X and Y axes
         axisX: DateTimeAxis {

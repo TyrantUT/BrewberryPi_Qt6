@@ -59,16 +59,7 @@ Item {
                     width: parent.width
                     height: parent.height
                     setpointTemp: BreweryValues.setpointTemp_HLT
-                    Timer {
-                        id: timer
-                        interval: 1000 // Update every second
-                        running: true
-                        repeat: true
-
-                        onTriggered: {
-                            graph.currentTemp = Math.random() * 30 + 10;
-                        }
-                    }
+                    currentTemp: BreweryValues.currentTemp_HLT
                 }
             }
 
@@ -87,6 +78,17 @@ Item {
                 }
 
             }
+        }
+    }
+
+    Timer {
+        id: timer
+        interval: 1000 // Update every second
+        running: true
+        repeat: true
+
+        onTriggered: {
+            BreweryValues.currentTemp_HLT = Math.random() * 30 + 10;
         }
     }
 }

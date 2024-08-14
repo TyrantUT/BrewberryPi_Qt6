@@ -31,20 +31,31 @@ T.DelayButton {
           anchors.centerIn: parent
           radius: width / 2
           color: Constants.backgroundColor
-          opacity: 0.2
-          z: -5
+          opacity: 0.1
       }
 
       background: Rectangle {
-
           opacity: enabled ? 1 : 0.3
           color: control.down ? Constants.warningColor : (control.checked ? Constants.dangerColor : Constants.successColor)
-
-
           width: Math.min(control.width, control.height) - 2
           height: width
           radius: width / 2
           anchors.centerIn: parent
+
+          // Shadow effect using multiple rectangles
+          Rectangle {
+              property color darkBorder: (Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor)
+              property color lightBorder: (Constants.isDarkTheme ? Constants.darkColor : Constants.lightColor)
+              width: parent.width - 2
+              height: parent.height - 2
+              radius: height / 2
+              opacity: 0.4
+              anchors.centerIn: parent
+              color: 'transparent'
+              border.color: control.checked ? darkBorder : lightBorder
+              border.width: 2
+          }
+
           Canvas {
               id: canvas
               anchors.fill: parent

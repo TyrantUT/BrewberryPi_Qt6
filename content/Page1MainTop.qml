@@ -37,7 +37,6 @@ Item {
             color: Constants.backgroundColor
 
             Row {
-                spacing: 2
                 width: parent.width / 3
                 height: parent.height
 

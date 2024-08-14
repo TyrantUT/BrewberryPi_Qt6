@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Shapes
-import QtQuick.Controls.Material
 import BrewberryPi
 
 pragma ComponentBehavior: Bound
@@ -33,9 +32,9 @@ Dial {
     readonly property string suffixText: setManualMode ? "%" : "°"
     signal valueChangedAndReleased(real setpointValue)
 
-
     visible: true
     antialiasing: true
+
 
     // Defaults
     from: 0
@@ -79,6 +78,7 @@ Dial {
         valueChangedAndReleased(setpointValue);
     }
 
+
     handle: Item {
         id: handleItem
         width: 20
@@ -86,25 +86,19 @@ Dial {
         anchors.centerIn: parent
         visible: enabled
 
-        // Inner open area to show temperature tick
-        Rectangle {
-            width: handleItem.width / 2
-            height: width * 2
-            radius: 5
-            anchors.centerIn: parent
-            border.width: 0
-            z: 1
-            color: Constants.backgroundColor
-        }
-
-        Rectangle {
+        Shape {
             id: handleShadow
-            width: handleItem.width
-            height: width * 2
-            radius: 10
-            color: currentColorSetPoint
-            anchors.centerIn: parent
-            border.width: 0
+
+            ShapePath {
+                startX: 10
+                startY: 0
+                PathLine { x: 20; y: 20 }
+                PathLine { x: 0; y: 20 }
+                PathLine { x: 10; y: 0 }
+                PathLine { x: 10; y: 0 }  // Close the path
+                fillColor: currentColorSetPoint
+                strokeColor: 'transparent'
+            }
 
             // Define initial state
             state: "unpressed"
@@ -136,7 +130,7 @@ Dial {
                         NumberAnimation {
                             target: handleShadow
                             property: "opacity"
-                            duration: 300
+                            duration: 100
                             easing.type: Easing.InOutQuad
                         }
                     }
@@ -148,7 +142,7 @@ Dial {
                         NumberAnimation {
                             target: handleShadow
                             property: "opacity"
-                            duration: 300
+                            duration: 100
                             easing.type: Easing.InOutQuad
                         }
                     }
@@ -158,7 +152,7 @@ Dial {
 
         transform: [
             Translate {
-                y: -Math.min(control.background.width, control.background.height) * 0.5 + handleItem.height / 2
+                y: -Math.min(control.background.width, control.background.height) * 0.33 + handleItem.height / 2
             },
             Rotation {
                 angle: control.angle
@@ -171,7 +165,7 @@ Dial {
     Canvas {
         id: canvas
         anchors.centerIn: parent
-        width: control.width
+        width: control.width - 10
         height: width
 
         onPaint: {
@@ -241,50 +235,27 @@ Dial {
                 id: outerArc
                 centerX: control.width / 2
                 centerY: centerX
-                radiusX: control.width / 2
+                radiusX: (control.width / 2) - 10
                 radiusY: radiusX
                 startAngle: control.startAngle - 90
                 sweepAngle: currentAngle + control.endAngle
+
+                Behavior on sweepAngle {
+                    NumberAnimation {
+                        duration: 100
+                        easing.type: Easing.InOutQuad
+                    }
+                }
             }
         }
     }
 
-    Column {
+    CustomElipse {
         width: parent.width
         height: parent.height
-
-        // Top Mouse Area
-        Item {
-            width: parent.width
-            height: parent.heigt / 2
-
-            CustomElipse {
-                width: parent.width
-                height: parent.height
-                anchors.horizontalCenter: parent.horizontalCenter
-                outerStrokeArea: outerHandleSize
-                onDoubleClicked: {
-                    onDoubleClickValueChanged(control.increase)
-                }
-            }
-        }
-
-        // Bottom Mouse Area
-        Item {
-            width: parent.width
-            height: parent.height / 2
-
-            CustomElipse {
-                width: parent.width
-                height: parent.height
-                anchors.horizontalCenter: parent.horizontalCenter
-                outerStrokeArea: outerHandleSize
-                flip: true
-                onDoubleClicked: {
-                    onDoubleClickValueChanged(control.decrease)
-                }
-            }
-        }
+        anchors.horizontalCenter: parent.horizontalCenter
+        outerStrokeArea: outerHandleSize
+        onClicked: {}
     }
 
     // Set Temperature (Inner Dial)
