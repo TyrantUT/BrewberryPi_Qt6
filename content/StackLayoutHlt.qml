@@ -80,15 +80,4 @@ Item {
             }
         }
     }
-
-    Timer {
-        id: timer
-        interval: 1000 // Update every second
-        running: true
-        repeat: true
-
-        onTriggered: {
-            BreweryValues.currentTemp_HLT = Math.random() * 30 + 20;
-        }
-    }
 }

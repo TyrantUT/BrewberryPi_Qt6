@@ -12,11 +12,6 @@ set_source_files_properties(BreweryValues.qml
         QT_QML_SINGLETON_TYPE true
     )
 
-set_source_files_properties(CustomShapes.qml
-    PROPERTIES
-        QT_QML_SINGLETON_TYPE true
-    )
-
 qt6_add_qml_module(BrewberryPi
     URI "BrewberryPi"
     VERSION 1.0
@@ -24,5 +19,8 @@ qt6_add_qml_module(BrewberryPi
         Constants.qml
         BreweryValues.qml
         BreweryFunctions.js
-
+    SOURCES
+        max31865.h
+        max31865.cpp
+        rpihelper.h
 )
