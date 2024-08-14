@@ -17,7 +17,12 @@ ChartView {
     property real currentTemp: 0.0
     property real setpointTemp: 0.0
 
-    function addTemperature(value, timestamp) {
+    function addTemperature(currentTemp, timestamp) {
+
+        // Add new point to series
+        lineSeries.append(timestamp, currentTemp);
+        elapsedTime++;
+
         // Remove old values if count exceeds 120 points
         if (lineSeries.count >= 120) {
            lineSeries.remove(0);
@@ -29,9 +34,6 @@ ChartView {
             xAxis.min = new Date(firstPointTime);
             xAxis.max = new Date(xAxis.min.getTime() + 120000);
         }
-
-        // Add new value
-        lineSeries.append(timestamp, value);
     }
 
     onSetpointTempChanged: {
@@ -41,11 +43,17 @@ ChartView {
         setpointSeries.append(new Date(xAxis.min.getTime() + 120000), setpointTemp);
     }
 
-    onCurrentTempChanged: {
-        var currentTime = new Date(); // Current time
-        var timestamp = new Date(chartView.elapsedTime * 1000); // Timestamp with elapsed time
-        chartView.addTemperature(currentTemp, timestamp);
-        chartView.elapsedTime++; // Increment the elapsed time
+    Timer {
+        id: timer
+        interval: 1000 // Update interval in milliseconds
+        running: true
+        repeat: true
+        onTriggered: {
+
+            var timestamp = new Date(chartView.elapsedTime * 1000); // Timestamp with elapsed time
+            chartView.addTemperature(currentTemp, timestamp);
+
+        }
     }
 
     LineSeries {

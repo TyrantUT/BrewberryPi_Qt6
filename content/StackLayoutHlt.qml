@@ -88,7 +88,7 @@ Item {
         repeat: true
 
         onTriggered: {
-            BreweryValues.currentTemp_HLT = Math.random() * 30 + 10;
+            BreweryValues.currentTemp_HLT = Math.random() * 30 + 20;
         }
     }
 }
