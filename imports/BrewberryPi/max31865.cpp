@@ -7,30 +7,31 @@
 **/
 
 #include "max31865.h"
+#include "pigpio.h"
+#include <QThread>
 #include <tgmath.h>
 
 MAX31865::MAX31865(int8_t spi_cs) {
     // Set SPI Chip Select pin
-    _spi_cs = spi_cs;
-    gpioSetMode(_spi_cs, PI_OUTPUT);
-    gpioWrite(_spi_cs, PI_HIGH);
+    MAX31865_handle.spi_cs = spi_cs;
+    gpioSetMode(spi_cs, PI_OUTPUT);
+    gpioWrite(spi_cs, PI_HIGH);
 }
 
 void MAX31865::MAX31865_init(void) {
     // Set up auto conversion
     uint8_t dataByte;
-    dataByte = MAX31865_buildDataByte();
+    dataByte = MAX31865_buildConfigByte();
     MAX31865_writeRegister(0, dataByte);
     QThread::msleep(100);
-
 }
 
-uint8_t MAX31865::MAX31865_buildDataByte(void) {
+uint8_t MAX31865::MAX31865_buildConfigByte(void) {
     uint8_t dataByte = MAX31865_CONFIG_REG;
 
     dataByte |= MAX31865_CONFIG_BIAS; // Enable Bias
-    dataByte |= MAX31865_CONFIG_MODEAUTO; // Set to Manual
-    dataByte &= ~MAX31865_CONFIG_1SHOT; // Configure 1 Shot
+    dataByte |= MAX31865_CONFIG_MODEAUTO; // Enable Auto Convert
+    dataByte &= ~MAX31865_CONFIG_1SHOT; // Disable 1 Shot
     dataByte |= MAX31865_CONFIG_3WIRE; // Configure 3 wire PT100
     dataByte &= ~MAX31865_CONFIG_FAULTCYCLE; // Disable fault cycle
     dataByte |= MAX31865_CONFIG_FAULTSTAT; // Clear fault bit
@@ -61,26 +62,12 @@ void MAX31865::MAX31865_readTemp(void) {
     uint16_t rtd_response = (( rtd_msb << 8 ) | rtd_lsb ) >> 1;
     //printf("RTD Code: %i\n", rtd_ADC_Code);
 
-    //hft_msb = outBuf[3];
-    //hft_lsb = outBuf[4];
-
-    //uint16_t hft = (( hft_msb << 8 ) | hft_lsb ) >> 1;
-    //printf("High Fault Threshold: %d\n", hft);
-
-    //lft_msb = outBuf[5];
-    //lft_lsb = outBuf[6];
-
-    //uint16_t lft = (( lft_msb << 8 ) | lft_lsb ) >> 1;
-    //printf("Low Fault Threshold: %d\n", lft);
-
     // Read Fault from buffer
-    _fault = outBuf[7];
-
-    // Compare fault bit to get fault text for debugging
-    MAX31865_compareFault();
+    MAX31865_handle.fault = outBuf[7];
 
     // Calculate temperature from rtd_response
     MAX31865_calculateTempC(rtd_response);
+    MAX31865_calculateTempF();
 
     // We need to allow for at least 100msec for each conversion
     // Note: This will impact the Temp Thread overall wait time since all 4 are within 1 thread
@@ -89,22 +76,18 @@ void MAX31865::MAX31865_readTemp(void) {
 }
 
 void MAX31865::MAX31865_writeRegister(uint8_t regNum, uint8_t data) {
-    gpioWrite(_spi_cs, PI_LOW);
-    uint8_t address = 0x80 | regNum;
-    RPiComms::spiSendByte(address);
-    RPiComms::spiSendByte(data);
-    gpioWrite(_spi_cs, PI_HIGH);
+    gpioWrite(MAX31865_handle.spi_cs, PI_LOW);
+    uint8_t address = MAX31865_CONFIG_WRITE | regNum;
+    spiWrite(0, (char *) &address, 1);
+    spiWrite(0, (char *) &data, sizeof(data));
+    gpioWrite(MAX31865_handle.spi_cs, PI_HIGH);
 }
 
-void MAX31865::MAX31865_readRegister(uint8_t regNumStart, uint8_t numRegisters, uint8_t buffer[]) {
-    gpioWrite(_spi_cs, PI_LOW);
-    RPiComms::spiSendByte(regNumStart);
-
-    for (int i = 0; i < numRegisters; i++) {
-        buffer[i] = RPiComms::spiReceiveByte();
-    }
-
-    gpioWrite(_spi_cs, PI_HIGH);
+void MAX31865::MAX31865_readRegister(uint8_t regNumStart, unsigned count, uint8_t *buffer) {
+    gpioWrite(MAX31865_handle.spi_cs, PI_LOW);
+    spiWrite(0, (char *) &regNumStart, 1);
+    spiRead(0, (char *) &buffer, count);
+    gpioWrite(MAX31865_handle.spi_cs, PI_HIGH);
 }
 
 void MAX31865::MAX31865_calculateTempC(uint16_t rtd_response) {
@@ -125,46 +108,39 @@ void MAX31865::MAX31865_calculateTempC(uint16_t rtd_response) {
     //printf("Temp in C: %f\n", temp);
 
     temp = MAX31865_normalizeTemp(temp);
-    _tempC = temp;
-    _lastTempC = _tempC;
+    MAX31865_handle.tempC = temp;
+    MAX31865_handle.lastTempC = temp;
+}
+
+void MAX31865::MAX31865_calculateTempF(void) {
+    MAX31865_handle.tempF = (MAX31865_handle.tempC * 9.0f / 5.0f) + 32.0f;
 }
 
 void MAX31865::MAX31865_compareFault(void) {
 
-    //# bit 7: RTD High Threshold / cable fault open
-    //# bit 6: RTD Low Threshold / cable fault short
-    //# bit 5: REFIN- > 0.85 x VBias -> must be requested
-    //# bit 4: REFIN- < 0.85 x VBias (FORCE- open) -> must be requested
-    //# bit 3: RTDIN- < 0.85 x VBias (FORCE- open) -> must be requested
-    //# bit 2: Overvoltage / undervoltage fault
+/*
+    # bit 7: RTD High Threshold / cable fault open
+        MAX31865_FAULT_HIGHTHRESH
+    # bit 6: RTD Low Threshold / cable fault short
+        MAX31865_FAULT_LOWTHRESH
+    # bit 5: REFIN- > 0.85 x VBias -> must be requested
+        MAX31865_FAULT_REFINLOW
+    # bit 4: REFIN- < 0.85 x VBias (FORCE- open) -> must be requested
+        MAX31865_FAULT_REFINHIGH
+    # bit 3: RTDIN- < 0.85 x VBias (FORCE- open) -> must be requested
+        MAX31865_FAULT_RTDINLOW
+    # bit 2: Overvoltage / undervoltage fault -
+        MAX31865_FAULT_OVUV
+    # bit 1: [Nothing]
+    # bit 0: No Fault
+        MAX31865_FAULT_NONE
+*/
 
-    _faultText = "Unknown error has occured. Refer to the MAX31865 datasheet.";
-    if (_fault == MAX31865_FAULT_NONE) {
-        _faultText = "No faults detected.";
-    }
-    if (_fault == MAX31865_FAULT_HIGHTHRESH) {
-        _faultText = "Measured resistance greater than High Fault Threshold value.";
-    }
-    if (_fault == MAX31865_FAULT_LOWTHRESH) {
-        _faultText = "Measured resistance less than Low Fault Threshold value.";
-    }
-    if (_fault == MAX31865_FAULT_REFINLOW) {
-        _faultText = "vREFIN > 0.85 x vBIAS.";
-    }
-    if (_fault == MAX31865_FAULT_REFINHIGH) {
-        _faultText = "vRERFIN < 0.85 X vBIAS (FORCE - open).";
-    }
-    if (_fault == MAX31865_FAULT_RTDINLOW) {
-        _faultText = "vRTRIN- < 0.85 X vBIAS (FORCE - open).";
-    }
-    if (_fault & MAX31865_FAULT_OVUV) {
-        _faultText = "Any protected input voltage > vDD or < GND1.";
-    }
 }
 
 float MAX31865::MAX31865_normalizeTemp(float temp) {
     if ((temp < 0) || (temp > 102) )
-        return _lastTempC;
+        return MAX31865_handle.lastTempC;
     else
         return temp;
 }

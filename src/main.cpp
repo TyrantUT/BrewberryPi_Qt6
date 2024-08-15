@@ -2,6 +2,7 @@
 #include <QApplication>
 #include "app_environment.h"
 #include "import_qml_plugins.h"
+#include "imports/BrewberryPi/pigpio.h"
 
 // Enable to remove debug outputs throughout code
 //#define QT_NO_DEBUG_OUTPUT
@@ -28,8 +29,14 @@ int main(int argc, char *argv[]) {
     set_qt_environment();
 
     QApplication app(argc, argv);
-
     QQmlApplicationEngine engine;
+
+    if (QSysInfo::productType() != "macos") {
+        QCursor cursor(Qt::BlankCursor);
+        QApplication::setOverrideCursor(cursor);
+        QApplication::changeOverrideCursor(cursor);
+    }
+
     const QUrl url(u"qrc:/qt/qml/Main/main.qml"_qs);
     QObject::connect(
         &engine,
@@ -41,11 +48,23 @@ int main(int argc, char *argv[]) {
         },
         Qt::QueuedConnection);
 
+    // Initalize GPIO
+    gpioInitialise();
+
     engine.load(url);
 
     if (engine.rootObjects().isEmpty()) {
         return -1;
     }
+
+
+    QObject *rootObj = engine.rootObjects().first();
+    qDebug() << Q_FUNC_INFO << rootObj;
+
+    foreach (auto o1, rootObj->children()) {
+        qDebug()  << o1->objectName();
+    }
+
 
     signal(SIGTERM, sigHandler);
     signal(SIGKILL, sigHandler);

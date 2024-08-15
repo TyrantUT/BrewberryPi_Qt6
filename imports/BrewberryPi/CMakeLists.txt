@@ -23,4 +23,7 @@ qt6_add_qml_module(BrewberryPi
         max31865.h
         max31865.cpp
         rpihelper.h
+        pigpio.h
+        pigpio.cpp
+        pidcontroller.h
 )
