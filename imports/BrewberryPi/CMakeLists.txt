@@ -26,4 +26,8 @@ qt6_add_qml_module(BrewberryPi
         pigpio.h
         pigpio.cpp
         pidcontroller.h
+        rpithreads.h
+        rpithreads.cpp
+        rpidata.h
+        rpidata.cpp
 )

@@ -3,13 +3,20 @@
 
 #import "pigpio.h"
 
+#define QT_DEBUG_ON         (bool)      true
+
+#define INPUT_MIN           (float)     0.0
+#define INPUT_MAX           (float)     100.0
+#define OUTPUT_MIN          (float)     0.0
+#define OUTPUT_MAX          (float)     255.0
+
 #define SPI_CHANNEL         0
 #define SPI_SPEED           5000000
 
-#define INPUT_MIN           (float)    0.0
-#define INPUT_MAX           (float)    100.0
-#define OUTPUT_MIN          (float)    0.0
-#define OUTPUT_MAX          (float)    255.0
+#define INPUT_MIN           (float)     0.0
+#define INPUT_MAX           (float)     100.0
+#define OUTPUT_MIN          (float)     0.0
+#define OUTPUT_MAX          (float)     255.0
 #define MISO                19
 #define MOSI                20
 #define SCLK                21

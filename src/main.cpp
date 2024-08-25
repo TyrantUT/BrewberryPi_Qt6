@@ -1,8 +1,13 @@
 #include <QQmlApplicationEngine>
 #include <QApplication>
+#include <QQmlContext>
 #include "app_environment.h"
 #include "import_qml_plugins.h"
 #include "imports/BrewberryPi/pigpio.h"
+#include "imports/BrewberryPi/rpidata.h"
+#include "imports/BrewberryPi/rpithreads.h"
+
+//#include "imports/BrewberryPi/temperaturethread.h"
 
 // Enable to remove debug outputs throughout code
 //#define QT_NO_DEBUG_OUTPUT
@@ -51,20 +56,32 @@ int main(int argc, char *argv[]) {
     // Initalize GPIO
     gpioInitialise();
 
+    // Initialize RPiData Class
+    RPiData RPiDataGlobal;
+    engine.rootContext()->setContextProperty("RPiDataGlobal", &RPiDataGlobal);
+
+    // Temperature Thread
+    RPiThreads* temperatureWorker = new RPiThreads(&RPiDataGlobal);
+    QThread *tempThread = new QThread;
+    temperatureWorker->moveToThread(tempThread);
+    QObject::connect(tempThread, &QThread::started, temperatureWorker, &RPiThreads::processTemps);
+    QObject::connect(tempThread, &QThread::finished, temperatureWorker, &QObject::deleteLater);
+    QObject::connect(&app, &QCoreApplication::aboutToQuit, tempThread, [tempThread]() {
+        tempThread->requestInterruption();
+        tempThread->quit();  // Ask the thread to quit (non-blocking)
+        tempThread->wait();  // Wait for the thread to finish (blocking)
+        tempThread->deleteLater();  // Clean up the thread object
+    }, Qt::DirectConnection);
+
+    tempThread->setPriority(QThread::TimeCriticalPriority);
+    tempThread->start();
+
+
     engine.load(url);
 
     if (engine.rootObjects().isEmpty()) {
         return -1;
     }
-
-
-    QObject *rootObj = engine.rootObjects().first();
-    qDebug() << Q_FUNC_INFO << rootObj;
-
-    foreach (auto o1, rootObj->children()) {
-        qDebug()  << o1->objectName();
-    }
-
 
     signal(SIGTERM, sigHandler);
     signal(SIGKILL, sigHandler);
