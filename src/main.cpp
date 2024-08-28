@@ -61,20 +61,79 @@ int main(int argc, char *argv[]) {
     engine.rootContext()->setContextProperty("RPiDataGlobal", &RPiDataGlobal);
 
     // Temperature Thread
-    RPiThreads* temperatureWorker = new RPiThreads(&RPiDataGlobal);
-    QThread *tempThread = new QThread;
-    temperatureWorker->moveToThread(tempThread);
-    QObject::connect(tempThread, &QThread::started, temperatureWorker, &RPiThreads::processTemps);
-    QObject::connect(tempThread, &QThread::finished, temperatureWorker, &QObject::deleteLater);
-    QObject::connect(&app, &QCoreApplication::aboutToQuit, tempThread, [tempThread]() {
-        tempThread->requestInterruption();
-        tempThread->quit();  // Ask the thread to quit (non-blocking)
-        tempThread->wait();  // Wait for the thread to finish (blocking)
-        tempThread->deleteLater();  // Clean up the thread object
+    RPiThreads *temperatureWorker = new RPiThreads(&RPiDataGlobal);
+    QThread *temperatureThread = new QThread;
+    temperatureWorker->moveToThread(temperatureThread);
+    QObject::connect(temperatureThread, &QThread::started, temperatureWorker, &RPiThreads::processTemps);
+    QObject::connect(temperatureThread, &QThread::finished, temperatureWorker, &QObject::deleteLater);
+
+    RPiThreads *pidHLTWorker = new RPiThreads(&RPiDataGlobal);
+    QThread *pidHLTThread = new QThread;
+    pidHLTWorker->moveToThread(pidHLTThread);
+    QObject::connect(pidHLTThread, &QThread::started, pidHLTWorker, &RPiThreads::processPidHlt);
+    QObject::connect(pidHLTThread, &QThread::finished, pidHLTWorker, &QObject::deleteLater);
+
+    RPiThreads *pidBoilWorker = new RPiThreads(&RPiDataGlobal);
+    QThread *pidBoilThread = new QThread;
+    pidBoilWorker->moveToThread(pidBoilThread);
+    QObject::connect(pidBoilThread, &QThread::started, pidBoilWorker, &RPiThreads::processPidBoil);
+    QObject::connect(pidBoilThread, &QThread::finished, pidBoilWorker, &QObject::deleteLater);
+
+    QObject::connect(&RPiDataGlobal, &RPiData::pwmDutyCycle_HLTChanged, [](float value) {
+        qDebug() << "HLT PWM Value Changed: PWM Value is now" << value;
+    });
+
+    QObject::connect(&RPiDataGlobal, &RPiData::pwmDutyCycle_BoilChanged, [](float value) {
+        qDebug() << "Boil PWM Value Changed: PWM Value is now" << value;
+    });
+
+    QObject::connect(&RPiDataGlobal, &RPiData::elementOn_HLTChanged, [](bool value) {
+        qDebug() << "HLT Element Value Changed: PWM Value is now" << value;
+    });
+
+    QObject::connect(&RPiDataGlobal, &RPiData::elementOn_BoilChanged, [](bool value) {
+        qDebug() << "HLT Element Value Changed: PWM Value is now" << value;
+    });
+
+    QObject::connect(&RPiDataGlobal, &RPiData::pumpOn_WortChanged, [](bool value) {
+        qDebug() << "Wort Pump Value Changed: PWM Value is now" << value;
+    });
+
+    QObject::connect(&RPiDataGlobal, &RPiData::pumpOn_WaterChanged, [](bool value) {
+        qDebug() << "Water Pump Value Changed: PWM Value is now" << value;
+    });
+
+    QObject::connect(&app, &QCoreApplication::aboutToQuit, temperatureThread, [temperatureThread]() {
+        // Handle pidHLTThread cleanup
+        temperatureThread->requestInterruption();
+        temperatureThread->quit();  // Ask the thread to quit (non-blocking)
+        temperatureThread->wait();  // Wait for the thread to finish (blocking)
+        temperatureThread->deleteLater();  // Clean up the thread object
     }, Qt::DirectConnection);
 
-    tempThread->setPriority(QThread::TimeCriticalPriority);
-    tempThread->start();
+    QObject::connect(&app, &QCoreApplication::aboutToQuit, pidHLTThread, [pidHLTThread]() {
+        // Handle pidHLTThread cleanup
+        pidHLTThread->requestInterruption();
+        pidHLTThread->quit();  // Ask the thread to quit (non-blocking)
+        pidHLTThread->wait();  // Wait for the thread to finish (blocking)
+        pidHLTThread->deleteLater();  // Clean up the thread object
+    }, Qt::DirectConnection);
+
+    QObject::connect(&app, &QCoreApplication::aboutToQuit, pidBoilThread, [pidBoilThread]() {
+        // Handle pidBoilThread cleanup
+        pidBoilThread->requestInterruption();
+        pidBoilThread->quit();  // Ask the thread to quit (non-blocking)
+        pidBoilThread->wait();  // Wait for the thread to finish (blocking)
+        pidBoilThread->deleteLater();  // Clean up the thread object
+    }, Qt::DirectConnection);
+
+
+    temperatureThread->start();
+    pidHLTThread->start();
+    pidBoilThread->start();
+    //tempThread->setPriority(QThread::TimeCriticalPriority);
+
+
 
 
     engine.load(url);

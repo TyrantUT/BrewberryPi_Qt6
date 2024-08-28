@@ -29,7 +29,15 @@ public:
     } PIDDirection;
 
     // Function prototypes
-    void PIDInit(float kp, float ki, float kd, float sampleTimeSeconds, float minOutput, float maxOutput, PIDMode mode, PIDDirection controllerDirection);
+    void PIDInit(
+        float kp,
+        float ki,
+        float kd,
+        float sampleTimeSeconds,
+        float minOutput,
+        float maxOutput,
+        PIDMode mode,
+        PIDDirection controllerDirection);
     bool PIDCompute();
     void PIDModeSet(PIDMode mode);
     void PIDOutputLimitsSet(float outMin, float outMax);

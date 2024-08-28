@@ -3,38 +3,46 @@
 
 #include <QObject>
 #include <QMutex>
+#include <QReadWriteLock>
+#include <QReadLocker>
+#include <QWriteLocker>
 #include "qqmlintegration.h"
 #include <QThread>
 
 typedef struct RPiData_t {
     // HLT or Mash mode
-    bool setpointHltOrMash = false;
+    std::atomic<bool> setpointHltOrMash{false};
 
     // Current Temperature
-    float currentTemp_HLT = 0.0f;
-    float currentTemp_Mash = 0.0f;
-    float currentTemp_Boil = 0.0f;
-    float currentTemp_Mash2 = 0.0f;
+    std::atomic<float> currentTemp_HLT{0.0};
+    std::atomic<float> currentTemp_Mash{0.0};
+    std::atomic<float> currentTemp_Boil{0.0};
+    std::atomic<float> currentTemp_Mash2{0.0};
 
     // Setpoint Values;
-    float setpointTemp_HLT = 0.0f;
-    float setpointTemp_Mash = 0.0f;
-    float setpointTemp_Boil = 0.0f;
-    int setpointPercent_HLT = 0;
-    int setpointPercent_Mash = 0;
-    int setpointPercent_Boil = 0;
+    std::atomic<float> setpointTemp_HLT{0.0};
+    std::atomic<float> setpointTemp_Mash{0.0};
+    std::atomic<float> setpointTemp_Boil{0.0};
+    std::atomic<int> setpointPercent_HLT{0};
+    std::atomic<int> setpointPercent_Mash{0};
+    std::atomic<int> setpointPercent_Boil{0};
 
-    bool setpointManual_HLT = false;
-    bool setpointManual_Mash = false;
-    bool setpointManual_Boil = false;
+    std::atomic<bool> setpointManual_HLT{false};
+    std::atomic<bool> setpointManual_Mash{false};
+    std::atomic<bool> setpointManual_Boil{false};
 
     // Element Control
-    bool elementOn_HLT = false;
-    bool elementOn_Boil = false;
+    std::atomic<bool> elementOn_HLT{false};
+    std::atomic<bool> elementOn_Boil{false};
 
     // Pump Control;
-    bool pumpOn_Wort = false;
-    bool pumpOn_Water = false;
+    std::atomic<bool> pumpOn_Wort{false};
+    std::atomic<bool> pumpOn_Water{false};
+
+    // PWM Values
+    std::atomic<float> pwmDutyCycle_HLT{0.0};
+    std::atomic<float> pwmDutyCycle_Boil{0.0};
+
 } RPiData_t;
 
 class RPiData : public QObject {
@@ -56,7 +64,6 @@ class RPiData : public QObject {
     Q_PROPERTY (int setpointPercent_Boil READ getSetpointPercent_Boil WRITE setSetpointPercent_Boil NOTIFY setpointPercent_BoilChanged)
 
     Q_PROPERTY (bool setpointManual_HLT READ getSetpointManual_HLT WRITE setSetpointManual_HLT NOTIFY setpointManual_HLTChanged)
-    Q_PROPERTY (bool setpointManual_Mash READ getSetpointManual_Mash WRITE setSetpointManual_Mash NOTIFY setpointManual_MashChanged)
     Q_PROPERTY (bool setpointManual_Boil READ getSetpointManual_Boil WRITE setSetpointManual_Boil NOTIFY setpointManual_BoilChanged)
 
     Q_PROPERTY (bool elementOn_HLT READ getElementOn_HLT WRITE setElementOn_HLT NOTIFY elementOn_HLTChanged)
@@ -67,39 +74,41 @@ class RPiData : public QObject {
 
 public:
     explicit RPiData();
-    virtual ~RPiData() {
-        emit aboutToBeDestroyed();
-    };
+    virtual ~RPiData() {};
 
-    bool getSetpointHltOrMash(void) const { return RPiDataStruct.setpointHltOrMash;}
-    float getCurrentTemp_HLT(void) const { return RPiDataStruct.currentTemp_HLT;}
-    float getCurrentTemp_Mash(void) const { return RPiDataStruct.currentTemp_Mash;}
-    float getCurrentTemp_Boil(void) const { return RPiDataStruct.currentTemp_Boil;}
-    float getCurrentTemp_Mash2(void) const { return RPiDataStruct.currentTemp_Mash2;}
-    float getSetpointTemp_HLT(void) const { return RPiDataStruct.setpointTemp_HLT;}
-    float getSetpointTemp_Mash(void) const { return RPiDataStruct.setpointTemp_Mash;}
-    float getSetpointTemp_Boil(void) const { return RPiDataStruct.setpointTemp_Boil;}
-    int getSetpointPercent_HLT(void) const { return RPiDataStruct.setpointPercent_HLT;}
-    int getSetpointPercent_Mash(void) const { return RPiDataStruct.setpointPercent_Mash;}
-    int getSetpointPercent_Boil(void) const { return RPiDataStruct.setpointPercent_Boil;}
-    bool getSetpointManual_HLT(void) const { return RPiDataStruct.setpointManual_HLT;}
-    bool getSetpointManual_Mash(void) const { return RPiDataStruct.setpointManual_Mash;}
-    bool getSetpointManual_Boil(void) const { return RPiDataStruct.setpointManual_Boil;}
-    bool getElementOn_HLT(void) const { return RPiDataStruct.elementOn_HLT;}
-    bool getElementOn_Boil(void) const { return RPiDataStruct.elementOn_Boil;}
-    bool getPumpOn_Wort(void) const { return RPiDataStruct.pumpOn_Wort;}
-    bool getPumpOn_Water(void) const { return RPiDataStruct.pumpOn_Water;}
+    bool getSetpointHltOrMash(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.setpointHltOrMash;}
+    float getCurrentTemp_HLT(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.currentTemp_HLT;}
+    float getCurrentTemp_Mash(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.currentTemp_Mash;}
+    float getCurrentTemp_Boil(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.currentTemp_Boil;}
+    float getCurrentTemp_Mash2(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.currentTemp_Mash2;}
+    float getSetpointTemp_HLT(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.setpointTemp_HLT;}
+    float getSetpointTemp_Mash(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.setpointTemp_Mash;}
+    float getSetpointTemp_Boil(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.setpointTemp_Boil;}
+    int getSetpointPercent_HLT(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.setpointPercent_HLT;}
+    int getSetpointPercent_Mash(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.setpointPercent_Mash;}
+    int getSetpointPercent_Boil(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.setpointPercent_Boil;}
+    bool getSetpointManual_HLT(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.setpointManual_HLT;}
+    bool getSetpointManual_Boil(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.setpointManual_Boil;}
+    bool getElementOn_HLT(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.elementOn_HLT;}
+    bool getElementOn_Boil(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.elementOn_Boil;}
+    bool getPumpOn_Wort(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.pumpOn_Wort;}
+    bool getPumpOn_Water(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.pumpOn_Water;}
+    float getPwmDutyCycle_HLT(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.pwmDutyCycle_HLT;}
+    float getPwmDutyCycle_Boil(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.pwmDutyCycle_Boil;}
 
     void setCurrentTemp_HLT(float value);
     void setCurrentTemp_Mash(float value);
     void setCurrentTemp_Boil(float value);
     void setCurrentTemp_Mash2(float value);
 
+    void setPwmDutyCycle_HLT(float value);
+    void setPwmDutyCycle_Boil(float value);
+
     // Mutex
-    QMutex rpiDataMutex;
+    mutable QReadWriteLock rpiDataMutex;
 
 public slots:
-    void setSetpointHltOrMash(float value);
+    void setSetpointHltOrMash(bool value);
     void setSetpointTemp_HLT(float value);
     void setSetpointTemp_Hash(float value);
     void setSetpointTemp_Boil(float value);
@@ -107,7 +116,6 @@ public slots:
     void setSetpointPercent_Mash(int value);
     void setSetpointPercent_Boil(int value);
     void setSetpointManual_HLT(bool value);
-    void setSetpointManual_Mash(bool value);
     void setSetpointManual_Boil(bool value);
     void setElementOn_HLT(bool value);
     void setElementOn_Boil(bool value);
@@ -127,14 +135,13 @@ signals:
     void setpointPercent_MashChanged();
     void setpointPercent_BoilChanged();
     void setpointManual_HLTChanged();
-    void setpointManual_MashChanged();
     void setpointManual_BoilChanged();
-    void elementOn_HLTChanged();
-    void elementOn_BoilChanged();
-    void pumpOn_WortChanged();
-    void pumpOn_WaterChanged();
-
-    void aboutToBeDestroyed();
+    void elementOn_HLTChanged(bool value);
+    void elementOn_BoilChanged(bool value);
+    void pumpOn_WortChanged(bool value);
+    void pumpOn_WaterChanged(bool value);
+    void pwmDutyCycle_HLTChanged(float value);
+    void pwmDutyCycle_BoilChanged(float value);
 
 private:
     // Data

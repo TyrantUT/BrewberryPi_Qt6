@@ -30,7 +30,7 @@ Item {
                     labelText: qsTr("Hot Liquor Tank")
                     setManualMode: BreweryValues.setpointManual_HLT
                     color: Constants.textColor
-                    enabled: true
+                    enabled: !BreweryValues.setpointHltOrMash
 
                     onValueChangedAndReleased: (setpointValue) => {
                         if (setManualMode) {

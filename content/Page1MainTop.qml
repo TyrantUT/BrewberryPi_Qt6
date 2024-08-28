@@ -54,8 +54,8 @@ Item {
                         setpointValue: setManualMode ? BreweryValues.setpointPercent_HLT : BreweryValues.setpointTemp_HLT
                         color: Constants.textColor
                         labelText: qsTr("Hot Liquor Tank")
-                        setManualMode: BreweryValues.setpointManual_HLT
-                        enabled: true
+                        setManualMode: BreweryValues.setpointManual_HLT && !BreweryValues.setpointHltOrMash
+                        enabled: !BreweryValues.setpointHltOrMash
 
                         onValueChangedAndReleased: (setpointValue) => {
                             if (setManualMode) {
@@ -81,10 +81,23 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                         currentTemp: BreweryValues.currentTemp_Mash
-                        setpointValue: BreweryValues.setpointTemp_Mash
+                        setpointValue: setManualMode ? BreweryValues.setpointPercent_Mash : BreweryValues.setpointTemp_Mash
                         color: Constants.textColor
                         labelText: qsTr("Mash")
-                        enabled: false
+                        setManualMode: BreweryValues.setpointManual_HLT && BreweryValues.setpointHltOrMash
+                        enabled: BreweryValues.setpointHltOrMash
+
+                        onValueChangedAndReleased: (setpointValue) => {
+                            if (setManualMode) {
+                                if (BreweryValues.setpointPercent_Mash !== setpointValue) {
+                                    BreweryValues.setpointPercent_Mash = setpointValue;
+                                }
+                            } else {
+                                if (BreweryValues.setpointTemp_Mash !== setpointValue) {
+                                    BreweryValues.setpointTemp_Mash = setpointValue;
+                                }
+                            }
+                        }
                     }
                 }
 

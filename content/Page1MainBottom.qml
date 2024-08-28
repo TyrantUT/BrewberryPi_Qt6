@@ -101,7 +101,7 @@ Item {
             height: parent.height
 
             Row {
-                width: parent.width / 2
+                width: parent.width / 3
                 height: parent.height / 2.2
 
 
@@ -132,6 +132,37 @@ Item {
                             text: checked ? "On" : "Off"
                             checked: BreweryValues.pumpOn_Water
                             onCheckedChanged: BreweryValues.pumpOn_Water = checked
+                        }
+                    }
+                }
+
+                Column {
+                    width: parent.width
+                    height: parent.height / 2
+
+                    Item {
+                        width: parent.width
+                        height: parent.height - 10
+                        Text {
+                            text: 'HLT / Mash'
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: Constants.textColor
+                            font.pixelSize: height
+                            font.bold: true
+                        }
+                    }
+
+                    Item {
+                        width: parent.width
+                        height: parent.height
+
+                        CustomToggleSwitch {
+                            width: parent.width / 2
+                            height: parent.height / 2 + 10
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: checked ? "Mash" : "HLT"
+                            checked: BreweryValues.setpointHltOrMash
+                            onCheckedChanged: BreweryValues.setpointHltOrMash = checked
                         }
                     }
                 }

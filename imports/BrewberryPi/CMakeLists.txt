@@ -5,12 +5,12 @@ qt_add_library(BrewberryPi STATIC)
 set_source_files_properties(Constants.qml
     PROPERTIES
         QT_QML_SINGLETON_TYPE true
-    )
+)
 
 set_source_files_properties(BreweryValues.qml
     PROPERTIES
         QT_QML_SINGLETON_TYPE true
-    )
+)
 
 qt6_add_qml_module(BrewberryPi
     URI "BrewberryPi"
@@ -26,8 +26,9 @@ qt6_add_qml_module(BrewberryPi
         pigpio.h
         pigpio.cpp
         pidcontroller.h
+        pidcontroller.cpp
         rpithreads.h
         rpithreads.cpp
         rpidata.h
-        rpidata.cpp
+        rpidata.cpp    
 )
