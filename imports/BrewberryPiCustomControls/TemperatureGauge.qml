@@ -313,7 +313,7 @@ Dial {
                         pixelSize: height
                     }
                     fontSizeMode: Text.Fit
-                    text: Math.round(currentTemp * 100 / 100) + "°"
+                    text: Math.round(currentTemp * 10) / 10 + "°"
                     color: control.gradientColor
                 }
             }

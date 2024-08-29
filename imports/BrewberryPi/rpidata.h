@@ -2,7 +2,6 @@
 #define RPIDATA_H
 
 #include <QObject>
-#include <QMutex>
 #include <QReadWriteLock>
 #include <QReadLocker>
 #include <QWriteLocker>

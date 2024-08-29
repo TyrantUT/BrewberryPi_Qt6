@@ -11,23 +11,26 @@
 #include <QThread>
 #include <tgmath.h>
 
-MAX31865::MAX31865(int8_t spi_cs) {
+MAX31865::MAX31865(qint8 spi_cs) {
     // Set SPI Chip Select pin
-    MAX31865_handle.spi_cs = spi_cs;
+    {
+        QWriteLocker locker(&temperatureLocker);
+        MAX31865_handle.spi_cs = spi_cs;
+    }
+
     gpioSetMode(spi_cs, PI_OUTPUT);
     gpioWrite(spi_cs, PI_HIGH);
 }
 
 void MAX31865::MAX31865_init(void) {
     // Set up auto conversion
-    uint8_t dataByte;
-    dataByte = MAX31865_buildConfigByte();
+    quint8 dataByte = MAX31865_buildConfigByte();
     MAX31865_writeRegister(0, dataByte);
     QThread::msleep(100);
 }
 
 uint8_t MAX31865::MAX31865_buildConfigByte(void) {
-    uint8_t dataByte = MAX31865_CONFIG_REG;
+    quint8 dataByte = MAX31865_CONFIG_REG;
 
     dataByte |= MAX31865_CONFIG_BIAS; // Enable Bias
     dataByte |= MAX31865_CONFIG_MODEAUTO; // Enable Auto Convert
@@ -42,12 +45,12 @@ uint8_t MAX31865::MAX31865_buildConfigByte(void) {
 
 void MAX31865::MAX31865_readTemp(void) {
 
-    uint8_t outBuf[8];
-    //uint8_t conf_reg;
+    quint8 outBuf[8];
+    //quint8 conf_reg;
 
-    uint8_t rtd_msb, rtd_lsb;
-    //uint8_t hft_msb, hft_lsb;
-    //uint8_t lft_msb, lft_lsb;
+    quint8 rtd_msb, rtd_lsb;
+    //quint8 hft_msb, hft_lsb;
+    //quint8 lft_msb, lft_lsb;
 
     // Read all registers
     MAX31865_readRegister(0, 8, outBuf);
@@ -59,11 +62,14 @@ void MAX31865::MAX31865_readTemp(void) {
     rtd_lsb = outBuf[2];
 
     // Combine two bytes to one for RTD Response
-    uint16_t rtd_response = (( rtd_msb << 8 ) | rtd_lsb ) >> 1;
+    quint16 rtd_response = (( rtd_msb << 8 ) | rtd_lsb ) >> 1;
     //printf("RTD Code: %i\n", rtd_ADC_Code);
 
     // Read Fault from buffer
-    MAX31865_handle.fault = outBuf[7];
+    {
+        QWriteLocker locker(&temperatureLocker);
+        MAX31865_handle.fault = outBuf[7];
+    }
 
     // Calculate temperature from rtd_response
     MAX31865_calculateTempC(rtd_response);
@@ -72,25 +78,24 @@ void MAX31865::MAX31865_readTemp(void) {
     // We need to allow for at least 100msec for each conversion
     // Note: This will impact the Temp Thread overall wait time since all 4 are within 1 thread
     QThread::msleep(100);
-
 }
 
-void MAX31865::MAX31865_writeRegister(uint8_t regNum, uint8_t data) {
+void MAX31865::MAX31865_writeRegister(quint8 regNum, quint8 data) {
     gpioWrite(MAX31865_handle.spi_cs, PI_LOW);
-    uint8_t address = MAX31865_CONFIG_WRITE | regNum;
+    quint8 address = MAX31865_CONFIG_WRITE | regNum;
     spiWrite(0, (char *) &address, 1);
     spiWrite(0, (char *) &data, sizeof(data));
     gpioWrite(MAX31865_handle.spi_cs, PI_HIGH);
 }
 
-void MAX31865::MAX31865_readRegister(uint8_t regNumStart, unsigned count, uint8_t *buffer) {
+void MAX31865::MAX31865_readRegister(quint8 regNumStart, unsigned count, quint8 *buffer) {
     gpioWrite(MAX31865_handle.spi_cs, PI_LOW);
     spiWrite(0, (char *) &regNumStart, 1);
     spiRead(0, (char *) &buffer, count);
     gpioWrite(MAX31865_handle.spi_cs, PI_HIGH);
 }
 
-void MAX31865::MAX31865_calculateTempC(uint16_t rtd_response) {
+void MAX31865::MAX31865_calculateTempC(quint8 rtd_response) {
     float Z1, Z2, Z3, Z4, Rt, temp;
 
     // Calculate temperature in C
@@ -108,11 +113,15 @@ void MAX31865::MAX31865_calculateTempC(uint16_t rtd_response) {
     //printf("Temp in C: %f\n", temp);
 
     temp = MAX31865_normalizeTemp(temp);
-    MAX31865_handle.tempC = temp;
-    MAX31865_handle.lastTempC = temp;
+    {
+        QWriteLocker locker(&temperatureLocker);
+        MAX31865_handle.tempC = temp;
+        MAX31865_handle.lastTempC = temp;
+    }
 }
 
 void MAX31865::MAX31865_calculateTempF(void) {
+    QWriteLocker locker(&temperatureLocker);
     MAX31865_handle.tempF = (MAX31865_handle.tempC * 9.0f / 5.0f) + 32.0f;
 }
 
@@ -139,10 +148,19 @@ void MAX31865::MAX31865_compareFault(void) {
 }
 
 float MAX31865::MAX31865_normalizeTemp(float temp) {
-    if ((temp < 0) || (temp > 102) )
-        return MAX31865_handle.lastTempC;
-    else
-        return temp;
+    tempBuffer.append(temp);
+
+    if (tempBuffer.size() > bufferSize) {
+        tempBuffer.removeFirst();
+    }
+
+    float sum = std::accumulate(tempBuffer.begin(), tempBuffer.end(), 0.0f);
+
+    if (temp < 0) {
+        return -17.77777777777778f;
+    } else {
+        return sum / tempBuffer.size();
+    }
 }
 
 MAX31865::~MAX31865() {

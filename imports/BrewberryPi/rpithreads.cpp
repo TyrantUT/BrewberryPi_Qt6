@@ -22,7 +22,7 @@ void RPiThreads::processTemps() {
     // Delay thread by 500 msec to wait for full startup
     QThread::sleep(5);
 
-    if (QT_DEBUG_ON) {
+    if (QT_THREADS_MAX) {
         qDebug() << "[DEBUG - MAX31865 Thread] MAX31865 Initialized.";
         qDebug() << "[DEBUG - MAX31865 Thread] MAX31865 Temperature Thread Starting";
     }
@@ -40,7 +40,7 @@ void RPiThreads::processTemps() {
         {
             float tempHLTTemp = MAX31865_hlt.MAX31865_tempF();
 
-            if (QT_DEBUG_ON) {
+            if (QT_THREADS_MAX) {
                 qDebug() << "[DEBUG - MAX31865 Thread] HLT Temp: " << tempHLTTemp;
             }
             // Handle HLT Mutex and set new temperature
@@ -52,7 +52,7 @@ void RPiThreads::processTemps() {
         {
             float tempMashTemp = MAX31865_mash.MAX31865_tempF();
 
-            if (QT_DEBUG_ON) {
+            if (QT_THREADS_MAX) {
                 qDebug() << "[DEBUG - MAX31865 Thread] Mash Temp: " << tempMashTemp;
             }
             // Handle Mash Mutex and set new temperature
@@ -64,7 +64,7 @@ void RPiThreads::processTemps() {
         {
             float tempBoilTemp = MAX31865_boil.MAX31865_tempF();
 
-            if (QT_DEBUG_ON) {
+            if (QT_THREADS_MAX) {
                 qDebug() << "[DEBUG - MAX31865 Thread] Boil Temp: " << tempBoilTemp;
             }
             // Handle Boil Mutex and set new temperature
@@ -76,7 +76,7 @@ void RPiThreads::processTemps() {
         {
             float tempMash2Temp = MAX31865_mash2.MAX31865_tempF();
 
-            if (QT_DEBUG_ON) {
+            if (QT_THREADS_MAX) {
                 qDebug() << "[DEBUG - MAX31865 Thread] Mash2 Temp: " << tempMash2Temp;
             }
             // Handle Mash2 Mutex and set new temperature
@@ -100,7 +100,7 @@ void RPiThreads::processPidHlt(void) {
                               PIDController_HLT.AUTOMATIC,
                               PIDController_HLT.DIRECT);
 
-    if (QT_DEBUG_ON) {
+    if (QT_THREADS_PID_HLT) {
         qDebug() << "[DEBUG - PID Controller Thread - HLT / MASH] PID Initalized.";
     }
 
@@ -193,7 +193,7 @@ void RPiThreads::processPidBoil(void) {
                               PIDController_Boil.AUTOMATIC,
                               PIDController_Boil.DIRECT);
 
-    if (QT_DEBUG_ON) {
+    if (QT_THREADS_PID_BOIL) {
         qDebug() << "[DEBUG - PID Controller Thread - BOil] PID Initalized.";
     }
 

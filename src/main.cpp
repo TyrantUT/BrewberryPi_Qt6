@@ -62,20 +62,23 @@ int main(int argc, char *argv[]) {
 
     // Temperature Thread
     RPiThreads *temperatureWorker = new RPiThreads(&RPiDataGlobal);
+    RPiThreads *pidHLTWorker = new RPiThreads(&RPiDataGlobal);
+    RPiThreads *pidBoilWorker = new RPiThreads(&RPiDataGlobal);
+
     QThread *temperatureThread = new QThread;
+    QThread *pidHLTThread = new QThread;
+    QThread *pidBoilThread = new QThread;
+
     temperatureWorker->moveToThread(temperatureThread);
+    pidHLTWorker->moveToThread(pidHLTThread);
+    pidBoilWorker->moveToThread(pidBoilThread);
+
     QObject::connect(temperatureThread, &QThread::started, temperatureWorker, &RPiThreads::processTemps);
     QObject::connect(temperatureThread, &QThread::finished, temperatureWorker, &QObject::deleteLater);
 
-    RPiThreads *pidHLTWorker = new RPiThreads(&RPiDataGlobal);
-    QThread *pidHLTThread = new QThread;
-    pidHLTWorker->moveToThread(pidHLTThread);
     QObject::connect(pidHLTThread, &QThread::started, pidHLTWorker, &RPiThreads::processPidHlt);
     QObject::connect(pidHLTThread, &QThread::finished, pidHLTWorker, &QObject::deleteLater);
 
-    RPiThreads *pidBoilWorker = new RPiThreads(&RPiDataGlobal);
-    QThread *pidBoilThread = new QThread;
-    pidBoilWorker->moveToThread(pidBoilThread);
     QObject::connect(pidBoilThread, &QThread::started, pidBoilWorker, &RPiThreads::processPidBoil);
     QObject::connect(pidBoilThread, &QThread::finished, pidBoilWorker, &QObject::deleteLater);
 
@@ -123,7 +126,7 @@ int main(int argc, char *argv[]) {
         // Handle pidBoilThread cleanup
         pidBoilThread->requestInterruption();
         pidBoilThread->quit();  // Ask the thread to quit (non-blocking)
-        pidBoilThread->wait();  // Wait for the thread to finish (blocking)
+        pidBoilThread->wait();  //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa Wait for the thread to finish (blocking)
         pidBoilThread->deleteLater();  // Clean up the thread object
     }, Qt::DirectConnection);
 

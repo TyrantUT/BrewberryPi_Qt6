@@ -4,6 +4,9 @@
 #import "pigpio.h"
 
 #define QT_DEBUG_ON         (bool)      true
+#define QT_THREADS_MAX      (bool)      false
+#define QT_THREADS_PID_HLT  (bool)      false
+#define QT_THREADS_PID_BOIL (bool)      false
 
 #define INPUT_MIN           (float)     0.0
 #define INPUT_MAX           (float)     100.0
