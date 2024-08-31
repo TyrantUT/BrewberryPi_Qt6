@@ -16,10 +16,6 @@
 #define SPI_CHANNEL         0
 #define SPI_SPEED           5000000
 
-#define INPUT_MIN           (float)     0.0
-#define INPUT_MAX           (float)     100.0
-#define OUTPUT_MIN          (float)     0.0
-#define OUTPUT_MAX          (float)     255.0
 #define MISO                19
 #define MOSI                20
 #define SCLK                21
@@ -35,7 +31,17 @@
 #define PUMP_WORT           2
 #define PUMP_WATER          3
 
-void piSetup(void) {
+static float mapPWM(float input) {
+    return 1.0 * OUTPUT_MIN + \
+        ((OUTPUT_MAX - OUTPUT_MIN) / (INPUT_MAX - INPUT_MIN)) \
+        * (input - INPUT_MIN);
+};
+
+static void piSetup(void) {
+
+    // Initalize GPIO
+    gpioInitialise();
+
     // Set Element Output to High
     gpioSetMode(ELEMENT_HLT, PI_OUTPUT);
     gpioSetMode(ELEMENT_BOIL, PI_OUTPUT);
@@ -59,12 +65,12 @@ void piSetup(void) {
     gpioPWM(PWM_BOIL, PI_LOW);
 }
 
-void gpioEnableElement(int pin) {
-    gpioWrite(pin, PI_LOW);
-}
+static void gpioWriteValue(unsigned pin, unsigned value) {
+    gpioWrite(pin, value);
+};
 
-void gpioDisableElement(int pin) {
-    gpioWrite(pin, PI_HIGH);
-}
+static void pwmWriteValue(unsigned pin, unsigned value) {
+    gpioPWM(pin, value);
+};
 
 #endif // RPIHELPER_H

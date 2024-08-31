@@ -8,7 +8,8 @@
 
 #include "rpidata.h"
 
-RPiData::RPiData() {};
+RPiData::RPiData(QObject *parent) : QObject(parent)
+{}
 
 void RPiData::setSetpointHltOrMash(bool value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -120,7 +121,8 @@ void RPiData::setElementOn_HLT(bool value) {
         RPiDataStruct.elementOn_HLT = value;
         emit elementOn_HLTChanged(value);
     }
-}
+};
+
 void RPiData::setElementOn_Boil(bool value) {
     QWriteLocker locker(&rpiDataMutex);
     if (RPiDataStruct.elementOn_Boil != value) {

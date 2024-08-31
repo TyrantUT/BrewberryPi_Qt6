@@ -30,5 +30,7 @@ qt6_add_qml_module(BrewberryPi
         rpithreads.h
         rpithreads.cpp
         rpidata.h
-        rpidata.cpp    
+        rpidata.cpp
+        connectionmanager.h
+        connectionmanager.cpp
 )

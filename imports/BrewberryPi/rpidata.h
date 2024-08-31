@@ -10,37 +10,37 @@
 
 typedef struct RPiData_t {
     // HLT or Mash mode
-    std::atomic<bool> setpointHltOrMash{false};
+    bool setpointHltOrMash{false};
 
     // Current Temperature
-    std::atomic<float> currentTemp_HLT{0.0};
-    std::atomic<float> currentTemp_Mash{0.0};
-    std::atomic<float> currentTemp_Boil{0.0};
-    std::atomic<float> currentTemp_Mash2{0.0};
+    float currentTemp_HLT = 0.0f;
+    float currentTemp_Mash = 0.0f;
+    float currentTemp_Boil = 0.0f;
+    float currentTemp_Mash2 = 0.0f;
 
     // Setpoint Values;
-    std::atomic<float> setpointTemp_HLT{0.0};
-    std::atomic<float> setpointTemp_Mash{0.0};
-    std::atomic<float> setpointTemp_Boil{0.0};
-    std::atomic<int> setpointPercent_HLT{0};
-    std::atomic<int> setpointPercent_Mash{0};
-    std::atomic<int> setpointPercent_Boil{0};
+    float setpointTemp_HLT = 0.0f;
+    float setpointTemp_Mash = 0.0f;
+    float setpointTemp_Boil = 0.0f;
+    int setpointPercent_HLT = 0;
+    int setpointPercent_Mash = 0;
+    int setpointPercent_Boil = 0.0f;
 
-    std::atomic<bool> setpointManual_HLT{false};
-    std::atomic<bool> setpointManual_Mash{false};
-    std::atomic<bool> setpointManual_Boil{false};
+    bool setpointManual_HLT = false;
+    bool setpointManual_Mash = false;
+    bool setpointManual_Boil = false;
 
     // Element Control
-    std::atomic<bool> elementOn_HLT{false};
-    std::atomic<bool> elementOn_Boil{false};
+    bool elementOn_HLT = false;
+    bool elementOn_Boil = false;
 
     // Pump Control;
-    std::atomic<bool> pumpOn_Wort{false};
-    std::atomic<bool> pumpOn_Water{false};
+    bool pumpOn_Wort = false;
+    bool pumpOn_Water = false;
 
     // PWM Values
-    std::atomic<float> pwmDutyCycle_HLT{0.0};
-    std::atomic<float> pwmDutyCycle_Boil{0.0};
+    float pwmDutyCycle_HLT = 0.0f;
+    float pwmDutyCycle_Boil = 0.0f;
 
 } RPiData_t;
 
@@ -72,7 +72,7 @@ class RPiData : public QObject {
     Q_PROPERTY (bool pumpOn_Water READ getPumpOn_Water WRITE setPumpOn_Water NOTIFY pumpOn_WaterChanged)
 
 public:
-    explicit RPiData();
+    explicit RPiData(QObject *parent = nullptr);
     virtual ~RPiData() {};
 
     bool getSetpointHltOrMash(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.setpointHltOrMash;}

@@ -3,12 +3,6 @@
 #include "max31865.h"
 #include "pidcontroller.h"
 
-static float mapPWM(float input) {
-    return 1.0 * OUTPUT_MIN + \
-    ((OUTPUT_MAX - OUTPUT_MIN) / (INPUT_MAX - INPUT_MIN)) \
-    * (input - INPUT_MIN);
-}
-
 RPiThreads::RPiThreads(RPiData *rpiData, QObject *parent) :
     QObject(parent),
     m_rpiData(rpiData)

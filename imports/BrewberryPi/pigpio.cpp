@@ -1,7 +1,7 @@
 #include <pigpio.h>
 
 int gpioInitialise(void) {
-    //qDebug() << "Initalize";
+    //qDebug() << "Initalise";
     return 0;
 }
 

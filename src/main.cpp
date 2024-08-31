@@ -3,11 +3,10 @@
 #include <QQmlContext>
 #include "app_environment.h"
 #include "import_qml_plugins.h"
-#include "imports/BrewberryPi/pigpio.h"
 #include "imports/BrewberryPi/rpidata.h"
 #include "imports/BrewberryPi/rpithreads.h"
-
-//#include "imports/BrewberryPi/temperaturethread.h"
+#include "imports/BrewberryPi/rpihelper.h"
+#include "imports/BrewberryPi/connectionmanager.h"
 
 // Enable to remove debug outputs throughout code
 //#define QT_NO_DEBUG_OUTPUT
@@ -53,8 +52,9 @@ int main(int argc, char *argv[]) {
         },
         Qt::QueuedConnection);
 
-    // Initalize GPIO
-    gpioInitialise();
+
+    // Initialize RPi GPIO and set default values
+    piSetup();
 
     // Initialize RPiData Class
     RPiData RPiDataGlobal;
@@ -82,29 +82,8 @@ int main(int argc, char *argv[]) {
     QObject::connect(pidBoilThread, &QThread::started, pidBoilWorker, &RPiThreads::processPidBoil);
     QObject::connect(pidBoilThread, &QThread::finished, pidBoilWorker, &QObject::deleteLater);
 
-    QObject::connect(&RPiDataGlobal, &RPiData::pwmDutyCycle_HLTChanged, [](float value) {
-        qDebug() << "HLT PWM Value Changed: PWM Value is now" << value;
-    });
-
-    QObject::connect(&RPiDataGlobal, &RPiData::pwmDutyCycle_BoilChanged, [](float value) {
-        qDebug() << "Boil PWM Value Changed: PWM Value is now" << value;
-    });
-
-    QObject::connect(&RPiDataGlobal, &RPiData::elementOn_HLTChanged, [](bool value) {
-        qDebug() << "HLT Element Value Changed: PWM Value is now" << value;
-    });
-
-    QObject::connect(&RPiDataGlobal, &RPiData::elementOn_BoilChanged, [](bool value) {
-        qDebug() << "HLT Element Value Changed: PWM Value is now" << value;
-    });
-
-    QObject::connect(&RPiDataGlobal, &RPiData::pumpOn_WortChanged, [](bool value) {
-        qDebug() << "Wort Pump Value Changed: PWM Value is now" << value;
-    });
-
-    QObject::connect(&RPiDataGlobal, &RPiData::pumpOn_WaterChanged, [](bool value) {
-        qDebug() << "Water Pump Value Changed: PWM Value is now" << value;
-    });
+    ConnectionManager connectionManager;
+    connectionManager.setupConnections(&RPiDataGlobal);
 
     QObject::connect(&app, &QCoreApplication::aboutToQuit, temperatureThread, [temperatureThread]() {
         // Handle pidHLTThread cleanup
@@ -117,17 +96,17 @@ int main(int argc, char *argv[]) {
     QObject::connect(&app, &QCoreApplication::aboutToQuit, pidHLTThread, [pidHLTThread]() {
         // Handle pidHLTThread cleanup
         pidHLTThread->requestInterruption();
-        pidHLTThread->quit();  // Ask the thread to quit (non-blocking)
-        pidHLTThread->wait();  // Wait for the thread to finish (blocking)
-        pidHLTThread->deleteLater();  // Clean up the thread object
+        pidHLTThread->quit();
+        pidHLTThread->wait();
+        pidHLTThread->deleteLater();
     }, Qt::DirectConnection);
 
     QObject::connect(&app, &QCoreApplication::aboutToQuit, pidBoilThread, [pidBoilThread]() {
         // Handle pidBoilThread cleanup
         pidBoilThread->requestInterruption();
-        pidBoilThread->quit();  // Ask the thread to quit (non-blocking)
-        pidBoilThread->wait();  //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa Wait for the thread to finish (blocking)
-        pidBoilThread->deleteLater();  // Clean up the thread object
+        pidBoilThread->quit();
+        pidBoilThread->wait();
+        pidBoilThread->deleteLater();
     }, Qt::DirectConnection);
 
 
@@ -135,9 +114,6 @@ int main(int argc, char *argv[]) {
     pidHLTThread->start();
     pidBoilThread->start();
     //tempThread->setPriority(QThread::TimeCriticalPriority);
-
-
-
 
     engine.load(url);
 
