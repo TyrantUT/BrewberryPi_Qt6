@@ -144,7 +144,7 @@ signals:
 
 private:
     // Data
-    RPiData_t RPiDataStruct;
+     RPiData_t RPiDataStruct;
 };
 
 #endif // RPIDATA_H

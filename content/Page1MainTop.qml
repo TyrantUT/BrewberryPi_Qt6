@@ -124,7 +124,7 @@ Item {
                                 }
                             } else {
                                 if (BreweryValues.setpointTemp_Boil !== setpointValue) {
-                                   BreweryValues.setpointTemp_Boil = setpointValue;
+                                    BreweryValues.setpointTemp_Boil = setpointValue;
                                 }
                             }
                         }

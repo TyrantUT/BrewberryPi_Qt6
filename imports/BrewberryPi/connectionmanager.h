@@ -5,7 +5,6 @@
 #include <QDebug>
 #include <QThreadPool>
 #include "rpidata.h"
-#include "rpihelper.h"
 
 class ConnectionManager : public QObject
 {

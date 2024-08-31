@@ -119,13 +119,18 @@ void RPiThreads::processPidHlt(void) {
         setpointManual_HLTLast = setpointManual_HLT;
 
 
-        if (elementOn_HLT) {            
+        if (elementOn_HLT) {
             if (!setpointManual_HLT) {
                 // Automatic mode
                 if (!setpointHltOrMash) {
                     // HLT Mode
                     float currentTemp_HLT = m_rpiData->getCurrentTemp_HLT();
                     float setpointTemp_HLT = m_rpiData->getSetpointTemp_HLT();
+
+                    if (setpointTemp_HLT == 0.0) {
+                        m_rpiData->setPwmDutyCycle_HLT(0.0);
+                        continue;
+                    }
 
                     PIDController_HLT.PIDInputSet(currentTemp_HLT);
                     PIDController_HLT.PIDSetpointSet(setpointTemp_HLT);
@@ -215,6 +220,11 @@ void RPiThreads::processPidBoil(void) {
                 // Automatic mode
                 float currentTemp_Boil = m_rpiData->getCurrentTemp_Boil();
                 float setpointTemp_Boil = m_rpiData->getSetpointTemp_Boil();
+
+                if (setpointTemp_Boil == 0.0) {
+                    m_rpiData->setPwmDutyCycle_Boil(0.0);
+                    continue;
+                }
 
                 PIDController_Boil.PIDInputSet(currentTemp_Boil);
                 PIDController_Boil.PIDSetpointSet(setpointTemp_Boil);

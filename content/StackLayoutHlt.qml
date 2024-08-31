@@ -27,9 +27,9 @@ Item {
                     height: width
                     currentTemp: BreweryValues.currentTemp_HLT
                     setpointValue: setManualMode ? BreweryValues.setpointPercent_HLT : BreweryValues.setpointTemp_HLT
-                    labelText: qsTr("Hot Liquor Tank")
-                    setManualMode: BreweryValues.setpointManual_HLT
                     color: Constants.textColor
+                    labelText: qsTr("Hot Liquor Tank")
+                    setManualMode: BreweryValues.setpointManual_HLT && !BreweryValues.setpointHltOrMash
                     enabled: !BreweryValues.setpointHltOrMash
 
                     onValueChangedAndReleased: (setpointValue) => {
@@ -39,7 +39,7 @@ Item {
                             }
                         } else {
                             if (BreweryValues.setpointTemp_HLT !== setpointValue) {
-                               BreweryValues.setpointTemp_HLT = setpointValue;
+                                BreweryValues.setpointTemp_HLT = setpointValue;
                             }
                         }
                     }
