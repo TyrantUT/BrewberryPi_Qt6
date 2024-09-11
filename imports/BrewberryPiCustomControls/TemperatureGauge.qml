@@ -254,7 +254,7 @@ Dial {
         width: parent.width
         height: parent.height
         anchors.horizontalCenter: parent.horizontalCenter
-        outerStrokeArea: outerHandleSize
+        outerStrokeArea: outerHandleSize * 2
         onClicked: {}
     }
 

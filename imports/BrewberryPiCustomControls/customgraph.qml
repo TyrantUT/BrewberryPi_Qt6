@@ -23,8 +23,9 @@ Item {
         id: timer;
         interval: root.interval;
         repeat: true;
+        running: true
         onTriggered: {
-            draw(xAxis, yAxis, lineSeries, root.currentTemp);
+            draw(xAxis, yAxis, lineSeries, step, numpoints, root.currentTemp);
 
             if (xAxis.max - xAxis.categoriesLabels[xAxis.categoriesLabels.length - 1] > 1){
                 xAxis.append(xAxis.max.toFixed(0), xAxis.max);
@@ -33,17 +34,57 @@ Item {
         }
     }
 
-    function draw(xAxis, yAxis, lineSeries, dataPoint) {
-        lineSeries.remove(0);
-        xAxis.min = xAxis.min + step;
-        xAxis.max = xAxis.max + step;
+    function draw(xAxis, yAxis, lineSeries, step, numpoints, currentTemp) {
+        if (lineSeries.count < numpoints) {
+            // Start appending points, x starting from 0 and incrementing by step
+            var x = lineSeries.count * step;
+            lineSeries.append(x, currentTemp);
 
-        var x = lineSeries.at(lineSeries.count - 1).x + step;
-        lineSeries.append(x, dataPoint);
-        if (dataPoint > yAxis.max){
-            yAxis.max = dataPoint + 1;
-        } else if (dataPoint < yAxis.min){
-            yAxis.min = dataPoint - 1;
+            // Adjust xAxis max only when enough points are added
+            if (lineSeries.count === numpoints) {
+                xAxis.min = 0;
+                xAxis.max = step * numpoints;
+            }
+        } else {
+            // Scroll the chart with the timer: remove the oldest point and append a new one
+            lineSeries.remove(0);
+
+            // Increment the xAxis range
+            xAxis.min += step;
+            xAxis.max += step;
+
+            // Add the new data point at the correct position, relative to the last x value
+            var lastX = lineSeries.at(lineSeries.count - 1).x;
+            var xv = lastX + step;
+            lineSeries.append(xv, currentTemp);
+        }
+
+        // Adjust yAxis based on the currentTemp
+        if (currentTemp > yAxis.max) {
+            yAxis.max = currentTemp + 1;
+        } else if (currentTemp < yAxis.min) {
+            yAxis.min = currentTemp - 1;
+        }
+    }
+
+    // Update the last data point in real-time when the value changes
+    function updateLastDataPoint(lineSeries, currentTemp) {
+        if (lineSeries.count > 0) {
+            // Ensure the new value is a valid number
+            if (isFinite(currentTemp)) {
+                var lastIndex = lineSeries.count - 1;
+                lineSeries.replace(lastIndex, lineSeries.at(lastIndex).x, currentTemp);
+            }
+        }
+    }
+
+    // Monitor currentTemp changes in real-time
+    Connections {
+        target: root
+
+        function onCurrentTempChanged(value) {
+            // Update the last point in real-time whenever currentTemp changes
+            updateLastDataPoint(lineSeries, value);
         }
     }
 
@@ -70,6 +111,7 @@ Item {
         title: root.chartLabel
         titleColor: Constants.textColor
         backgroundColor: Constants.backgroundColor
+        animationOptions: ChartView.SeriesAnimations
 
         CategoryAxis {
             id: xAxis
@@ -80,6 +122,7 @@ Item {
             labelsColor: Constants.textColor
             labelsFont:Qt.font({pointSize: root.chartXFontSize})
 
+            // Draw X Axis Labels
             Component.onCompleted: {
                 for (var i = 0; i < max + 1; i++){
                     xAxis.append(i, i);
@@ -97,6 +140,7 @@ Item {
             labelsColor: Constants.textColor
             labelsFont:Qt.font({pointSize: root.chartYFontSize})
 
+            // Draw Y Axis Labels
             Component.onCompleted: {
                 for (var i = 0; i < max + 1; i++) {
                     if (i % root.chartYSpacing === 0) {
@@ -111,13 +155,6 @@ Item {
             id: lineSeries
             axisX: xAxis
             axisY: yAxis
-
-            Component.onCompleted: {
-                for (var i = 0; i < numpoints; i++) {
-                    lineSeries.append(i * step, root.currentTemp); // Dynamically updated within the timer
-                }
-                timer.start();
-            }
         }
 
         CategoryAxis {
