@@ -5,7 +5,7 @@
 #include <QReadWriteLock>
 #include <QReadLocker>
 #include <QWriteLocker>
-#include "qqmlintegration.h"
+#include <QQmlEngine>
 #include <QThread>
 
 typedef struct RPiData_t {

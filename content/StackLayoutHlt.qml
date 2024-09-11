@@ -56,10 +56,11 @@ Item {
                 height: parent.height / 2
                 CustomGraph {
                     id: graph
+                    chartLabel: "Hot Liquor Tank"
+                    currentTemp: BreweryValues.currentTemp_HLT
+                    setpointTemp: BreweryValues.setpointTemp_HLT
                     width: parent.width
                     height: parent.height
-                    setpointTemp: BreweryValues.setpointTemp_HLT
-                    currentTemp: BreweryValues.currentTemp_HLT
                 }
             }
 

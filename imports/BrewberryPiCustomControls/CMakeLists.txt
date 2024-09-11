@@ -14,4 +14,6 @@ qt6_add_qml_module(BrewberryPiCustomControls
         CustomElipse.qml
         CustomGraph.qml
         CustomTimerBox.qml
+
+
 )

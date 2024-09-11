@@ -1,6 +1,7 @@
 #include <QQmlApplicationEngine>
 #include <QApplication>
 #include <QQmlContext>
+#include <QQuickWindow>
 #include "app_environment.h"
 #include "import_qml_plugins.h"
 #include "imports/BrewberryPi/rpidata.h"
@@ -28,7 +29,7 @@ int main(int argc, char *argv[]) {
 #endif
 
     // Allow file reads inside the qrc files
-    qputenv("QML_XHR_ALLOW_FILE_READ", QByteArray("1"));
+    //qputenv("QML_XHR_ALLOW_FILE_READ", QByteArray("1"));
 
     set_qt_environment();
 
@@ -39,18 +40,17 @@ int main(int argc, char *argv[]) {
         QCursor cursor(Qt::BlankCursor);
         QApplication::setOverrideCursor(cursor);
         QApplication::changeOverrideCursor(cursor);
+        QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenVG);
+    } else {
+        QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
     }
 
     const QUrl url(u"qrc:/qt/qml/Main/main.qml"_qs);
-    QObject::connect(
-        &engine,
-        &QQmlApplicationEngine::objectCreated,
-        &app,
-        [url](QObject *obj, const QUrl &objUrl) {
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
+        &app, [url](QObject *obj, const QUrl &objUrl) {
             if (!obj && url == objUrl)
                 QCoreApplication::exit(-1);
-        },
-        Qt::QueuedConnection);
+        }, Qt::QueuedConnection);
 
 
     // Initialize RPi GPIO and set default values
@@ -116,10 +116,7 @@ int main(int argc, char *argv[]) {
     //tempThread->setPriority(QThread::TimeCriticalPriority);
 
     engine.load(url);
-
-    if (engine.rootObjects().isEmpty()) {
-        return -1;
-    }
+    if (engine.rootObjects().isEmpty()) return -1;
 
     signal(SIGTERM, sigHandler);
     signal(SIGKILL, sigHandler);

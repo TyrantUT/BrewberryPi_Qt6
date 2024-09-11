@@ -1,12 +1,17 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.26)
 
 project(BrewberryPiApp LANGUAGES CXX)
 
-find_package(Qt6 6.7 REQUIRED COMPONENTS Core Gui Qml Quick Widgets QuickControls2)
+find_package(Qt6 6.7.2 REQUIRED COMPONENTS Core Gui Qml Quick Widgets QuickControls2 Charts)
+
+set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-qt_standard_project_setup(REQUIRES 6.7)
+
+qt_standard_project_setup(REQUIRES 6.7.2)
 
 qt_add_executable(BrewberryPiApp
     src/main.cpp
@@ -25,6 +30,7 @@ target_link_libraries(BrewberryPiApp PRIVATE
     Qt6::Quick
     Qt6::Widgets
     Qt6::QuickControls2
+    Qt6::Charts
 )
 
 set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/qml)

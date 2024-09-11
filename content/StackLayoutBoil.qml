@@ -21,10 +21,10 @@ Item {
                 height: parent.height
 
                 TemperatureGauge {
-                    width: Math.min(parent.width, parent.height)
-                    height: Math.min(parent.width, parent.height)
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
+                    width: parent.width - 50
+                    height: width
                     currentTemp: BreweryValues.currentTemp_Boil
                     setpointValue: setManualMode ? BreweryValues.setpointPercent_Boil : BreweryValues.setpointTemp_Boil
                     setManualMode: BreweryValues.setpointManual_Boil
@@ -56,8 +56,6 @@ Item {
                 height: parent.height / 2
                 CustomGraph {
                     id: graph
-                    width: parent.width
-                    height: parent.height
                     setpointTemp: BreweryValues.setpointTemp_Boil
                     currentTemp: BreweryValues.currentTemp_Boil
                 }

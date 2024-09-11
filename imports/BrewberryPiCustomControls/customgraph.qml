@@ -1,108 +1,161 @@
 import QtQuick
+import QtQuick.Layouts
 import QtCharts
-import BrewberryPi
+import QtQuick.Controls
 
-pragma ComponentBehavior: Bound
+Item {
+    id: root
 
-ChartView {
-    id: chartView
-    legend.visible: false
-    antialiasing: true
-    backgroundColor: Constants.backgroundColor
-    titleColor: Constants.textColor
-    //animationOptions: ChartView.SeriesAnimations
-    dropShadowEnabled: true
-
-    property int elapsedTime: 0
-    property real currentTemp: 0.0
-    property real setpointTemp: 0.0
-
-    function addTemperature(currentTemp, timestamp) {
-
-        // Add new point to series
-        lineSeries.append(timestamp, currentTemp);
-        elapsedTime++;
-
-        // Remove old values if count exceeds 120 points
-        if (lineSeries.count >= 120) {
-           lineSeries.remove(0);
-        }
-
-        // Update X-axis min and max
-        if (lineSeries.count > 0) {
-            var firstPointTime = lineSeries.at(0).x;
-            xAxis.min = new Date(firstPointTime);
-            xAxis.max = new Date(xAxis.min.getTime() + 120000);
-        }
-    }
-
-    onSetpointTempChanged: {
-        setpointSeries.remove(0); // Remove the oldest point
-        setpointSeries.remove(0); // Remove the oldest point
-        setpointSeries.append(xAxis.min, setpointTemp);
-        setpointSeries.append(new Date(xAxis.min.getTime() + 120000), setpointTemp);
-    }
+    property string chartLabel: "";
+    property int chartXFontSize: 6
+    property int chartYFontSize: 6
+    property int chartYSpacing: 20
+    property int numpoints: 1000;
+    property int interval: 100;
+    property real step: 0.01;
+    property real currentTemp: 0.0;
+    property real setpointTemp: 0.0;
 
     Timer {
-        id: timer
-        interval: 1000 // Update interval in milliseconds
-        running: true
-        repeat: true
+        id: timer;
+        interval: root.interval;
+        repeat: true;
         onTriggered: {
+            draw(xAxis, yAxis, lineSeries, root.currentTemp);
 
-            var timestamp = new Date(chartView.elapsedTime * 1000); // Timestamp with elapsed time
-            chartView.addTemperature(currentTemp, timestamp);
-
+            if (xAxis.max - xAxis.categoriesLabels[xAxis.categoriesLabels.length - 1] > 1){
+                xAxis.append(xAxis.max.toFixed(0), xAxis.max);
+                xAxis.remove(xAxis.categoriesLabels[0]);
+            }
         }
     }
 
-    LineSeries {
-        id: lineSeries
+    function draw(xax, yax, lineSeries, dataPoint) {
+        lineSeries.remove(0);
+        xax.min = xax.min + step;
+        xax.max = xax.max + step;
 
-        // Define the X and Y axes
-        axisX: DateTimeAxis {
+        var x = lineSeries.at(lineSeries.count - 1).x + step ;
+        lineSeries.append(x, dataPoint);
+        if (dataPoint > yax.max){
+            yax.max = dataPoint + 1;
+        } else if (dataPoint < yax.min){
+            yax.min = dataPoint - 1;
+        }
+    }
+
+    ChartView {
+        width: root.width
+        height: root.height
+        Layout.fillHeight: true
+        Layout.fillWidth: true
+        title: root.chartLabel
+        titleColor: "white"
+        antialiasing: true
+        legend.visible: false
+        backgroundColor: "black"
+
+        CategoryAxis {
             id: xAxis
-            min: new Date(0) // Initial min value; will be updated dynamically
-            max: new Date(120000) // Initial max value; 120 seconds in milliseconds
-            format: "mm:ss" // Format for the labels
-            tickCount: 5
-            titleText: "Time (minutes)" // X-axis labe
-            labelsColor: Constants.textColor
-            labelsFont: Qt.font({bold: true})
+            min: 0
+            max: numpoints * step + (numpoints * step) / 6;
             gridVisible: false
-            titleBrush: labelsColor
+            lineVisible: false
+            labelsPosition: CategoryAxis.AxisLabelsPositionOnValue;
+            labelsColor: 'white'
+            labelsFont:Qt.font({pointSize: root.chartXFontSize})
+
+            Component.onCompleted: {
+                for (var i = 0; i < max + 1; i++){
+                    xAxis.append(i, i);
+                }
+            }
         }
 
-        axisY: ValuesAxis {
+        CategoryAxis {
             id: yAxis
             min: 0
-            max: 220 // Adjust according to your temperature range
-            tickCount: chartView.height / 50
-            titleText: "Temperature" // Y-axis label
-            labelFormat: "%d &deg;F"
-            labelsColor: Constants.textColor
-            labelsFont: Qt.font({bold: true})
+            max: 230
             gridVisible: false
-            titleBrush: labelsColor
+            lineVisible: false
+            labelsPosition: CategoryAxis.AxisLabelsPositionOnValue;
+            labelsColor: 'white'
+            labelsFont:Qt.font({pointSize: root.chartYFontSize})
+        }
+
+        LineSeries {
+            id: lineSeries
+            axisX: xAxis
+            axisY: yAxis
+
+            Component.onCompleted: {
+                for (var i = 0; i < numpoints; i++) {
+                    lineSeries.append(i*step, root.currentTemp); // Dynamically updated within the timer
+                }
+                timer.start();
+            }
+        }
+
+        CategoryAxis {
+            id: xAxis2
+            gridVisible: false
+            lineVisible: false
+        }
+
+        CategoryAxis {
+            id: yAxis2
+            min: 0
+            max: 230
+            labelsPosition: CategoryAxis.AxisLabelsPositionOnValue;
+            labelsColor: 'white'
+            labelsFont:Qt.font({pointSize: root.chartYFontSize})
+            gridLineColor: "#ff0000"
+            minorGridVisible: false
+
+           CategoryRange {
+               label: "Mash"
+               endValue: 152
+           }
+
+           CategoryRange {
+               label: "Strike"
+               endValue: 168
+           }
+
+           CategoryRange {
+               label: "Boil"
+               endValue: 212
+           }
+
+            Component.onCompleted: {
+                for (var i = 0; i < max + 1; i++) {
+                    if (i == 152) { yAxis.append(("<span style=\" color:#ff0000;\">152°</span>"), i); }
+                    if (i == 168) { yAxis.append(("<span style=\" color:#ff0000;\">168°</span>"), i); }
+                    if (i == 212) { yAxis.append(("<span style=\" color:#ff0000;\">212°</span>"), i); }
+                    if (i % root.chartYSpacing === 0) {yAxis.append( i + "&deg", i ); }
+                }
+            }
+        }
+
+        LineSeries {
+            id: lineSeries2
+            axisX: xAxis2
+            axisY: yAxis2
+        }
+
+        Label {
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                bottom: parent.bottom
+                bottomMargin: 10
+            }
+
+            text: qsTr("Current Temperature: " + Math.round(currentTemp, 1))
+            color: "#FFFFFF"
+            font.pointSize: 15
         }
     }
 
-    LineSeries {
-        id: setpointSeries
-        name: "Setpoint Temperature"
-        axisX: xAxis
-        axisY: yAxis
-        color: "red" // Set the color to red
-        width: 1 // Line width
-        style: Qt.DashLine // Dashed line style
 
-        // This series will be used to create a dashed line
-        // Initialize with dummy data
-        Component.onCompleted: {
-            // Initialize with dummy data
-            var initialTime = xAxis.min;
-            setpointSeries.append(initialTime, setpointTemp);
-            setpointSeries.append(new Date(initialTime.getTime() + 120000), setpointTemp);
-        }
-    }
 }
+

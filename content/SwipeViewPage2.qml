@@ -35,7 +35,7 @@ Page {
         }
 
         StackLayoutHlt {}
-        StackLayoutMash {}
-        StackLayoutBoil {}
+        //StackLayoutMash {}
+        //StackLayoutBoil {}
     }
 }
