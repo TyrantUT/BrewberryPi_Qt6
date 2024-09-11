@@ -2,19 +2,22 @@ import QtQuick
 import QtQuick.Layouts
 import QtCharts
 import QtQuick.Controls
+import BrewberryPi
 
 Item {
     id: root
 
     property string chartLabel: "";
     property int chartXFontSize: 6
-    property int chartYFontSize: 6
+    property int chartYFontSize: 4
     property int chartYSpacing: 20
     property int numpoints: 1000;
     property int interval: 100;
     property real step: 0.01;
     property real currentTemp: 0.0;
     property real setpointTemp: 0.0;
+    property string hintLineText: "";
+    property double hintLineValue: 0.0;
 
     Timer {
         id: timer;
@@ -30,39 +33,51 @@ Item {
         }
     }
 
-    function draw(xax, yax, lineSeries, dataPoint) {
+    function draw(xAxis, yAxis, lineSeries, dataPoint) {
         lineSeries.remove(0);
-        xax.min = xax.min + step;
-        xax.max = xax.max + step;
+        xAxis.min = xAxis.min + step;
+        xAxis.max = xAxis.max + step;
 
-        var x = lineSeries.at(lineSeries.count - 1).x + step ;
+        var x = lineSeries.at(lineSeries.count - 1).x + step;
         lineSeries.append(x, dataPoint);
-        if (dataPoint > yax.max){
-            yax.max = dataPoint + 1;
-        } else if (dataPoint < yax.min){
-            yax.min = dataPoint - 1;
+        if (dataPoint > yAxis.max){
+            yAxis.max = dataPoint + 1;
+        } else if (dataPoint < yAxis.min){
+            yAxis.min = dataPoint - 1;
         }
     }
 
+    Rectangle {
+        width: parent.width
+        height: parent.height
+        color: "#000000"
+        opacity: .2
+        radius: 5
+        z: -1
+    }
+
     ChartView {
-        width: root.width
-        height: root.height
-        Layout.fillHeight: true
-        Layout.fillWidth: true
-        title: root.chartLabel
-        titleColor: "white"
+        anchors.fill: parent
+        margins {
+            top: 0
+            bottom: 0
+            left: 0
+            right: 0
+        }
         antialiasing: true
         legend.visible: false
-        backgroundColor: "black"
+        backgroundRoundness: 0
+        title: root.chartLabel
+        titleColor: Constants.textColor
+        backgroundColor: Constants.backgroundColor
 
         CategoryAxis {
             id: xAxis
             min: 0
             max: numpoints * step + (numpoints * step) / 6;
             gridVisible: false
-            lineVisible: false
-            labelsPosition: CategoryAxis.AxisLabelsPositionOnValue;
-            labelsColor: 'white'
+            minorGridVisible: true
+            labelsColor: Constants.textColor
             labelsFont:Qt.font({pointSize: root.chartXFontSize})
 
             Component.onCompleted: {
@@ -77,10 +92,19 @@ Item {
             min: 0
             max: 230
             gridVisible: false
-            lineVisible: false
+            minorGridVisible: true
             labelsPosition: CategoryAxis.AxisLabelsPositionOnValue;
-            labelsColor: 'white'
+            labelsColor: Constants.textColor
             labelsFont:Qt.font({pointSize: root.chartYFontSize})
+
+            Component.onCompleted: {
+                for (var i = 0; i < max + 1; i++) {
+                    if (i % root.chartYSpacing === 0) {
+                        yAxis.append( i + "&deg", i );
+                    }
+                }
+            }
+
         }
 
         LineSeries {
@@ -90,7 +114,7 @@ Item {
 
             Component.onCompleted: {
                 for (var i = 0; i < numpoints; i++) {
-                    lineSeries.append(i*step, root.currentTemp); // Dynamically updated within the timer
+                    lineSeries.append(i * step, root.currentTemp); // Dynamically updated within the timer
                 }
                 timer.start();
             }
@@ -107,34 +131,23 @@ Item {
             min: 0
             max: 230
             labelsPosition: CategoryAxis.AxisLabelsPositionOnValue;
-            labelsColor: 'white'
+            labelsColor: Constants.textColor
             labelsFont:Qt.font({pointSize: root.chartYFontSize})
             gridLineColor: "#ff0000"
-            minorGridVisible: false
+            gridVisible: true
 
            CategoryRange {
-               label: "Mash"
-               endValue: 152
+               label: root.hintLineText
+               endValue: root.hintLineValue
            }
 
-           CategoryRange {
-               label: "Strike"
-               endValue: 168
+           Component.onCompleted: {
+               for (var i = 0; i < max; i++) {
+                   if (i === root.hintLintValue) {
+                       yAxis2.append((`<span style=\" color:#ff0000;\">${root.hintLineValue}&deg</span>`), i);
+                   }
+               }
            }
-
-           CategoryRange {
-               label: "Boil"
-               endValue: 212
-           }
-
-            Component.onCompleted: {
-                for (var i = 0; i < max + 1; i++) {
-                    if (i == 152) { yAxis.append(("<span style=\" color:#ff0000;\">152°</span>"), i); }
-                    if (i == 168) { yAxis.append(("<span style=\" color:#ff0000;\">168°</span>"), i); }
-                    if (i == 212) { yAxis.append(("<span style=\" color:#ff0000;\">212°</span>"), i); }
-                    if (i % root.chartYSpacing === 0) {yAxis.append( i + "&deg", i ); }
-                }
-            }
         }
 
         LineSeries {
@@ -142,20 +155,6 @@ Item {
             axisX: xAxis2
             axisY: yAxis2
         }
-
-        Label {
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-                bottom: parent.bottom
-                bottomMargin: 10
-            }
-
-            text: qsTr("Current Temperature: " + Math.round(currentTemp, 1))
-            color: "#FFFFFF"
-            font.pointSize: 15
-        }
     }
-
-
 }
 
