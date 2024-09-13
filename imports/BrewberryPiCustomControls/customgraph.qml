@@ -8,10 +8,10 @@ Item {
     id: root
 
     property string chartLabel: "";
-    property int chartXFontSize: 6
-    property int chartYFontSize: 4
+    property int chartXFontSize: 10
+    property int chartYFontSize: 6
     property int chartYSpacing: 20
-    property int numpoints: 1000;
+    property int numpoints: 250;
     property int interval: 100;
     property real step: 0.01;
     property real currentTemp: 0.0;
@@ -36,30 +36,24 @@ Item {
 
     function draw(xAxis, yAxis, lineSeries, step, numpoints, currentTemp) {
         if (lineSeries.count < numpoints) {
-            // Start appending points, x starting from 0 and incrementing by step
             var x = lineSeries.count * step;
             lineSeries.append(x, currentTemp);
 
-            // Adjust xAxis max only when enough points are added
             if (lineSeries.count === numpoints) {
                 xAxis.min = 0;
                 xAxis.max = step * numpoints;
             }
         } else {
-            // Scroll the chart with the timer: remove the oldest point and append a new one
             lineSeries.remove(0);
 
-            // Increment the xAxis range
             xAxis.min += step;
             xAxis.max += step;
 
-            // Add the new data point at the correct position, relative to the last x value
             var lastX = lineSeries.at(lineSeries.count - 1).x;
             var xv = lastX + step;
             lineSeries.append(xv, currentTemp);
         }
 
-        // Adjust yAxis based on the currentTemp
         if (currentTemp > yAxis.max) {
             yAxis.max = currentTemp + 1;
         } else if (currentTemp < yAxis.min) {
@@ -103,7 +97,7 @@ Item {
             top: 0
             bottom: 0
             left: 0
-            right: 0
+            right: 10
         }
         antialiasing: true
         legend.visible: false
@@ -118,7 +112,8 @@ Item {
             min: 0
             max: numpoints * step + (numpoints * step) / 6;
             gridVisible: false
-            minorGridVisible: true
+            minorGridVisible: false
+            labelsPosition: CategoryAxis.AxisLabelsPositionOnValue;
             labelsColor: Constants.textColor
             labelsFont:Qt.font({pointSize: root.chartXFontSize})
 
@@ -133,9 +128,9 @@ Item {
         CategoryAxis {
             id: yAxis
             min: 0
-            max: 230
+            max: 220
             gridVisible: false
-            minorGridVisible: true
+            minorGridVisible: false
             labelsPosition: CategoryAxis.AxisLabelsPositionOnValue;
             labelsColor: Constants.textColor
             labelsFont:Qt.font({pointSize: root.chartYFontSize})
@@ -148,7 +143,6 @@ Item {
                     }
                 }
             }
-
         }
 
         LineSeries {
@@ -167,21 +161,13 @@ Item {
             id: yAxis2
             min: 0
             max: 230
-            labelsPosition: CategoryAxis.AxisLabelsPositionOnValue;
-            labelsColor: Constants.textColor
-            labelsFont:Qt.font({pointSize: root.chartYFontSize})
             gridLineColor: "#ff0000"
             gridVisible: true
 
-           CategoryRange {
-               label: root.hintLineText
-               endValue: root.hintLineValue
-           }
-
            Component.onCompleted: {
                for (var i = 0; i < max; i++) {
-                   if (i === root.hintLintValue) {
-                       yAxis2.append((`<span style=\" color:#ff0000;\">${root.hintLineValue}&deg</span>`), i);
+                   if (i === root.hintLineValue) {
+                       yAxis2.append("", i);
                    }
                }
            }
