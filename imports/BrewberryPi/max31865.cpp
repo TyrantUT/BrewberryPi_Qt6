@@ -9,6 +9,7 @@
 #include "max31865.h"
 #include "pigpio.h"
 #include <QThread>
+#include <QDebug>
 #include <cmath>
 
 MAX31865::MAX31865(qint8 spi_cs, int spi_handle) {
