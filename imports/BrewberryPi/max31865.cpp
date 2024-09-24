@@ -11,11 +11,12 @@
 #include <QThread>
 #include <cmath>
 
-MAX31865::MAX31865(qint8 spi_cs) {
+MAX31865::MAX31865(qint8 spi_cs, int spi_handle) {
     // Set SPI Chip Select pin
     {
         QWriteLocker locker(&temperatureLocker);
         MAX31865_handle.spi_cs = spi_cs;
+        MAX31865_handle.spi_handle = spi_handle;
     }
 
     gpioSetMode(spi_cs, PI_OUTPUT);
@@ -83,15 +84,15 @@ void MAX31865::MAX31865_readTemp(void) {
 void MAX31865::MAX31865_writeRegister(quint8 regNum, quint8 data) {
     gpioWrite(MAX31865_handle.spi_cs, PI_LOW);
     quint8 address = MAX31865_CONFIG_WRITE | regNum;
-    spiWrite(0, (char *) &address, 1);
-    spiWrite(0, (char *) &data, sizeof(data));
+    spiWrite(MAX31865_handle.spi_handle, (char *) &address, 1);
+    spiWrite(MAX31865_handle.spi_handle, (char *) &data, sizeof(data));
     gpioWrite(MAX31865_handle.spi_cs, PI_HIGH);
 }
 
 void MAX31865::MAX31865_readRegister(quint8 regNumStart, unsigned count, quint8 *buffer) {
     gpioWrite(MAX31865_handle.spi_cs, PI_LOW);
-    spiWrite(0, (char *) &regNumStart, 1);
-    spiRead(0, (char *) &buffer, count);
+    spiWrite(MAX31865_handle.spi_handle, (char *) &regNumStart, 1);
+    spiRead(MAX31865_handle.spi_handle, (char *) &buffer, count);
     gpioWrite(MAX31865_handle.spi_cs, PI_HIGH);
 }
 

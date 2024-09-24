@@ -40,7 +40,6 @@ static float mapPWM(float input) {
 static void piSetup(void) {
 
     gpioInitialise();
-    spiOpen(SPI_CHANNEL, SPI_SPEED, 0);
 
     // Set Element Output to High
     gpioSetMode(ELEMENT_HLT, PI_OUTPUT);

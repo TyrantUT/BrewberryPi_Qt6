@@ -53,6 +53,7 @@
 
 typedef struct MAX31865_handle {
     qint8 spi_cs = 0;
+    int spi_handle;
     float tempC = 0.0f;
     float tempF = 0.0f;
     float lastTempC = 0.0f;
@@ -61,7 +62,7 @@ typedef struct MAX31865_handle {
 
 class MAX31865 {
 public:
-    MAX31865(qint8 spi_cs);
+    MAX31865(qint8 spi_cs, int spi_handle);
     virtual ~MAX31865();
 
     void MAX31865_readTemp(void);

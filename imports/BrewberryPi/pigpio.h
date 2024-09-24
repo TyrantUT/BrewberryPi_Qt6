@@ -9,7 +9,7 @@
 #define PI_OUTPUT   1
 
 int gpioInitialise(void);
-int spiOpen(unsigned channel, unsigned speed, unsigned flags);
+int spiOpen(unsigned spiChan, unsigned baud, unsigned spiFlags);
 int gpioTerminate(void);
 int gpioRead (unsigned gpio);
 int gpioWrite(unsigned gpio, unsigned level);

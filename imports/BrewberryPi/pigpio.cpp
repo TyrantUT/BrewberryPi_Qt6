@@ -5,7 +5,7 @@ int gpioInitialise(void) {
     return 0;
 }
 
-int spiOpen(unsigned channel, unsigned speed, unsigned flags) {
+int spiOpen(unsigned spiChan, unsigned baud, unsigned spiFlags) {
     return 0;
 }
 
