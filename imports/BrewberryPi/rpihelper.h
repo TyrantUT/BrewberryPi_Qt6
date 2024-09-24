@@ -41,6 +41,16 @@ static void piSetup(void) {
 
     gpioInitialise();
 
+    gpioSetMode(MISO, PI_INPUT);
+
+    // Set MOSI to Output and set Low
+    gpioSetMode(MOSI, PI_OUTPUT);
+    gpioWrite(MOSI, PI_LOW);
+
+    // Set SCLK to Output and set to Low
+    gpioSetMode(SCLK, PI_OUTPUT);
+    gpioWrite(SCLK, PI_LOW);
+
     // Set Element Output to High
     gpioSetMode(ELEMENT_HLT, PI_OUTPUT);
     gpioSetMode(ELEMENT_BOIL, PI_OUTPUT);

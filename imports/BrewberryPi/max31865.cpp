@@ -83,6 +83,7 @@ void MAX31865::MAX31865_readTemp(void) {
 }
 
 void MAX31865::MAX31865_writeRegister(quint8 regNum, quint8 data) {
+
     gpioWrite(MAX31865_handle.spi_cs, PI_LOW);
     quint8 address = MAX31865_CONFIG_WRITE | regNum;
     spiWrite(MAX31865_handle.spi_handle, (char *) &address, 1);
@@ -113,7 +114,6 @@ void MAX31865::MAX31865_calculateTempC(quint8 rtd_response) {
     temp = (sqrt(temp) + Z1) / Z4;
 
     //printf("Temp in C: %f\n", temp);
-    qDebug() << "Temperature: " << temp;
 
     temp = MAX31865_normalizeTemp(temp);
     {

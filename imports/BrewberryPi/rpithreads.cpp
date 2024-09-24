@@ -42,8 +42,6 @@ void RPiThreads::processTemps() {
             m_rpiData->setCurrentTemp_HLT(tempHLTTemp);
         }
 
-        /*
-
         // MASH
         MAX31865_mash.MAX31865_readTemp();
         {
@@ -79,7 +77,6 @@ void RPiThreads::processTemps() {
             // Handle Mash2 Mutex and set new temperature
             m_rpiData->setCurrentTemp_Mash2(tempMash2Temp);
         }
-        */
     }
 
     QThread::currentThread()->quit();
