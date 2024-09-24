@@ -28,6 +28,11 @@ void RPiThreads::processTemps() {
     MAX31865 MAX31865_boil(MAX31865_BOIL_GPIO, spi_handle);
     MAX31865 MAX31865_mash2(MAX31865_MASH2_GPIO, spi_handle);
 
+    MAX31865_hlt.MAX31865_init();
+    MAX31865_mash.MAX31865_init();
+    MAX31865_boil.MAX31865_init();
+    MAX31865_mash2.MAX31865_init();
+
     while (!QThread::currentThread()->isInterruptionRequested()) {
 
         // HLT

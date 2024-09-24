@@ -65,6 +65,7 @@ public:
     MAX31865(qint8 spi_cs, int spi_handle);
     virtual ~MAX31865();
 
+    void MAX31865_init(void);
     void MAX31865_readTemp(void);
 
     float MAX31865_tempC() {QReadLocker locker(&temperatureLocker); return MAX31865_handle.tempC;}
@@ -78,10 +79,8 @@ private:
 
     struct MAX31865_handle MAX31865_handle;
 
-    void MAX31865_init(void);
     float MAX31865_lastTempC() {QReadLocker locker(&temperatureLocker); return MAX31865_handle.lastTempC;}
     quint8 MAX31865_buildConfigByte(void);
-
     void MAX31865_writeRegister(quint8 regNum, quint8 data);
     void MAX31865_readRegister(quint8 regNumStart, unsigned count, quint8 *buffer);
     void MAX31865_calculateTempC(quint8 rtd_response);
