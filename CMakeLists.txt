@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.20)
 
 project(BrewberryPiApp LANGUAGES CXX)
 
@@ -23,6 +23,18 @@ qt_add_resources(BrewberryPiApp "configuration"
         qtquickcontrols2.conf
 )
 
+# Detect if the target architecture is ARM
+if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
+    message(STATUS "Non-ARM architecture detected. Skipping pigpio files.")
+    set(PIGPIO_LIBRARY "")
+else()
+    message(STATUS "ARM architecture detected. Including pigpio files.")
+    set(PIGPIO_LIBRARY pigpio)
+    target_include_directories(BrewberryPiApp PRIVATE /sysroot/usr /sysroot/usr/include)
+    target_link_directories(BrewberryPiApp PRIVATE /sysroot/usr/lib)
+    target_compile_options(BrewberryPiApp PRIVATE -Wall)
+endif()
+
 target_link_libraries(BrewberryPiApp PRIVATE
     Qt6::Core
     Qt6::Gui
@@ -31,6 +43,7 @@ target_link_libraries(BrewberryPiApp PRIVATE
     Qt6::Widgets
     Qt6::QuickControls2
     Qt6::Charts
+    ${PIGPIO_LIBRARY}
 )
 
 set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/qml)
