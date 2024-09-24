@@ -8,6 +8,7 @@
 #include "imports/BrewberryPi/rpithreads.h"
 #include "imports/BrewberryPi/rpihelper.h"
 #include "imports/BrewberryPi/connectionmanager.h"
+#include <csignal>
 
 // Enable to remove debug outputs throughout code
 //#define QT_NO_DEBUG_OUTPUT

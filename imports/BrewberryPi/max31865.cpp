@@ -9,7 +9,7 @@
 #include "max31865.h"
 #include "pigpio.h"
 #include <QThread>
-#include <tgmath.h>
+#include <cmath>
 
 MAX31865::MAX31865(qint8 spi_cs) {
     // Set SPI Chip Select pin

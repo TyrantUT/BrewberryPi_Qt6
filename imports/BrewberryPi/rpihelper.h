@@ -13,7 +13,7 @@
 #define OUTPUT_MIN          (float)     0.0
 #define OUTPUT_MAX          (float)     255.0
 
-#define SPI_CHANNEL         0
+#define SPI_CHANNEL         1
 #define SPI_SPEED           5000000
 
 #define MISO                19
@@ -39,8 +39,8 @@ static float mapPWM(float input) {
 
 static void piSetup(void) {
 
-    // Initalize GPIO
     gpioInitialise();
+    spiOpen(SPI_CHANNEL, SPI_SPEED, 0);
 
     // Set Element Output to High
     gpioSetMode(ELEMENT_HLT, PI_OUTPUT);

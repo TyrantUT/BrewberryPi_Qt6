@@ -12,6 +12,17 @@ set_source_files_properties(BreweryValues.qml
         QT_QML_SINGLETON_TYPE true
 )
 
+# Detect if the target architecture is ARM
+if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
+    message(STATUS "Non-ARM architecture detected. Skipping pigpio files.")
+    set(PIGPIO_SOURCES "")
+else()
+    message(STATUS "ARM architecture detected. Including pigpio files.")
+    set(PIGPIO_SOURCES pigpio.h pigpio.cpp)
+    target_include_directories(BrewberryPi PRIVATE /sysroot/usr /sysroot/usr/include)
+    target_link_directories(BrewberryPi PRIVATE /sysroot/usr/lib)
+endif()
+
 qt6_add_qml_module(BrewberryPi
     URI "BrewberryPi"
     VERSION 1.0
@@ -23,8 +34,6 @@ qt6_add_qml_module(BrewberryPi
         max31865.h
         max31865.cpp
         rpihelper.h
-        pigpio.h
-        pigpio.cpp
         pidcontroller.h
         pidcontroller.cpp
         rpithreads.h
@@ -33,4 +42,5 @@ qt6_add_qml_module(BrewberryPi
         rpidata.cpp
         connectionmanager.h
         connectionmanager.cpp
+        ${PIGPIO_SOURCES}
 )

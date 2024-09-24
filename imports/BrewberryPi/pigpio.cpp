@@ -5,6 +5,10 @@ int gpioInitialise(void) {
     return 0;
 }
 
+int spiOpen(unsigned channel, unsigned speed, unsigned flags) {
+    return 0;
+}
+
 int gpioTerminate(void) {
     return 0;
 }
