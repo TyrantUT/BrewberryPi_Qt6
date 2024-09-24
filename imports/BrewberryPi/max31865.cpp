@@ -112,6 +112,7 @@ void MAX31865::MAX31865_calculateTempC(quint8 rtd_response) {
     temp = (sqrt(temp) + Z1) / Z4;
 
     //printf("Temp in C: %f\n", temp);
+    qDebug() << "Temperature: " << temp;
 
     temp = MAX31865_normalizeTemp(temp);
     {

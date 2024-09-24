@@ -4,7 +4,7 @@
 #include "pigpio.h"
 
 #define QT_DEBUG_ON         (bool)      true
-#define QT_THREADS_MAX      (bool)      false
+#define QT_THREADS_MAX      (bool)      true
 #define QT_THREADS_PID_HLT  (bool)      false
 #define QT_THREADS_PID_BOIL (bool)      false
 
@@ -14,7 +14,7 @@
 #define OUTPUT_MAX          (float)     255.0
 
 #define SPI_CHANNEL         1
-#define SPI_SPEED           5000000
+#define SPI_SPEED           200000
 
 #define MISO                19
 #define MOSI                20
