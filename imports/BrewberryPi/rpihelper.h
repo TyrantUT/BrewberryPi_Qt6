@@ -1,6 +1,7 @@
 #ifndef RPIHELPER_H
 #define RPIHELPER_H
 
+#include <QThread>
 #include "pigpio.h"
 
 #define QT_DEBUG_ON         (bool)      true
@@ -41,9 +42,10 @@ static void piSetup(void) {
 
     gpioInitialise();
 
+    // Set MISI to Input
     gpioSetMode(MISO, PI_INPUT);
 
-    // Set MOSI to Output and set Low
+    // Set MOSI to Output ands set Low
     gpioSetMode(MOSI, PI_OUTPUT);
     gpioWrite(MOSI, PI_LOW);
 
@@ -81,5 +83,38 @@ static void gpioWriteValue(unsigned pin, unsigned value) {
 static void pwmWriteValue(unsigned pin, unsigned value) {
     gpioPWM(pin, value);
 };
+
+void spiSendByte(quint8 byte) {
+
+    for (int i = 0; i < 8; i++) {
+        gpioWrite(SCLK, PI_HIGH);
+        if (byte & 0x80) {
+            gpioWrite(MOSI, PI_HIGH);
+        } else {
+            gpioWrite(MOSI, PI_LOW);
+        }
+        byte <<= 1;
+        gpioWrite(SCLK, PI_LOW);
+
+        QThread::usleep(500);
+    }
+}
+
+quint8 spiReceiveByte(void) {
+    quint8 byte = 0x00;
+
+    for (int i = 0; i < 8; i++) {
+        gpioWrite(SCLK, PI_HIGH);
+        byte <<= 1;
+        if (gpioRead(MISO)) {
+            byte |= 0x1;
+        }
+        gpioWrite(SCLK, PI_LOW);
+
+        QThread::usleep(500);
+    }
+
+    return byte;
+}
 
 #endif // RPIHELPER_H

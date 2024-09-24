@@ -12,7 +12,6 @@ RPiThreads::RPiThreads(RPiData *rpiData, QObject *parent) :
 RPiThreads::~RPiThreads() { }
 
 void RPiThreads::processTemps() {
-    int spi_handle = spiOpen(SPI_CHANNEL, SPI_SPEED, 0);
 
     // Delay thread by 500 msec to wait for full startup
     QThread::sleep(5);
@@ -23,15 +22,10 @@ void RPiThreads::processTemps() {
     }
 
     // Initialize MAX31865 temperature sensors
-    MAX31865 MAX31865_hlt(MAX31865_HLT_GPIO, spi_handle);
-    MAX31865 MAX31865_mash(MAX31865_MASH_GPIO, spi_handle);
-    MAX31865 MAX31865_boil(MAX31865_BOIL_GPIO, spi_handle);
-    MAX31865 MAX31865_mash2(MAX31865_MASH2_GPIO, spi_handle);
-
-    MAX31865_hlt.MAX31865_init();
-    MAX31865_mash.MAX31865_init();
-    MAX31865_boil.MAX31865_init();
-    MAX31865_mash2.MAX31865_init();
+    MAX31865 MAX31865_hlt(MAX31865_HLT_GPIO);
+    MAX31865 MAX31865_mash(MAX31865_MASH_GPIO);
+    MAX31865 MAX31865_boil(MAX31865_BOIL_GPIO);
+    MAX31865 MAX31865_mash2(MAX31865_MASH2_GPIO);
 
     while (!QThread::currentThread()->isInterruptionRequested()) {
 

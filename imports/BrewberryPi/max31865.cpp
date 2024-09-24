@@ -8,30 +8,28 @@
 
 #include "max31865.h"
 #include "pigpio.h"
+#include "rpihelper.h"
 #include <QThread>
 #include <QDebug>
 #include <cmath>
 
-MAX31865::MAX31865(qint8 spi_cs, int spi_handle) {
+MAX31865::MAX31865(qint8 spi_cs) {
     // Set SPI Chip Select pin
     {
         QWriteLocker locker(&temperatureLocker);
         MAX31865_handle.spi_cs = spi_cs;
-        MAX31865_handle.spi_handle = spi_handle;
     }
 
     gpioSetMode(spi_cs, PI_OUTPUT);
     gpioWrite(spi_cs, PI_HIGH);
-}
 
-void MAX31865::MAX31865_init(void) {
-    // Set up auto conversion
     quint8 dataByte = MAX31865_buildConfigByte();
     MAX31865_writeRegister(0, dataByte);
+
     QThread::msleep(100);
 }
 
-uint8_t MAX31865::MAX31865_buildConfigByte(void) {
+quint8 MAX31865::MAX31865_buildConfigByte(void) {
     quint8 dataByte = MAX31865_CONFIG_REG;
 
     dataByte |= MAX31865_CONFIG_BIAS; // Enable Bias
@@ -86,15 +84,20 @@ void MAX31865::MAX31865_writeRegister(quint8 regNum, quint8 data) {
 
     gpioWrite(MAX31865_handle.spi_cs, PI_LOW);
     quint8 address = MAX31865_CONFIG_WRITE | regNum;
-    spiWrite(MAX31865_handle.spi_handle, (char *) &address, 1);
-    spiWrite(MAX31865_handle.spi_handle, (char *) &data, sizeof(data));
+    spiSendByte(address);
+    spiSendByte(data);
     gpioWrite(MAX31865_handle.spi_cs, PI_HIGH);
 }
 
-void MAX31865::MAX31865_readRegister(quint8 regNumStart, unsigned count, quint8 *buffer) {
+void MAX31865::MAX31865_readRegister(quint8 regNumStart, quint8 count, quint8 buffer[]) {
     gpioWrite(MAX31865_handle.spi_cs, PI_LOW);
-    spiWrite(MAX31865_handle.spi_handle, (char *) &regNumStart, 1);
-    spiRead(MAX31865_handle.spi_handle, (char *) &buffer, count);
+
+    spiSendByte(regNumStart);
+
+    for (int i = 0; i < count; i++) {
+        buffer[i] = spiReceiveByte();
+    }
+
     gpioWrite(MAX31865_handle.spi_cs, PI_HIGH);
 }
 

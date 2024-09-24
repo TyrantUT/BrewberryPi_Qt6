@@ -53,7 +53,6 @@
 
 typedef struct MAX31865_handle {
     qint8 spi_cs = 0;
-    int spi_handle;
     float tempC = 0.0f;
     float tempF = 0.0f;
     float lastTempC = 0.0f;
@@ -62,7 +61,7 @@ typedef struct MAX31865_handle {
 
 class MAX31865 {
 public:
-    MAX31865(qint8 spi_cs, int spi_handle);
+    MAX31865(qint8 spi_cs);
     virtual ~MAX31865();
 
     void MAX31865_init(void);
@@ -82,7 +81,7 @@ private:
     float MAX31865_lastTempC() {QReadLocker locker(&temperatureLocker); return MAX31865_handle.lastTempC;}
     quint8 MAX31865_buildConfigByte(void);
     void MAX31865_writeRegister(quint8 regNum, quint8 data);
-    void MAX31865_readRegister(quint8 regNumStart, unsigned count, quint8 *buffer);
+    void MAX31865_readRegister(quint8 regNumStart, quint8 count, quint8 buffer[]);
     void MAX31865_calculateTempC(quint8 rtd_response);
     void MAX31865_calculateTempF(void);
     void MAX31865_compareFault(void);
