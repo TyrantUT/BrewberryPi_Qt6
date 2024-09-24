@@ -4,7 +4,7 @@
 #include "pigpio.h"
 
 #define QT_DEBUG_ON         (bool)      true
-#define QT_THREADS_MAX      (bool)      true
+#define QT_THREADS_MAX      (bool)      false
 #define QT_THREADS_PID_HLT  (bool)      false
 #define QT_THREADS_PID_BOIL (bool)      false
 

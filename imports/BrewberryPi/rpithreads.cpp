@@ -13,6 +13,7 @@ RPiThreads::~RPiThreads() { }
 
 void RPiThreads::processTemps() {
     int spi_handle = spiOpen(SPI_CHANNEL, SPI_SPEED, 0);
+    qDebug() << "SPI Handle: " << spi_handle;
 
     // Delay thread by 500 msec to wait for full startup
     QThread::sleep(5);
