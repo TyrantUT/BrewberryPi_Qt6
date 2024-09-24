@@ -15,10 +15,10 @@ set_source_files_properties(BreweryValues.qml
 # Detect if the target architecture is ARM
 if (APPLE)
     message(STATUS "Skipping pigpio files.")
-    set(PIGPIO_SOURCES "")
+    set(PIGPIO_SOURCES pigpio.h pigpio.cpp)
 else()
     message(STATUS "Adding pigpio related directories and libraries")
-    set(PIGPIO_SOURCES pigpio.h pigpio.cpp)
+    set(PIGPIO_SOURCES "")
     target_include_directories(BrewberryPi PRIVATE /sysroot/usr /sysroot/usr/include)
     target_link_directories(BrewberryPi PRIVATE /sysroot/usr/lib)
 endif()
