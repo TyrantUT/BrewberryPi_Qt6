@@ -58,3 +58,7 @@ build/
 
 # Ignore Mac files
 .DS_Store
+
+# Ignore pigpio files
+pigpio.h
+pigpio.cpp

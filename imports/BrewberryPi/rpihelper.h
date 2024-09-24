@@ -1,7 +1,7 @@
 #ifndef RPIHELPER_H
 #define RPIHELPER_H
 
-#import "pigpio.h"
+#include "pigpio.h"
 
 #define QT_DEBUG_ON         (bool)      true
 #define QT_THREADS_MAX      (bool)      false
