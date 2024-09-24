@@ -84,7 +84,7 @@ static void pwmWriteValue(unsigned pin, unsigned value) {
     gpioPWM(pin, value);
 };
 
-void spiSendByte(quint8 byte) {
+void spiSendBytes(quint8 byte) {
 
     for (int i = 0; i < 8; i++) {
         gpioWrite(SCLK, PI_HIGH);
@@ -100,7 +100,7 @@ void spiSendByte(quint8 byte) {
     }
 }
 
-quint8 spiReceiveByte(void) {
+quint8 spiReceiveBytes(void) {
     quint8 byte = 0x00;
 
     for (int i = 0; i < 8; i++) {

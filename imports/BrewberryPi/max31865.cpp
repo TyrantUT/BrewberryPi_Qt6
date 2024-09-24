@@ -84,18 +84,18 @@ void MAX31865::MAX31865_writeRegister(quint8 regNum, quint8 data) {
 
     gpioWrite(MAX31865_handle.spi_cs, PI_LOW);
     quint8 address = MAX31865_CONFIG_WRITE | regNum;
-    spiSendByte(address);
-    spiSendByte(data);
+    spiSendBytes(address);
+    spiSendBytes(data);
     gpioWrite(MAX31865_handle.spi_cs, PI_HIGH);
 }
 
 void MAX31865::MAX31865_readRegister(quint8 regNumStart, quint8 count, quint8 buffer[]) {
     gpioWrite(MAX31865_handle.spi_cs, PI_LOW);
 
-    spiSendByte(regNumStart);
+    spiSendBytes(regNumStart);
 
     for (int i = 0; i < count; i++) {
-        buffer[i] = spiReceiveByte();
+        buffer[i] = spiReceiveBytes();
     }
 
     gpioWrite(MAX31865_handle.spi_cs, PI_HIGH);
