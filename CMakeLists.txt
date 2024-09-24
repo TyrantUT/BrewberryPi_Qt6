@@ -24,11 +24,11 @@ qt_add_resources(BrewberryPiApp "configuration"
 )
 
 # Detect if the target architecture is ARM
-if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
-    message(STATUS "Non-ARM architecture detected. Skipping pigpio files.")
+if (APPLE)
+    message(STATUS "Skipping pigpio files.")
     set(PIGPIO_LIBRARY "")
 else()
-    message(STATUS "ARM architecture detected. Including pigpio files.")
+    message(STATUS "Adding pigpio related directories and libraries")
     set(PIGPIO_LIBRARY pigpio)
     target_include_directories(BrewberryPiApp PRIVATE /sysroot/usr /sysroot/usr/include)
     target_link_directories(BrewberryPiApp PRIVATE /sysroot/usr/lib)
