@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
         QCursor cursor(Qt::BlankCursor);
         QApplication::setOverrideCursor(cursor);
         QApplication::changeOverrideCursor(cursor);
-        QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenVG);
+        QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
     } else {
         QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
     }
