@@ -87,7 +87,7 @@ Item {
                                 anchors.centerIn: parent
                                 checked: BreweryValues.elementOn_HLT
                                 enabled: !BreweryValues.elementOn_Boil
-                                onCheckedChanged: BreweryValues.elementOn_HLT = !checked
+                                onCheckedChanged: BreweryValues.elementOn_HLT = checked
                             }
                         }
                     }
@@ -256,7 +256,7 @@ Item {
                                 anchors.centerIn: parent
                                 checked: BreweryValues.elementOn_Boil
                                 enabled: !BreweryValues.elementOn_HLT
-                                onCheckedChanged: BreweryValues.elementOn_Boil = !checked
+                                onCheckedChanged: BreweryValues.elementOn_Boil = checked
                             }
                         }
                     }
