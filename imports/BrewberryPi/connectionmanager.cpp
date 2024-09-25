@@ -26,14 +26,14 @@ void ConnectionManager::setupConnections(RPiData *RPiDataGlobal) {
     QObject::connect(RPiDataGlobal, &RPiData::elementOn_HLTChanged, [RPiDataGlobal](bool value) {
         qDebug() << "HLT Element On Value Changed: Value is now" << value;     
         QThreadPool::globalInstance()->start([value]() {
-            gpioWriteValue(ELEMENT_HLT, value);
+            gpioWriteValue(ELEMENT_HLT, !value);
         });
     });
 
     QObject::connect(RPiDataGlobal, &RPiData::elementOn_BoilChanged, [RPiDataGlobal](bool value) {
         qDebug() << "Boil Element On Value Changed: Value is now" << value; 
         QThreadPool::globalInstance()->start([value]() {
-            gpioWriteValue(ELEMENT_BOIL, value);
+            gpioWriteValue(ELEMENT_BOIL, !value);
         });
     });
 

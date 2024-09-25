@@ -57,8 +57,8 @@ Item {
                 CustomGraph {
                     id: graph
                     chartLabel: "Hot Liquor Tank"
-                    currentTemp: BreweryValues.setpointTemp_HLT
-                    setpointTemp: BreweryValues.currentTemp_HLT
+                    currentTemp: BreweryValues.currentTemp_HLT
+                    setpointTemp: BreweryValues.setpointTemp_HLT
                     hintLineText: "Strike"
                     hintLineValue: 152
                     width: parent.width
