@@ -170,4 +170,5 @@ float MAX31865::MAX31865_normalizeTemp(float temp) {
 }
 
 MAX31865::~MAX31865() {
+    gpioTerminate();
 }

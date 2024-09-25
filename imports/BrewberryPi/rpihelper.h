@@ -74,7 +74,8 @@ static void piSetup(void) {
 }
 
 static void gpioWriteValue(unsigned pin, unsigned value) {
-    gpioWrite(pin, value);
+    int response = gpioWrite(pin, value);
+    qDebug() << "Response: " << response;
 };
 
 static void pwmWriteValue(unsigned pin, unsigned value) {
