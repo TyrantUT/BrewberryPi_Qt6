@@ -14,9 +14,6 @@
 #define OUTPUT_MIN          (float)     0.0
 #define OUTPUT_MAX          (float)     255.0
 
-#define SPI_CHANNEL         1
-#define SPI_SPEED           100000
-
 #define MISO                19
 #define MOSI                20
 #define SCLK                21
