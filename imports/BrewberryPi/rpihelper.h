@@ -54,8 +54,8 @@ static void piSetup(void) {
     // Set Element Output to High
     gpioSetMode(ELEMENT_HLT, PI_OUTPUT);
     gpioSetMode(ELEMENT_BOIL, PI_OUTPUT);
-    gpioWrite(ELEMENT_HLT, PI_HIGH);
-    gpioWrite(ELEMENT_BOIL, PI_HIGH);
+    gpioWrite(ELEMENT_HLT, PI_LOW);
+    gpioWrite(ELEMENT_BOIL, PI_LOW);
 
     // Set Pump Output to High
     gpioSetMode(PUMP_WORT, PI_OUTPUT);
@@ -75,8 +75,7 @@ static void piSetup(void) {
 }
 
 static void gpioWriteValue(unsigned pin, unsigned value) {
-    int response = gpioWrite(pin, value);
-    qDebug() << "Response: " << response;
+    gpioWrite(pin, value);
 };
 
 static void pwmWriteValue(unsigned pin, unsigned value) {
