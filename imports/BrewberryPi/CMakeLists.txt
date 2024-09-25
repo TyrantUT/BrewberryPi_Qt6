@@ -21,7 +21,6 @@ else()
     set(PIGPIO_SOURCES "")
     target_include_directories(BrewberryPi PRIVATE /sysroot/usr /sysroot/usr/include)
     target_link_directories(BrewberryPi PRIVATE /sysroot/usr/lib)
-    target_compile_options(BrewberryPi PRIVATE -Wall -Wcomment -Wunused-function -lpigpio -lrt -lpthread)
 endif()
 
 qt6_add_qml_module(BrewberryPi
