@@ -2,6 +2,7 @@
 #define RPIHELPER_H
 
 #include <QThread>
+#include <QDebug>
 #include "pigpio.h"
 
 #define QT_DEBUG_ON         (bool)      true
