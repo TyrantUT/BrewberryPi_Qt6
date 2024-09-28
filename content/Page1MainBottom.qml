@@ -113,7 +113,7 @@ Item {
                         width: parent.width
                         height: parent.height - 10
                         Text {
-                            text: 'Water Pump'
+                            text: 'Pump 1'
                             anchors.horizontalCenter: parent.horizontalCenter
                             color: Constants.textColor
                             font.pixelSize: height
@@ -144,7 +144,7 @@ Item {
                         width: parent.width
                         height: parent.height - 10
                         Text {
-                            text: 'HLT / Mash'
+                            text: 'Mode'
                             anchors.horizontalCenter: parent.horizontalCenter
                             color: Constants.textColor
                             font.pixelSize: height
@@ -175,7 +175,7 @@ Item {
                         width: parent.width
                         height: parent.height - 10
                         Text {
-                            text: 'Wort Pump'
+                            text: 'Pump 2'
                             anchors.horizontalCenter: parent.horizontalCenter
                             color: Constants.textColor
                             font.pixelSize: height
