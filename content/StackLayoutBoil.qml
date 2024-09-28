@@ -56,8 +56,13 @@ Item {
                 height: parent.height / 2
                 CustomGraph {
                     id: graph
-                    setpointTemp: BreweryValues.setpointTemp_Boil
+                    chartLabel: "Boil"
                     currentTemp: BreweryValues.currentTemp_Boil
+                    setpointTemp: BreweryValues.setpointTemp_Boil
+                    hintLineText: "Boil"
+                    hintLineValue: 212
+                    width: parent.width
+                    height: parent.height
                 }
             }
 

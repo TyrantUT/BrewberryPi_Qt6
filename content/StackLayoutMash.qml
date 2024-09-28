@@ -56,8 +56,13 @@ Item {
                 height: parent.height / 2
                 CustomGraph {
                     id: graph
-                    setpointTemp: BreweryValues.setpointTemp_Mash
+                    chartLabel: "Mash"
                     currentTemp: BreweryValues.currentTemp_Mash
+                    setpointTemp: BreweryValues.setpointTemp_Mash
+                    hintLineText: "Mash"
+                    hintLineValue: 152
+                    width: parent.width
+                    height: parent.height
                 }
             }
 
