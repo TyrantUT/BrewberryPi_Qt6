@@ -18,5 +18,8 @@ ApplicationWindow {
         SwipeViewPage2 {}
     }
 
-    Component.onCompleted: console.log(height); console.log(width);
+    Component.onCompleted: {
+        console.log(height);
+        console.log(width);
+    }
 }
