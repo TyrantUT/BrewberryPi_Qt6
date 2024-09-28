@@ -35,7 +35,7 @@ Item {
 
                         Item {
                             width: parent.width
-                            height: parent.height
+                            height: parent.height / 3
                             Text {
                                 text: 'PID Mode'
                                 anchors.horizontalCenter: parent.horizontalCenter
@@ -272,7 +272,7 @@ Item {
 
                         Item {
                             width: parent.width
-                            height: parent.height
+                            height: parent.height / 3
                             Text {
                                 text: 'PID Mode'
                                 anchors.horizontalCenter: parent.horizontalCenter
