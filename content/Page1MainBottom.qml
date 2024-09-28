@@ -70,7 +70,7 @@ Item {
                         height: parent.height
 
                         Text {
-                            text: 'Element Power'
+                            text: 'HLT Element'
                             anchors.horizontalCenter: parent.horizontalCenter
                             color: Constants.textColor
                             font.pixelSize: height
@@ -239,7 +239,7 @@ Item {
                         height: parent.height
 
                         Text {
-                            text: 'Element Power'
+                            text: 'Boil Element'
                             anchors.horizontalCenter: parent.horizontalCenter
                             color: Constants.textColor
                             font.pixelSize: height

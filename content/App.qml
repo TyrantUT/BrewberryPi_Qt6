@@ -7,8 +7,8 @@ import BrewberryPi
 
 ApplicationWindow {
     title: "BrewberryPi"
-    width: Constants.width
-    height: Constants.height
+    //width: Constants.width
+    //height: Constants.height
     visible: true
 
     SwipeView {
@@ -17,4 +17,6 @@ ApplicationWindow {
         SwipeViewPage1 {}
         SwipeViewPage2 {}
     }
+
+    Component.onCompleted: console.log(height); console.log(width);
 }
