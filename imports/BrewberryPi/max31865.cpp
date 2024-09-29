@@ -154,17 +154,30 @@ void MAX31865::MAX31865_compareFault(void) {
 }
 
 float MAX31865::MAX31865_normalizeTemp(float temp) {
-    tempBuffer.append(temp);
+
+    if (!tempBuffer.empty()) {
+        float lastBufferedTemp = tempBuffer.back();
+
+        if (std::abs(temp - lastBufferedTemp) > 20.0f) {
+            float sum = std::accumulate(tempBuffer.begin(), tempBuffer.end(), 0.0f);
+            return sum / tempBuffer.size();
+        }
+    }
+
+    tempBuffer.push_back(temp);
 
     if (tempBuffer.size() > bufferSize) {
-        tempBuffer.removeFirst();
+        tempBuffer.pop_front();
     }
 
     float sum = std::accumulate(tempBuffer.begin(), tempBuffer.end(), 0.0f);
 
+    tempBuffer.append(temp);
+
     if (temp < 0) {
-        return -17.77777777777778f;
+        return -17.77777777777778f;  // Return a specific error value if temp is below zero
     } else {
+        // Return the average of the buffer
         return sum / tempBuffer.size();
     }
 }

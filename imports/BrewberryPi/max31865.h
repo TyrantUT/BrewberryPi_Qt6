@@ -74,7 +74,7 @@ public:
 private:
     mutable QReadWriteLock temperatureLocker;
     QList<float> tempBuffer;
-    int bufferSize = 10;
+    int bufferSize = 20;
 
     struct MAX31865_handle MAX31865_handle;
 
