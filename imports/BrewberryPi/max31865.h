@@ -82,7 +82,7 @@ private:
     quint8 MAX31865_buildConfigByte(void);
     void MAX31865_writeRegister(quint8 regNum, quint8 data);
     void MAX31865_readRegister(quint8 regNumStart, quint8 count, quint8 buffer[]);
-    void MAX31865_calculateTempC(quint8 rtd_response);
+    void MAX31865_calculateTempC(quint16 rtd_response);
     void MAX31865_calculateTempF(void);
     void MAX31865_compareFault(void);
     float MAX31865_normalizeTemp(float temp);

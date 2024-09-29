@@ -101,7 +101,7 @@ void MAX31865::MAX31865_readRegister(quint8 regNumStart, quint8 count, quint8 bu
     gpioWrite(MAX31865_handle.spi_cs, PI_HIGH);
 }
 
-void MAX31865::MAX31865_calculateTempC(quint8 rtd_response) {
+void MAX31865::MAX31865_calculateTempC(quint16 rtd_response) {
     float Z1, Z2, Z3, Z4, Rt, temp;
 
     // Calculate temperature in C
