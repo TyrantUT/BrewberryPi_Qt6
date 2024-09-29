@@ -116,7 +116,7 @@ void MAX31865::MAX31865_calculateTempC(quint16 rtd_response) {
     temp = Z2 + (Z3 * Rt);
     temp = (sqrt(temp) + Z1) / Z4;
 
-    printf("Temp in C: %f\n", temp);
+    //printf("Temp in C: %f\n", temp);
 
     temp = MAX31865_normalizeTemp(temp);
     {
