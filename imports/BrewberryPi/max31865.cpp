@@ -77,7 +77,7 @@ void MAX31865::MAX31865_readTemp(void) {
 
     // We need to allow for at least 100msec for each conversion
     // Note: This will impact the Temp Thread overall wait time since all 4 are within 1 thread
-    //QThread::msleep(100);
+    QThread::msleep(100);
 }
 
 void MAX31865::MAX31865_writeRegister(quint8 regNum, quint8 data) {
