@@ -25,6 +25,7 @@ Item {
             Row {
                 width: parent.width / 2
                 height: parent.height
+
                 Item {
                     width: parent.width
                     height: parent.height                    
@@ -36,6 +37,7 @@ Item {
                         Item {
                             width: parent.width
                             height: parent.height / 3
+
                             Text {
                                 text: 'PID Mode'
                                 anchors.horizontalCenter: parent.horizontalCenter
@@ -54,6 +56,7 @@ Item {
                                 height: parent.height
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: checked ? "Manual" : "Automatic"
+                                font.pixelSize: height
                                 checked: BreweryValues.setpointManual_HLT
                                 onCheckedChanged: BreweryValues.setpointManual_HLT = checked
                             }
@@ -291,6 +294,7 @@ Item {
                                 height: parent.height
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: checked ? "Manual" : "Automatic"
+                                font.pixelSize: height
                                 checked: BreweryValues.setpointManual_Boil
                                 onCheckedChanged: BreweryValues.setpointManual_Boil = checked
                             }

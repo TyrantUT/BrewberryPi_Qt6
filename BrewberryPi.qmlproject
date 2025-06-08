@@ -109,5 +109,4 @@ Project {
     multilanguageSupport: true
     supportedLanguages: ["en"]
     primaryLanguage: "en"
-
 }
