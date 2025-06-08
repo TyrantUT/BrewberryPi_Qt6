@@ -56,7 +56,7 @@ Item {
                                 height: parent.height
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: checked ? "Manual" : "Automatic"
-                                font.pixelSize: height
+                                font.pixelSize: height - 12
                                 checked: BreweryValues.setpointManual_HLT
                                 onCheckedChanged: BreweryValues.setpointManual_HLT = checked
                             }
@@ -294,7 +294,7 @@ Item {
                                 height: parent.height
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: checked ? "Manual" : "Automatic"
-                                font.pixelSize: height
+                                font.pixelSize: height - 12
                                 checked: BreweryValues.setpointManual_Boil
                                 onCheckedChanged: BreweryValues.setpointManual_Boil = checked
                             }
