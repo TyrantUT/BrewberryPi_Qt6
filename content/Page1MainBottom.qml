@@ -52,7 +52,7 @@ Item {
                             height: parent.height / 2
 
                             CustomToggleSwitch {
-                                width: parent.width
+                                width: parent.width - 4
                                 height: parent.height
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: checked ? "Manual" : "Automatic"
@@ -290,7 +290,7 @@ Item {
                             height: parent.height / 2
 
                             CustomToggleSwitch {
-                                width: parent.width
+                                width: parent.width - 4
                                 height: parent.height
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: checked ? "Manual" : "Automatic"
