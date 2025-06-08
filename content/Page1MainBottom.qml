@@ -52,11 +52,11 @@ Item {
                             height: parent.height / 2
 
                             CustomToggleSwitch {
-                                width: parent.width / 2
+                                width: parent.width
                                 height: parent.height
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: checked ? "Manual" : "Automatic"
-                                font.pixelSize: height - 12
+                                font.pixelSize: height
                                 checked: BreweryValues.setpointManual_HLT
                                 onCheckedChanged: BreweryValues.setpointManual_HLT = checked
                             }
@@ -290,11 +290,11 @@ Item {
                             height: parent.height / 2
 
                             CustomToggleSwitch {
-                                width: parent.width / 2
+                                width: parent.width
                                 height: parent.height
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: checked ? "Manual" : "Automatic"
-                                font.pixelSize: height - 12
+                                font.pixelSize: height
                                 checked: BreweryValues.setpointManual_Boil
                                 onCheckedChanged: BreweryValues.setpointManual_Boil = checked
                             }
