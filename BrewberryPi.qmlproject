@@ -92,7 +92,7 @@ Project {
 
     qdsVersion: "4.3"
 
-    quickVersion: "6.5"
+    quickVersion: "6.9"
 
     /* If any modules the project imports require widgets (e.g. QtCharts), widgetApp must be true */
     widgetApp: true
@@ -106,7 +106,7 @@ Project {
         files: [ "content/shaders/*" ]
     }
 
-    multilanguageSupport: true
+    multilanguageSupport: false
     supportedLanguages: ["en"]
     primaryLanguage: "en"
 }

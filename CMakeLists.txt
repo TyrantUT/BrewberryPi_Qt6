@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 
 project(BrewberryPiApp LANGUAGES CXX)
 
-find_package(Qt6 6.7.2 REQUIRED COMPONENTS Core Gui Qml Quick Widgets QuickControls2 Charts)
+find_package(Qt6 6.9.1 REQUIRED COMPONENTS Core Gui Qml Quick Widgets QuickControls2 Charts)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
