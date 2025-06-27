@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-qt_standard_project_setup(REQUIRES 6.7.2)
+qt_standard_project_setup(REQUIRES 6.9.1)
 
 qt_add_executable(BrewberryPiApp
     src/main.cpp
@@ -33,6 +33,7 @@ else()
     set(PIGPIO_LIBRARY pigpio pthread)
     target_include_directories(BrewberryPiApp PRIVATE /sysroot/usr /sysroot/usr/include)
     target_link_directories(BrewberryPiApp PRIVATE /sysroot/usr/lib)
+    target_link_libraries(BrewberryPiApp PRIVATE ${PIGPIO_LIBRARY})
     target_compile_options(BrewberryPiApp PRIVATE -Wall -Wcomment -Wunused-function)
 endif()
 
