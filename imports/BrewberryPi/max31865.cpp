@@ -7,7 +7,6 @@
 **/
 
 #include "max31865.h"
-#include "pigpio.h"
 #include "rpihelper.h"
 #include <QThread>
 #include <QDebug>
