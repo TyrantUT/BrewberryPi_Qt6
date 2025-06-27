@@ -26,6 +26,7 @@ qt_add_resources(BrewberryPiApp "configuration"
 # Detect if the target architecture is ARM
 if (APPLE)
     message(STATUS "Skipping pigpio files.")
+    add_definitions(-DUSE_QUOTED_PIGPIO_INCLUDE)
     set(PIGPIO_LIBRARY "")
 else()
     message(STATUS "Adding pigpio related directories and libraries")
