@@ -33,7 +33,6 @@ else()
     set(PIGPIO_LIBRARY pigpio pthread)
     target_include_directories(BrewberryPiApp PRIVATE /sysroot/usr /sysroot/usr/include)
     target_link_directories(BrewberryPiApp PRIVATE /sysroot/usr/lib)
-    target_link_libraries(BrewberryPiApp PRIVATE ${PIGPIO_LIBRARY})
     target_compile_options(BrewberryPiApp PRIVATE -Wall -Wcomment -Wunused-function)
 endif()
 

@@ -7,7 +7,7 @@
 #ifdef USE_QUOTED_PIGPIO_INCLUDE
 #include "pigpio.h"
 #else
-#include <pigpio.h>
+#include "/sysroot/usr/include/pigpio.h"
 #endif
 
 #define QT_DEBUG_ON         (bool)      true
