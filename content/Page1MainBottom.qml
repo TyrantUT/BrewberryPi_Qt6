@@ -48,7 +48,7 @@ Item {
                         }
 
                         Item {
-                            width: parent.width
+                            width: parent.width - 4
                             height: parent.height / 2
 
                             CustomToggleSwitch {
@@ -146,6 +146,7 @@ Item {
                     Item {
                         width: parent.width
                         height: parent.height - 10
+
                         Text {
                             text: 'Mode'
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -160,7 +161,7 @@ Item {
                         height: parent.height
 
                         CustomToggleSwitch {
-                            width: parent.width / 2
+                            width: parent.width
                             height: parent.height / 2 + 10
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: checked ? "Mash" : "HLT"
@@ -206,6 +207,7 @@ Item {
                 height: parent.height / 2
 
                 Item {
+                    id: thi_parent
                     width: parent.width
                     height: parent.height
 
@@ -276,6 +278,7 @@ Item {
                         Item {
                             width: parent.width
                             height: parent.height / 3
+
                             Text {
                                 text: 'PID Mode'
                                 anchors.horizontalCenter: parent.horizontalCenter
@@ -286,7 +289,7 @@ Item {
                         }
 
                         Item {
-                            width: parent.width
+                            width: parent.width - 4
                             height: parent.height / 2
 
                             CustomToggleSwitch {

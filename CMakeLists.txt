@@ -1,17 +1,17 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.19)
 
 project(BrewberryPiApp LANGUAGES CXX)
 
-find_package(Qt6 6.9.1 REQUIRED COMPONENTS Core Gui Qml Quick Widgets QuickControls2 Charts)
+find_package(Qt6 REQUIRED COMPONENTS
+            Core
+            Gui
+            Qml
+            Quick
+            Widgets
+            QuickControls2
+            Charts)
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-
-qt_standard_project_setup(REQUIRES 6.9.1)
+qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(BrewberryPiApp
     src/main.cpp
@@ -52,6 +52,7 @@ set(QML_IMPORT_PATH ${QT_QML_OUTPUT_DIRECTORY}
     CACHE STRING "Import paths for Qt Creator's code model"
     FORCE
 )
+set(QT_QML_GENERATE_QMLLS_INI ON)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/qmlmodules)
 
@@ -66,3 +67,12 @@ install(TARGETS BrewberryPiApp
 # make IDEs aware of the QML import path
 set(QML_IMPORT_PATH ${PROJECT_BINARY_DIR}/qml CACHE PATH
     "Path to the custom QML components defined by the project")
+
+qt_generate_deploy_qml_app_script(
+    TARGET BrewberryPiApp
+    OUTPUT_SCRIPT deploy_script
+    MACOS_BUNDLE_POST_BUILD
+    NO_UNSUPPORTED_PLATFORM_ERROR
+    DEPLOY_USER_QML_MODULES_ON_UNSUPPORTED_PLATFORM
+)
+install(SCRIPT ${deploy_script})

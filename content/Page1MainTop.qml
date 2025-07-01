@@ -17,7 +17,7 @@ Item {
             Label {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                text: qsTr("Brewery Status")
+                text: qsTr("Brewberry Pi")
                 font.bold: true
                 font.pixelSize: 24
                 color: Constants.textColor

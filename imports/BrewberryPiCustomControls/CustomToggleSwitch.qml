@@ -1,19 +1,17 @@
 import QtQuick
-import QtQuick.Controls as T
-import QtQuick.Controls.Material.impl
+import QtQuick.Controls.Basic
 import BrewberryPi
 
 pragma ComponentBehavior: Bound
 
-T.Switch {
+Switch {
     id: control
     anchors.horizontalCenter: control.horizontalCenter
 
     Text {
         text: parent.text
         anchors {
-            verticalCenter: control.verticalCenter
-            horizontalCenter: control.horizontalCenter
+            centerIn: control
         }
         z: 1
         font.bold: true

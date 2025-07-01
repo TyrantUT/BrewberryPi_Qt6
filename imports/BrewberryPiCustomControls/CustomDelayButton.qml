@@ -1,10 +1,10 @@
 import QtQuick
-import QtQuick.Controls as T
+import QtQuick.Controls.Basic
 import BrewberryPi
 
 pragma ComponentBehavior: Bound
 
-T.DelayButton {
+DelayButton {
       id: control
       delay: 2000
       font.bold: true
@@ -12,17 +12,17 @@ T.DelayButton {
       text: qsTr("Off")
 
       onProgressChanged: {
-          canvas.requestPaint()
+          canvas.requestPaint();
       }
 
       contentItem: Text {
           text: control.text
           font: control.font
-          opacity: enabled ? 1.0 : 0.3          
+          opacity: enabled ? 1.0 : 0.3
           color: Constants.lightColor
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter
-          elide: Text.ElideMiddle
+          elide: Text.ElideRight
       }
 
       Rectangle {

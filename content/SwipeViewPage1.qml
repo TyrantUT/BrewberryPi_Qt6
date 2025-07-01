@@ -25,6 +25,12 @@ Page {
             height: parent.height * 2/3
         }
 
+        Rectangle {
+            width: parent.width
+            height: 2
+            color: "black"
+        }
+
         Page1MainBottom {
             width: parent.width
             height: parent.height * 1/3
