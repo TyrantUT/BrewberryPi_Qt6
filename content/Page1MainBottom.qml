@@ -207,7 +207,6 @@ Item {
                 height: parent.height / 2
 
                 Item {
-                    id: thi_parent
                     width: parent.width
                     height: parent.height
 

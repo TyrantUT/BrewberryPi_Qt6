@@ -4,25 +4,10 @@ import BrewberryPi
 import BrewberryPiCustomControls
 
 Item {
-    property int headerHeight: 50
+    property int headerHeight: 0
 
     Column {
         anchors.fill: parent
-
-        Rectangle {
-            height: headerHeight
-            width: parent.width
-            color: Constants.backgroundColor
-
-            Label {
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                text: qsTr("Brewberry Pi")
-                font.bold: true
-                font.pixelSize: 24
-                color: Constants.textColor
-            }
-        }
 
         Rectangle {
             width: parent.width
@@ -75,6 +60,7 @@ Item {
                 Item {
                     width: parent.width
                     height: parent.height
+
                     TemperatureGauge {
                         width: Math.min(parent.width, parent.height)
                         height: Math.min(parent.width, parent.height)
@@ -105,6 +91,7 @@ Item {
                 Item {
                     width: parent.width
                     height: parent.height
+
                     TemperatureGauge {
                         width: Math.min(parent.width, parent.height)
                         height: Math.min(parent.width, parent.height)

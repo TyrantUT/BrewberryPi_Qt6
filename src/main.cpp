@@ -110,11 +110,13 @@ int main(int argc, char *argv[]) {
         pidBoilThread->deleteLater();
     }, Qt::DirectConnection);
 
-
     temperatureThread->start();
     pidHLTThread->start();
     pidBoilThread->start();
-    //tempThread->setPriority(QThread::TimeCriticalPriority);
+
+    temperatureThread->setPriority(QThread::TimeCriticalPriority);
+    pidHLTThread->setPriority((QThread::HighPriority));
+    pidBoilThread->setPriority((QThread::HighPriority));
 
     engine.load(url);
     if (engine.rootObjects().isEmpty()) return -1;

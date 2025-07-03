@@ -82,15 +82,6 @@ Item {
         }
     }
 
-    Rectangle {
-        width: parent.width
-        height: parent.height
-        color: "#000000"
-        opacity: .2
-        radius: 5
-        z: -1
-    }
-
     ChartView {
         anchors.fill: parent
         margins {
