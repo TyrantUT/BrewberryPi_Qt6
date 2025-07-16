@@ -1,15 +1,17 @@
 import QtQuick
 
+pragma ComponentBehavior: Bound
+
 Item {
     id: root
 
     // Public properties
     property real maxTemperature: 215 // Maximum temperature for scaling
     property real timeWindow: 30 // Visible time window in seconds
-    property int maxPoints: 100 // Number of points for smooth rendering
+    property int maxPoints: root.width
     property alias running: timer.running // Control whether the graph is updating
     property real currentTemperature: 0 // Bindable property for external temperature
-    property real bufferTime: 0.5 // Seconds to place new points beyond visible window
+    property real bufferTime: .1 // Seconds to place new points beyond visible window
 
     // Canvas for drawing the graph
     Canvas {
@@ -104,7 +106,7 @@ Item {
     // Timer for continuous updates and point addition
     Timer {
         id: timer
-        interval: 500 // Match Main.qml's update rate
+        interval: 100
         running: true
         repeat: true
         onTriggered: {

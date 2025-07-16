@@ -15,7 +15,5 @@ ApplicationWindow {
         anchors.fill: parent
 
         SwipeViewPage1 {}
-        SwipeViewPage2 {}
-        SwipeViewPage3 {}
     }
 }

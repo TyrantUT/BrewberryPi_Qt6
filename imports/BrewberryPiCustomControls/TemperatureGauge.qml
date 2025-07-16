@@ -35,7 +35,6 @@ Dial {
     visible: true
     antialiasing: true
 
-
     // Defaults
     from: 0
     to: setManualMode ? 100 : 220

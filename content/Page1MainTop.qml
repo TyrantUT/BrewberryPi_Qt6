@@ -4,6 +4,7 @@ import BrewberryPi
 import BrewberryPiCustomControls
 
 Item {
+    id: root
     property int headerHeight: 0
 
     Column {
@@ -18,7 +19,7 @@ Item {
         Rectangle {
             id: top
             width: parent.width - parent.spacing
-            height: parent.height - headerHeight - 1
+            height: parent.height - root.headerHeight - 1
             color: Constants.backgroundColor
 
             Row {
@@ -54,6 +55,18 @@ Item {
                             }
                         }
                     }
+
+                    CustomLineGraph {
+                        width: parent.width - 50
+                        height: 40
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: 10
+                        maxTemperature: 215
+                        timeWindow: 30
+                        currentTemperature: BreweryValues.currentTemp_HLT
+                        running: true
+                    }
                 }
 
                 // Mash Dial
@@ -85,6 +98,18 @@ Item {
                             }
                         }
                     }
+
+                    CustomLineGraph {
+                        width: parent.width - 50
+                        height: 40
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: 10
+                        maxTemperature: 215
+                        timeWindow: 30
+                        currentTemperature: BreweryValues.currentTemp_Mash
+                        running: true
+                    }
                 }
 
                 // Boil Dial
@@ -115,6 +140,18 @@ Item {
                                 }
                             }
                         }
+                    }
+
+                    CustomLineGraph {
+                        width: parent.width - 50
+                        height: 40
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: 10
+                        maxTemperature: 215
+                        timeWindow: 30
+                        currentTemperature: BreweryValues.currentTemp_Boil
+                        running: true
                     }
                 }
             }

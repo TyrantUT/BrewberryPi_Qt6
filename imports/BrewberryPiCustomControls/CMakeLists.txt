@@ -10,7 +10,6 @@ qt6_add_qml_module(BrewberryPiCustomControls
         CustomButton.qml
         CustomDelayButton.qml
         CustomElipse.qml
-        CustomGraph.qml
         CustomTimerBox.qml
         CustomToggleSwitch.qml
         TemperatureGauge.qml

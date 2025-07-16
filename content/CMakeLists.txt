@@ -9,11 +9,6 @@ qt6_add_qml_module(content
     QML_FILES
         App.qml
         SwipeViewPage1.qml
-        SwipeViewPage2.qml
-        SwipeViewPage3.qml
-        StackLayoutHlt.qml        
-        StackLayoutMash.qml
-        StackLayoutBoil.qml
         Page1MainTop.qml
         Page1MainBottom.qml
     RESOURCES
