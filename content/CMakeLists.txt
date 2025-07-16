@@ -10,6 +10,7 @@ qt6_add_qml_module(content
         App.qml
         SwipeViewPage1.qml
         SwipeViewPage2.qml
+        SwipeViewPage3.qml
         StackLayoutHlt.qml        
         StackLayoutMash.qml
         StackLayoutBoil.qml

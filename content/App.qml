@@ -16,5 +16,6 @@ ApplicationWindow {
 
         SwipeViewPage1 {}
         SwipeViewPage2 {}
+        SwipeViewPage3 {}
     }
 }

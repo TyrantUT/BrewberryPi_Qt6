@@ -14,4 +14,5 @@ qt6_add_qml_module(BrewberryPiCustomControls
         CustomTimerBox.qml
         CustomToggleSwitch.qml
         TemperatureGauge.qml
+        CustomLineGraph.qml
 )
