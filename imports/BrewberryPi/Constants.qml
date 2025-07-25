@@ -29,6 +29,11 @@ QtObject {
 
     readonly property color backgroundColor: isDarkTheme ? darkColor : lightColor
     readonly property color textColor: isDarkTheme ? secondaryColor : darkColor
+    readonly property color controlBackgroundColor: isDarkTheme ? "#3A3A3A" : "#FFFFFF"
+    readonly property color controlBorderColor: isDarkTheme ? "#555555" : "#DDDDDD"
+    readonly property color controlShadowColor: isDarkTheme ? "#00000080" : "#00000020"
+    readonly property color controlGlowColor: isDarkTheme ? "#00BCD440" : "#2196F340"
+
 
     // Radial Bar
     readonly property int labelSize: 12

@@ -8,7 +8,7 @@ qt6_add_qml_module(content
     RESOURCE_PREFIX "/qt/qml"
     QML_FILES
         App.qml
-        SwipeViewPage1.qml
+
         Page1MainTop.qml
         Page1MainBottom.qml
     RESOURCES

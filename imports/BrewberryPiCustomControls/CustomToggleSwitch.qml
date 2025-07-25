@@ -32,15 +32,13 @@ Switch {
 
         // Shadow effect using multiple rectangles
         Rectangle {
-            property color darkBorder: (Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor)
-            property color lightBorder: (Constants.isDarkTheme ? Constants.darkColor : Constants.lightColor)
             width: parent.width - 2
             height: parent.height - 2
             radius: height / 2
             opacity: 0.4
             anchors.centerIn: parent
             color: 'transparent'
-            border.color: control.checked ? darkBorder : lightBorder
+            border.color: control.checked ? !Constants.backgroundColor : Constants.backgroundColor
             border.width: 2
         }
 

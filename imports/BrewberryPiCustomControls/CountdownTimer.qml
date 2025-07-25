@@ -1,145 +1,324 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick.Effects
 import BrewberryPi
-import "../BrewberryPi/BreweryFunctions.js" as BreweryFunctions
 
 pragma ComponentBehavior: Bound
 
 Item {
+    id: root
 
-    property int countdownTime: 0
+    implicitWidth: 240
+    implicitHeight: 300
+
+    signal started()
+    signal stopped()
+    signal finished()
+
+    property alias selectedHours: hourView.currentIndex
+    property alias selectedMinutes: minuteView.currentIndex
+    property alias selectedSeconds: secondView.currentIndex
+    property bool running: false
+
+    property int remainingTime: (hourView.currentIndex * 3600) +
+                                (minuteView.currentIndex * 60) +
+                                secondView.currentIndex
 
     Timer {
-        id: timer
-        interval: 1000 // 1 second
+        id: countdownTimer
+        interval: 1000
         repeat: true
         running: false
+
         onTriggered: {
-            if (countdownTime !== 0)
-                countdownTime--;
-            if (countdownTime === 0) {
-                timer.stop()
+            if (root.remainingTime > 0) {
+                root.remainingTime--
+                root.updatePickers()
+            } else {
+                countdownTimer.stop()
+                root.running = false
+                root.finished()
             }
         }
     }
 
-    Row {
+    function updatePickers() {
+        const hrs = Math.floor(root.remainingTime / 3600)
+        const mins = Math.floor((root.remainingTime % 3600) / 60)
+        const secs = root.remainingTime % 60
+
+        hourView.currentIndex = hrs
+        minuteView.currentIndex = mins
+        secondView.currentIndex = secs
+    }
+
+    // Outer shadow effect around the whole widget
+    Rectangle {
+        id: timerContainer
         width: parent.width
         height: parent.height
-        spacing: 2
+        radius: 12
+        color: Constants.backgroundColor
+        border.color: Constants.controlBorderColor
+        border.width: 1
 
-        Column {
-            width: parent.width * .75
-            height: parent.height / 2
-
-            Item {
-                width: parent.width
-                height: parent.height
-                CustomTimerBox {
-                    height: parent.height
-                    width: parent.width
-                    Item {
-                        anchors.fill: parent
-                        MouseArea {
-                            anchors.fill: parent
-                            onDoubleClicked: {
-                                if (timer.running) {
-                                    timer.stop();
-                                }
-
-                                countdownTime = 0;
-                            }
-                        }
-                    }
-                }
-            }
-            Item {
-                width: parent.width
-                height: parent.height
-
-                Row {
-                    width: parent.width / 2
-                    height: parent.height
-
-                    Item {
-                        width: parent.width
-                        height: parent.height
-
-                        CustomButton {
-                            width: parent.width / 2
-                            height: parent.height / 2
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.verticalCenter: parent.verticalCenter
-                            text: qsTr("60")
-
-                            onClicked: countdownTime = 60 * 60
-
-                        }
-                    }
-
-                    Item {
-                        width: parent.width
-                        height: parent.height
-
-                        CustomButton {
-                            width: parent.width / 2
-                            height: parent.height / 2
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.verticalCenter: parent.verticalCenter
-                            text: qsTr("90")
-
-                            onClicked: countdownTime = 90 * 60
-                        }
-                    }
-                }
-            }
+        layer.enabled: true
+        layer.effect: MultiEffect {
+            shadowEnabled: true
+            shadowColor: Constants.controlShadowColor
+            shadowVerticalOffset: 0
+            shadowHorizontalOffset: 4
+            shadowBlur: 12
         }
 
-        Column {
-            width: parent.width * .25
-            height: parent.height
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: 12
+            spacing: 8
 
-            // Up button
-            Item {
-                width: parent.width
-                height: parent.height / 3
-                CustomButton {
-                    width: parent.width / 2
-                    height: parent.height
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    arrow: "up"
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                spacing: 10
 
-                    onClicked: countdownTime += 60
+                ListView {
+                    id: hourView
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    clip: true
+                    model: 24
+                    orientation: ListView.Vertical
+                    snapMode: ListView.SnapToItem
+                    boundsBehavior: Flickable.StopAtBounds
+                    highlightFollowsCurrentItem: true
+                    preferredHighlightBegin: height / 2 - 20
+                    preferredHighlightEnd: height / 2 + 20
+                    highlightMoveDuration: root.running ? 0 : 250
+                    interactive: !root.running
+
+                    onMovementEnded: {
+                        let index = Math.round(contentY / 40)
+                        currentIndex = Math.max(0, Math.min(index, count - 1))
+                    }
+
+                    delegate: Item {
+                        required property int modelData
+                        width: hourView.width
+                        height: 40
+
+                        Text {
+                            anchors.centerIn: parent
+                            font.pixelSize: 24
+                            color: hourView.currentIndex === modelData
+                                ? (Constants.isDarkTheme ? "white" : "black")
+                                : (Constants.isDarkTheme ? "gray" : "#888")
+                            text: modelData.toString().padStart(2, "0")
+                        }
+                    }
+                }
+
+                Text {
+                    text: ":"
+                    font.pixelSize: 24
+                    color: Constants.isDarkTheme ? "white" : "black"
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                ListView {
+                    id: minuteView
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    clip: true
+                    model: 60
+                    orientation: ListView.Vertical
+                    snapMode: ListView.SnapToItem
+                    boundsBehavior: Flickable.StopAtBounds
+                    highlightFollowsCurrentItem: true
+                    preferredHighlightBegin: height / 2 - 20
+                    preferredHighlightEnd: height / 2 + 20
+                    highlightMoveDuration: root.running ? 0 : 250
+                    interactive: !root.running
+
+                    onMovementEnded: {
+                        let index = Math.round(contentY / 40)
+                        currentIndex = Math.max(0, Math.min(index, count - 1))
+                    }
+
+                    delegate: Item {
+                        required property int modelData
+                        width: minuteView.width
+                        height: 40
+
+                        Text {
+                            anchors.centerIn: parent
+                            font.pixelSize: 24
+                            color: minuteView.currentIndex === modelData
+                                ? (Constants.isDarkTheme ? "white" : "black")
+                                : (Constants.isDarkTheme ? "gray" : "#888")
+                            text: modelData.toString().padStart(2, "0")
+                        }
+                    }
+                }
+
+                Text {
+                    text: ":"
+                    font.pixelSize: 24
+                    color: Constants.isDarkTheme ? "white" : "black"
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                ListView {
+                    id: secondView
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    clip: true
+                    model: 60
+                    orientation: ListView.Vertical
+                    snapMode: ListView.SnapToItem
+                    boundsBehavior: Flickable.StopAtBounds
+                    highlightFollowsCurrentItem: true
+                    preferredHighlightBegin: height / 2 - 20
+                    preferredHighlightEnd: height / 2 + 20
+                    highlightMoveDuration: root.running ? 0 : 250
+                    interactive: !root.running
+
+                    onMovementEnded: {
+                        let index = Math.round(contentY / 40)
+                        currentIndex = Math.max(0, Math.min(index, count - 1))
+                    }
+
+                    delegate: Item {
+                        required property int modelData
+                        width: secondView.width
+                        height: 40
+
+                        Text {
+                            anchors.centerIn: parent
+                            font.pixelSize: 24
+                            color: secondView.currentIndex === modelData
+                                ? (Constants.isDarkTheme ? "white" : "black")
+                                : (Constants.isDarkTheme ? "gray" : "#888")
+                            text: modelData.toString().padStart(2, "0")
+                        }
+                    }
                 }
             }
 
-            // Start Button
-            Item {
-                width: parent.width
-                height: parent.height / 3
-                CustomButton {
-                    width: parent.width
-                    height: parent.height
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: timer.running ? qsTr("Stop") : qsTr("Start")
+            RowLayout {
+                Layout.alignment: Qt.AlignHCenter
+                spacing: 20
 
-                    onClicked: (!timer.running && countdownTime !== 0) ? timer.start() : timer.stop()
-                }
-            }
-
-            // Up button
-            Item {
-                width: parent.width
-                height: parent.height / 3
-                CustomButton {
-                    width: parent.width / 2
-                    height: parent.height
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    arrow: "down"
-
+                // Styled Start/Stop Button
+                Button {
+                    id: startStopButton
+                    text: root.running ? "Stop" : "Start"
                     onClicked: {
-                        if (countdownTime !== 0)
-                            countdownTime -= 60
+                        if (!root.running) {
+                            root.remainingTime = (hourView.currentIndex * 3600) +
+                                                 (minuteView.currentIndex * 60) +
+                                                 secondView.currentIndex
+                            if (root.remainingTime > 0) {
+                                countdownTimer.start()
+                                root.running = true
+                                root.started()
+                            }
+                        } else {
+                            countdownTimer.stop()
+                            root.running = false
+                            root.stopped()
+                        }
+                    }
+                    font.pixelSize: 18
+
+                    Rectangle {
+                        width: parent.width + 2
+                        height: parent.height + 2
+                        radius: height / 2
+                        color: Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor
+                        opacity: 0.1
+                        anchors.centerIn: parent
+                    }
+
+                    background: Rectangle {
+                        id: startBackground
+                        color: root.running
+                            ? (Constants.isDarkTheme ? "#cc3333" : "#ff4444")
+                            : (Constants.isDarkTheme ? "#33aa33" : "#33cc33")
+                        border.color: Constants.isDarkTheme ? Constants.backgroundColor : !Constants.backgroundColor
+                        radius: 12
+                        layer.enabled: true
+
+                        Rectangle {
+                            width: parent.width - 4
+                            height: parent.height - 4
+                            anchors.centerIn: parent
+                            color: 'transparent'
+                            border.color: Constants.darkColor
+                            border.width: 2
+                            opacity: .2
+                            radius: parent.radius
+                            visible: startStopButton.down
+                        }
+
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        anchors.centerIn: parent
+                        color: "white"
+                        font.pixelSize: 18
+                    }
+                }
+
+                // Styled Reset Button
+                Button {
+                    id: resetButton
+                    text: "Reset"
+                    enabled: !root.running
+                    onClicked: {
+                        countdownTimer.stop()
+                        root.remainingTime = 0
+                        hourView.currentIndex = 0
+                        minuteView.currentIndex = 0
+                        secondView.currentIndex = 0
+                    }
+                    font.pixelSize: 18
+
+                    Rectangle {
+                        width: parent.width + 2
+                        height: parent.height + 2
+                        radius: height / 2
+                        color: Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor
+                        opacity: 0.1
+                        anchors.centerIn: parent
+                    }
+
+                    background: Rectangle {
+                        id: resetBackground
+                        color: Constants.isDarkTheme ? "#888888" : "#dddddd"
+                        radius: 12
+                        border.color: Constants.isDarkTheme ? Constants.backgroundColor : !Constants.backgroundColor
+                        border.width: 1
+
+                        Rectangle {
+                            width: parent.width - 4
+                            height: parent.height - 4
+                            anchors.centerIn: parent
+                            color: 'transparent'
+                            border.color: Constants.darkColor
+                            border.width: 2
+                            opacity: .2
+                            radius: parent.radius
+                            visible: resetButton.down
+                        }
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        anchors.centerIn: parent
+                        color: Constants.isDarkTheme ? "white" : "black"
+                        font.pixelSize: 18
                     }
                 }
             }

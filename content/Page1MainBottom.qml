@@ -13,7 +13,6 @@ Item {
     }
 
     Row {
-        spacing: 2
         width: parent.width / 3
         height: parent.height
 
@@ -26,49 +25,44 @@ Item {
                 width: parent.width / 2
                 height: parent.height
 
-                Item {
+                Column {
                     width: parent.width
-                    height: parent.height                    
+                    height: parent.height / 2
 
-                    Column {
+                    Item {
                         width: parent.width
+                        height: parent.height / 3
+
+                        Text {
+                            text: 'PID Mode'
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: Constants.textColor
+                            font.pixelSize: height
+                            font.bold: true
+                        }
+                    }
+
+                    Item {
+                        width: parent.width - 4
                         height: parent.height / 2
 
-                        Item {
-                            width: parent.width
-                            height: parent.height / 3
-
-                            Text {
-                                text: 'PID Mode'
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                color: Constants.textColor
-                                font.pixelSize: height
-                                font.bold: true
-                            }
-                        }
-
-                        Item {
+                        CustomToggleSwitch {
                             width: parent.width - 4
-                            height: parent.height / 2
-
-                            CustomToggleSwitch {
-                                width: parent.width - 4
-                                height: parent.height
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                text: checked ? "Manual" : "Automatic"
-                                font.pixelSize: height
-                                checked: BreweryValues.setpointManual_HLT
-                                onCheckedChanged: BreweryValues.setpointManual_HLT = checked
-                            }
+                            height: parent.height
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: checked ? "Manual" : "Automatic"
+                            font.pixelSize: height
+                            checked: BreweryValues.setpointManual_HLT
+                            onCheckedChanged: BreweryValues.setpointManual_HLT = checked
                         }
                     }
                 }
 
-                Item {
+                Column {
                     width: parent.width
                     height: parent.height
 
-                    Column {
+                    Item {
                         width: parent.width
                         height: parent.height
 
@@ -80,18 +74,13 @@ Item {
                             font.bold: true
                         }
 
-                        Item {
-                            width: parent.width
-                            height: parent.height
-
-                            CustomDelayButton {
-                                width: parent.width * .75
-                                height: parent.height * .75
-                                anchors.centerIn: parent
-                                checked: BreweryValues.elementOn_HLT
-                                enabled: !BreweryValues.elementOn_Boil
-                                onCheckedChanged: BreweryValues.elementOn_HLT = checked
-                            }
+                        CustomDelayButton {
+                            width: parent.width * .75
+                            height: width
+                            anchors.centerIn: parent
+                            checked: BreweryValues.elementOn_HLT
+                            enabled: !BreweryValues.elementOn_Boil
+                            onCheckedChanged: BreweryValues.elementOn_HLT = checked
                         }
                     }
                 }
@@ -115,6 +104,7 @@ Item {
                     Item {
                         width: parent.width
                         height: parent.height - 10
+
                         Text {
                             text: 'Pump 1'
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -178,6 +168,7 @@ Item {
                     Item {
                         width: parent.width
                         height: parent.height - 10
+
                         Text {
                             text: 'Pump 2'
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -190,6 +181,7 @@ Item {
                     Item {
                         width: parent.width
                         height: parent.height
+
                         CustomToggleSwitch {
                             width: parent.width / 2
                             height: parent.height / 2 + 10
@@ -215,10 +207,10 @@ Item {
                         height: parent.height
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
-                        countdownTime: BreweryValues.breweryTimer
+                        remainingTime: BreweryValues.breweryTimer
 
-                        onCountdownTimeChanged: (cuontdownTime) => {
-                            BreweryValues.breweryTimer = countdownTime;
+                        onRemainingTimeChanged: () => {
+                            BreweryValues.breweryTimer = remainingTime;
                         }
                     }
                 }
@@ -234,11 +226,11 @@ Item {
                 width: parent.width / 2
                 height: parent.height
 
-                Item {
+                Column {
                     width: parent.width
                     height: parent.height
 
-                    Column {
+                    Item {
                         width: parent.width
                         height: parent.height
 
@@ -250,18 +242,13 @@ Item {
                             font.bold: true
                         }
 
-                        Item {
-                            width: parent.width
-                            height: parent.height
-
-                            CustomDelayButton {
-                                width: parent.width * .75
-                                height: parent.height * .75
-                                anchors.centerIn: parent
-                                checked: BreweryValues.elementOn_Boil
-                                enabled: !BreweryValues.elementOn_HLT
-                                onCheckedChanged: BreweryValues.elementOn_Boil = checked
-                            }
+                        CustomDelayButton {
+                            width: parent.width * .75
+                            height: width
+                            anchors.centerIn: parent
+                            checked: BreweryValues.elementOn_Boil
+                            enabled: !BreweryValues.elementOn_HLT
+                            onCheckedChanged: BreweryValues.elementOn_Boil = checked
                         }
                     }
                 }
