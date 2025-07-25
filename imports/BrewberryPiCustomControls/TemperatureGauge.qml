@@ -1,41 +1,34 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Shapes
+import QtQuick.Effects
 import BrewberryPi
 
 pragma ComponentBehavior: Bound
 
 Dial {
     id: control
-
     property color color: '#000000'
     property alias dialColor: control.color
     property real currentTemp: 0.0
     property string labelText: ''
     property bool setManualMode: false
     property alias setpointValue: control.value
-
     property int capStyle: Qt.RoundCap
     property color trackColor: "#505050"
     property color progressColor: "#3a4ec4"
     property color handleColor: "#fefefe"
-
     property real currentAngle: startAngle + (endAngle - startAngle) * (currentTemp - from) / (to - from)
     property color gradientColor: Qt.rgba((currentAngle - startAngle) / (endAngle - startAngle), 0, 1 - (currentAngle - startAngle) / (endAngle - startAngle), 1)
     property real currentAngleSetPoint: startAngle + (endAngle - startAngle) * (value - from) / (to - from)
     property color currentColorSetPoint: Qt.rgba((currentAngleSetPoint - startAngle) / (endAngle - startAngle), 0, 1 - (currentAngleSetPoint - startAngle) / (endAngle - startAngle), 1)
-
-    property int outerHandleSize: {
-        return Math.max(control.handle.width, control.handle.height);
-    }
-
+    property int outerHandleSize: Math.max(control.handle.width, control.handle.height)
     readonly property string suffixText: setManualMode ? "%" : "°"
+
     signal valueChangedAndReleased(real setpointValue)
 
     visible: true
     antialiasing: true
-
-    // Defaults
     from: 0
     to: setManualMode ? 100 : 220
     stepSize: 1
@@ -44,8 +37,37 @@ Dial {
     inputMode: Dial.Circular
     wrap: false
 
-    background: Rectangle {
-        color: 'transparent'
+    // Drop shadow under entire dial
+
+
+    // Outer ring with theme-aware gradient
+
+
+    background: Item {
+        width: control.width - 2
+        height: control.height - 2
+        anchors.centerIn: parent
+
+        Rectangle {
+            width: parent.width
+            height: parent.height
+            anchors.centerIn: parent
+            radius: width / 2
+            color: Qt.rgba(0, 0, 0, 0.5)
+            opacity: 0.25
+            z: -3
+        }
+
+        Rectangle {
+            id: shell
+            width: parent.width
+            height: parent.height
+            radius: width / 2
+            anchors.centerIn: parent
+            color: Constants.backgroundColor
+            border.color: Qt.darker(Constants.backgroundColor, 1.8)
+            border.width: 2
+        }
     }
 
     Connections {
@@ -60,23 +82,10 @@ Dial {
     }
 
     onPressedChanged: {
-        // Toggle between states for the handle shadow
-        if (handleShadow.state === "pressed") {
-            handleShadow.state = "unpressed"
-        } else {
-            handleShadow.state = "pressed"
-        }
-
         if (!pressed) {
-            valueChangedAndReleased(setpointValue);
+            valueChangedAndReleased(setpointValue)
         }
     }
-
-    property var onDoubleClickValueChanged: (foo) => {
-        foo()
-        valueChangedAndReleased(setpointValue);
-    }
-
 
     handle: Item {
         id: handleItem
@@ -86,7 +95,9 @@ Dial {
         visible: enabled
 
         Shape {
-            id: handleShadow
+            id: handleShape
+            width: parent.width
+            height: parent.height
 
             ShapePath {
                 startX: 10
@@ -94,123 +105,99 @@ Dial {
                 PathLine { x: 20; y: 20 }
                 PathLine { x: 0; y: 20 }
                 PathLine { x: 10; y: 0 }
-                PathLine { x: 10; y: 0 }  // Close the path
+                PathLine { x: 10; y: 0 }
                 fillColor: currentColorSetPoint
                 strokeColor: 'transparent'
             }
-
-            // Define initial state
-            state: "unpressed"
-
-            // Define states
-            states: [
-                State {
-                    name: "pressed"
-                    PropertyChanges {
-                        target: handleShadow
-                        opacity: Constants.isDarkTheme ? .9 : .7
-                    }
-                },
-                State {
-                    name: "unpressed"
-                    PropertyChanges {
-                        target: handleShadow
-                        opacity: Constants.isDarkTheme ? .6 : .3
-                    }
-                }
-            ]
-
-            // Define transitions
-            transitions: [
-                Transition {
-                    from: "unpressed"
-                    to: "pressed"
-                    SequentialAnimation {
-                        NumberAnimation {
-                            target: handleShadow
-                            property: "opacity"
-                            duration: 100
-                            easing.type: Easing.InOutQuad
-                        }
-                    }
-                },
-                Transition {
-                    from: "pressed"
-                    to: "unpressed"
-                    SequentialAnimation {
-                        NumberAnimation {
-                            target: handleShadow
-                            property: "opacity"
-                            duration: 100
-                            easing.type: Easing.InOutQuad
-                        }
-                    }
-                }
-            ]
         }
 
-        transform: [
-            Translate {
-                y: -Math.min(control.background.width, control.background.height) * 0.33 + handleItem.height / 2
+        MultiEffect {
+            anchors.fill: handleShape
+            source: handleShape
+            shadowEnabled: true
+            shadowOpacity: 0.4
+            shadowBlur: 0.1
+            shadowColor: Qt.rgba(0, 0, 0, 0.5)
+        }
+
+        state: "unpressed"
+        states: [
+            State {
+                name: "pressed"
+                PropertyChanges { target: handleShape; opacity: Constants.isDarkTheme ? 0.9 : 0.7 }
             },
-            Rotation {
-                angle: control.angle
-                origin.x: handleItem.width / 2
-                origin.y: handleItem.height / 2
+            State {
+                name: "unpressed"
+                PropertyChanges { target: handleShape; opacity: Constants.isDarkTheme ? 0.6 : 0.3 }
             }
+        ]
+
+        transitions: [
+            Transition {
+                from: "unpressed"
+                to: "pressed"
+                NumberAnimation { target: handleShape; property: "opacity"; duration: 100; easing.type: Easing.InOutQuad }
+            },
+            Transition {
+                from: "pressed"
+                to: "unpressed"
+                NumberAnimation { target: handleShape; property: "opacity"; duration: 100; easing.type: Easing.InOutQuad }
+            }
+        ]
+
+        transform: [
+            Translate { y: -Math.min(control.width, control.height) * 0.33 + handleItem.height / 2 },
+            Rotation { angle: control.angle; origin.x: handleItem.width / 2; origin.y: handleItem.height / 2 }
         ]
     }
 
-    Canvas {
-        id: canvas
+    Item {
+        id: canvasContainer
         anchors.centerIn: parent
         width: control.width - 10
         height: width
+        z: 2
 
-        onPaint: {
-            var ctx = getContext("2d");
-            ctx.reset();
+        Canvas {
+            id: canvas
+            anchors.fill: parent
 
-            var centerX = width / 2;
-            var centerY = height / 2;
-            var radius = Math.min(width, height) / 2 - (outerShapePath.strokeWidth * 2);
-            var largeTickLength = 15; // Length of large tick arks
-            var smallTickLength = 7;  // Length of small tick marks
-            var labelRadius = radius - largeTickLength - 20; // Radius for the labels
-
-            var minAngle = control.startAngle; // Start angle in degrees
-            var maxAngle = control.endAngle; // End angle in degrees
-            var minValue = control.from; // Start value
-            var maxValue = control.to; // End value
-
-            // Draw tick marks and labels
-            for (var value = minValue; value <= maxValue; value += 5) {
-                // Map value to angle
-                var angle = minAngle + (value - minValue) * (maxAngle - minAngle) / (maxValue - minValue);
-                // Convert angle to radians and shift by 90 degrees
-                var rad = (angle - 90) * Math.PI / 180;
-                var tickLength = (value % 20 === 0) ? largeTickLength : smallTickLength;
-                var xStart = centerX + (radius - tickLength) * Math.cos(rad);
-                var yStart = centerY + (radius - tickLength) * Math.sin(rad);
-                var xEnd = centerX + radius * Math.cos(rad);
-                var yEnd = centerY + radius * Math.sin(rad);
-
-                ctx.beginPath();
-                ctx.moveTo(xStart, yStart);
-                ctx.lineTo(xEnd, yEnd);
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = dialColor;
-                ctx.stroke();
-
-                // Draw labels for large tick marks
-                if (value % 20 === 0) {
-                    var labelX = centerX + labelRadius * Math.cos(rad);
-                    var labelY = centerY + labelRadius * Math.sin(rad);
-                    ctx.fillStyle = dialColor;
-                    ctx.font = "bold 14px sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.fillText(value.toString(), labelX, labelY);
+            onPaint: {
+                var ctx = getContext("2d")
+                ctx.reset()
+                var centerX = width / 2
+                var centerY = height / 2
+                var radius = width / 2 - (outerShapePath.strokeWidth * 2)
+                var largeTickLength = 15
+                var smallTickLength = 7
+                var labelRadius = radius - largeTickLength - 20
+                var minAngle = control.startAngle
+                var maxAngle = control.endAngle
+                var minValue = control.from
+                var maxValue = control.to
+                for (var value = minValue; value <= maxValue; value += 5) {
+                    var angle = minAngle + (value - minValue) * (maxAngle - minAngle) / (maxValue - minValue)
+                    var rad = (angle - 90) * Math.PI / 180
+                    var tickLength = (value % 20 === 0) ? largeTickLength : smallTickLength
+                    var xStart = centerX + (radius - tickLength) * Math.cos(rad)
+                    var yStart = centerY + (radius - tickLength) * Math.sin(rad)
+                    var xEnd = centerX + radius * Math.cos(rad)
+                    var yEnd = centerY + radius * Math.sin(rad)
+                    ctx.beginPath()
+                    ctx.moveTo(xStart, yStart)
+                    ctx.lineTo(xEnd, yEnd)
+                    ctx.lineWidth = 2
+                    ctx.strokeStyle = dialColor
+                    ctx.stroke()
+                    if (value % 20 === 0) {
+                        var labelX = centerX + labelRadius * Math.cos(rad)
+                        var labelY = centerY + labelRadius * Math.sin(rad)
+                        ctx.fillStyle = dialColor
+                        ctx.font = "bold 14px sans-serif"
+                        ctx.textAlign = "center"
+                        ctx.textBaseline = "middle"
+                        ctx.fillText(value.toString(), labelX, labelY)
+                    }
                 }
             }
         }
@@ -221,37 +208,38 @@ Dial {
         id: outer
         antialiasing: true
         visible: !setManualMode
+        z: 3
+        anchors.centerIn: parent
+        width: control.width - 10
+        height: width
 
         ShapePath {
             fillColor: "transparent"
             strokeColor: gradientColor
             strokeStyle: ShapePath.SolidLine
-            strokeWidth: 10
-            capStyle: ShapePath.RoundCap
+            strokeWidth: 8
+            capStyle: control.capStyle
             pathHints: ShapePath.PathNonIntersecting
 
             PathAngleArc {
                 id: outerArc
-                centerX: control.width / 2
-                centerY: centerX
-                radiusX: (control.width / 2) - 10
+                centerX: parent.width / 2
+                centerY: centerY
+                radiusX: parent.width / 2 - 10
                 radiusY: radiusX
                 startAngle: control.startAngle - 90
-                sweepAngle: currentAngle + control.endAngle
+                sweepAngle: control.currentAngle - control.startAngle
 
                 Behavior on sweepAngle {
-                    NumberAnimation {
-                        duration: 200
-                        easing.type: Easing.InOutQuad
-                    }
+                    NumberAnimation { duration: 200; easing.type: Easing.InOutQuad }
                 }
             }
         }
     }
 
     CustomElipse {
-        width: parent.width
-        height: parent.height
+        width: control.width
+        height: control.height
         anchors.horizontalCenter: parent.horizontalCenter
         outerStrokeArea: outerHandleSize * 2
         onClicked: {}
@@ -260,25 +248,28 @@ Dial {
     // Set Temperature (Inner Dial)
     Shape {
         antialiasing: true
+        z: 2
+        anchors.centerIn: parent
+        width: control.width - 10
+        height: width
 
         ShapePath {
             id: outerShapePath
             fillColor: "transparent"
             strokeColor: control.currentColorSetPoint
             strokeStyle: ShapePath.SolidLine
-
             strokeWidth: 5
-            capStyle: ShapePath.RoundCap
+            capStyle: control.capStyle
             pathHints: ShapePath.PathNonIntersecting
 
             PathAngleArc {
                 id: innerArc
-                centerX: control.width / 2
+                centerX: parent.width / 2
                 centerY: centerX
-                radiusX: control.width / 4
+                radiusX: parent.width / 4
                 radiusY: radiusX
                 startAngle: control.startAngle - 90
-                sweepAngle: control.angle + control.endAngle
+                sweepAngle: control.currentAngleSetPoint - control.startAngle
             }
         }
     }
@@ -286,10 +277,8 @@ Dial {
     Item {
         width: parent.width / 2
         height: parent.height / 2
-        anchors {
-            horizontalCenter: parent.horizontalCenter
-            verticalCenter: parent.verticalCenter
-        }
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
 
         Column {
             width: parent.width
@@ -301,16 +290,13 @@ Dial {
             Item {
                 width: parent.width
                 height: parent.height / 2
-
                 Label {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalAlignment
                     height: parent.height
-                    font {
-                        family: "Helvetica"
-                        italic: false
-                        pixelSize: height
-                    }
+                    font.family: "Helvetica"
+                    font.italic: false
+                    font.pixelSize: height
                     fontSizeMode: Text.Fit
                     text: Math.round(currentTemp * 10) / 10 + "°"
                     color: control.gradientColor
@@ -322,16 +308,13 @@ Dial {
                 width: parent.width
                 height: parent.height / 2
                 color: 'transparent'
-
                 Label {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalAlignment
                     height: parent.height
-                    font {
-                        family: "Helvetica"
-                        italic: false
-                        pixelSize: height
-                    }
+                    font.family: "Helvetica"
+                    font.italic: false
+                    font.pixelSize: height
                     fontSizeMode: Text.Fit
                     text: Math.round(setpointValue * 100 / 100) + suffixText
                     color: control.currentColorSetPoint
@@ -343,15 +326,14 @@ Dial {
     Item {
         width: parent.width / 2
         height: parent.height / 20
-        anchors {
-            horizontalCenter: parent.horizontalCenter
-            bottom: parent.bottom
-            bottomMargin: 30
-        }
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 30
+
         Label {
             height: parent.height
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom:  parent.bottom
+            anchors.bottom: parent.bottom
             text: control.labelText
             color: Constants.textColor
             font.bold: true

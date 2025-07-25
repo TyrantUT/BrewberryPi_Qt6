@@ -9,14 +9,16 @@ QtObject {
 
     /* Edit this comment to add your custom font */
     readonly property font font: Qt.font({
-                                             family: Qt.application.font.family,
-                                             pixelSize: Qt.application.font.pixelSize
-                                         })
+         family: Qt.application.font.family,
+         pixelSize: Qt.application.font.pixelSize
+     })
     readonly property font largeFont: Qt.font({
-                                                  family: Qt.application.font.family,
-                                                  pixelSize: Qt.application.font.pixelSize * 1.6
-                                              })
-    property bool isDarkTheme: false
+        family: Qt.application.font.family,
+        pixelSize: Qt.application.font.pixelSize * 1.6
+    })
+
+    // Default to Dark Theme
+    property bool isDarkTheme: true
     readonly property color primaryColor: "#3B71CA"
     readonly property color secondaryColor: "#9FA6B2"
     readonly property color successColor: "#14A44D"

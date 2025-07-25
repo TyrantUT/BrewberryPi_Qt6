@@ -44,14 +44,14 @@ Item {
 
                     Item {
                         width: parent.width - 4
-                        height: parent.height / 2
+                        height: width
 
                         CustomToggleSwitch {
-                            width: parent.width - 4
-                            height: parent.height
+                            width: parent.width / 2
+                            height: width
                             anchors.horizontalCenter: parent.horizontalCenter
-                            text: checked ? "Manual" : "Automatic"
-                            font.pixelSize: height
+                            text: checked ? "Manual" : "Auto"
+                            font.pixelSize: height / 6
                             checked: BreweryValues.setpointManual_HLT
                             onCheckedChanged: BreweryValues.setpointManual_HLT = checked
                         }
@@ -123,6 +123,7 @@ Item {
                             height: parent.height / 2 + 10
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: checked ? "On" : "Off"
+                            outerBevelPixelSize: 8
                             checked: BreweryValues.pumpOn_Water
                             onCheckedChanged: BreweryValues.pumpOn_Water = checked
                         }
@@ -155,6 +156,7 @@ Item {
                             height: parent.height / 2 + 10
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: checked ? "Mash" : "HLT"
+                            outerBevelPixelSize: 8
                             checked: BreweryValues.setpointHltOrMash
                             onCheckedChanged: BreweryValues.setpointHltOrMash = checked
                         }
@@ -187,6 +189,7 @@ Item {
                             height: parent.height / 2 + 10
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: checked ? "On" : "Off"
+                            outerBevelPixelSize: 8
                             checked: BreweryValues.pumpOn_Wort
                             onCheckedChanged: BreweryValues.pumpOn_Wort = checked
                         }
@@ -276,14 +279,14 @@ Item {
 
                         Item {
                             width: parent.width - 4
-                            height: parent.height / 2
+                            height: width
 
                             CustomToggleSwitch {
-                                width: parent.width - 4
-                                height: parent.height
+                                width: parent.width / 2
+                                height: width
                                 anchors.horizontalCenter: parent.horizontalCenter
-                                text: checked ? "Manual" : "Automatic"
-                                font.pixelSize: height
+                                text: checked ? "Manual" : "Auto"
+                                font.pixelSize: height / 6
                                 checked: BreweryValues.setpointManual_Boil
                                 onCheckedChanged: BreweryValues.setpointManual_Boil = checked
                             }
