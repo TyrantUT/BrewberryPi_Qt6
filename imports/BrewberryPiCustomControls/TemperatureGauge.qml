@@ -37,26 +37,10 @@ Dial {
     inputMode: Dial.Circular
     wrap: false
 
-    // Drop shadow under entire dial
-
-
-    // Outer ring with theme-aware gradient
-
-
     background: Item {
         width: control.width - 2
         height: control.height - 2
         anchors.centerIn: parent
-
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            anchors.centerIn: parent
-            radius: width / 2
-            color: Qt.rgba(0, 0, 0, 0.5)
-            opacity: 0.25
-            z: -3
-        }
 
         Rectangle {
             id: shell
@@ -64,9 +48,46 @@ Dial {
             height: parent.height
             radius: width / 2
             anchors.centerIn: parent
-            color: Constants.backgroundColor
-            border.color: Qt.darker(Constants.backgroundColor, 1.8)
-            border.width: 2
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: Qt.lighter(Constants.backgroundColor, 1.6) } // Brighter for metallic rim
+                GradientStop { position: 0.5; color: Qt.lighter(Constants.backgroundColor, 1.3) }
+                GradientStop { position: 1.0; color: Qt.darker(Constants.backgroundColor, 1.4) } // Darker inner edge
+            }
+            border.color: Qt.lighter(Constants.backgroundColor, 1.8) // Very light for strong metallic edge
+            border.width: 3 // Thicker for bolder edge
+        }
+
+        MultiEffect {
+            anchors.fill: shell
+            source: shell
+            shadowEnabled: true
+            shadowColor: Qt.lighter(Constants.backgroundColor, 1.15) // Slightly lighter for inner shadow
+            shadowOpacity: 0.9 // Stronger for pronounced effect
+            shadowBlur: 0.7 // Softer blur for depth
+            shadowHorizontalOffset: -5 // Stronger inward shadow
+            shadowVerticalOffset: -5
+            shadowScale: 0.97 // Scale down for recessed center
+            blurEnabled: true
+            blur: 0.5 // Enhanced blur for smoothness
+            maskEnabled: true
+            maskSource: Rectangle {
+                width: shell.width
+                height: shell.height
+                radius: shell.radius
+                color: "white"
+            }
+            // Subtle outer shadow for raised edge
+            MultiEffect {
+                anchors.fill: parent
+                source: shell
+                shadowEnabled: true
+                shadowColor: Qt.rgba(0, 0, 0, 0.4)
+                shadowOpacity: 0.3
+                shadowBlur: 0.8
+                shadowHorizontalOffset: 3
+                shadowVerticalOffset: 3
+                shadowScale: 1.03 // Slight scale up for outer rim
+            }
         }
     }
 
@@ -175,6 +196,7 @@ Dial {
                 var maxAngle = control.endAngle
                 var minValue = control.from
                 var maxValue = control.to
+
                 for (var value = minValue; value <= maxValue; value += 5) {
                     var angle = minAngle + (value - minValue) * (maxAngle - minAngle) / (maxValue - minValue)
                     var rad = (angle - 90) * Math.PI / 180
@@ -183,16 +205,52 @@ Dial {
                     var yStart = centerY + (radius - tickLength) * Math.sin(rad)
                     var xEnd = centerX + radius * Math.cos(rad)
                     var yEnd = centerY + radius * Math.sin(rad)
+
+                    // Draw rounded glow (halo) behind the tick mark, blending with background
                     ctx.beginPath()
                     ctx.moveTo(xStart, yStart)
                     ctx.lineTo(xEnd, yEnd)
-                    ctx.lineWidth = 2
-                    ctx.strokeStyle = dialColor
+                    ctx.lineWidth = (value % 20 === 0) ? 10 : 9 // Wider for visible glow
+                    ctx.lineCap = "round" // Rounded ends for glow
+                    var glowGradient = ctx.createLinearGradient(xStart, yStart, xEnd, yEnd)
+                    glowGradient.addColorStop(0.0, Qt.lighter(Constants.backgroundColor, 1.3)) // Brighter for visibility
+                    glowGradient.addColorStop(1.0, Qt.lighter(Constants.backgroundColor, 1.05)) // Blend to background
+                    ctx.strokeStyle = glowGradient
+                    ctx.globalAlpha = 0.4 // Increased opacity for visibility
                     ctx.stroke()
+                    ctx.globalAlpha = 1.0 // Reset alpha
+
+                    // Draw pronounced shadow for stronger raised effect
+                    ctx.beginPath()
+                    ctx.moveTo(xStart, yStart)
+                    ctx.lineTo(xEnd, yEnd)
+                    ctx.lineWidth = (value % 20 === 0) ? 7 : 6
+                    ctx.lineCap = "round"
+                    ctx.strokeStyle = Qt.rgba(0, 0, 0, 0.2) // Stronger shadow
+                    ctx.shadowColor = Qt.rgba(0, 0, 0, 0.4)
+                    ctx.shadowOffsetX = 1.5
+                    ctx.shadowOffsetY = 1.5
+                    ctx.shadowBlur = 4
+                    ctx.stroke()
+                    ctx.shadowColor = "transparent" // Reset shadow
+
+                    // Draw tick mark with gradient on top
+                    var gradient = ctx.createLinearGradient(xStart, yStart, xEnd, yEnd)
+                    gradient.addColorStop(0.0, Qt.lighter(control.dialColor, 1.5)) // Stronger highlight
+                    gradient.addColorStop(0.5, control.dialColor)
+                    gradient.addColorStop(1.0, Qt.darker(control.dialColor, 1.3)) // Deeper shadow
+                    ctx.beginPath()
+                    ctx.moveTo(xStart, yStart)
+                    ctx.lineTo(xEnd, yEnd)
+                    ctx.lineWidth = (value % 20 === 0) ? 4 : 3 // Thicker for prominence
+                    ctx.lineCap = "round" // Rounded ends for tick mark
+                    ctx.strokeStyle = gradient
+                    ctx.stroke()
+
                     if (value % 20 === 0) {
                         var labelX = centerX + labelRadius * Math.cos(rad)
                         var labelY = centerY + labelRadius * Math.sin(rad)
-                        ctx.fillStyle = dialColor
+                        ctx.fillStyle = control.dialColor
                         ctx.font = "bold 14px sans-serif"
                         ctx.textAlign = "center"
                         ctx.textBaseline = "middle"
