@@ -266,30 +266,29 @@ Dial {
         id: outer
         antialiasing: true
         visible: !setManualMode
-        z: 3
-        anchors.centerIn: parent
-        width: control.width - 10
-        height: width
 
         ShapePath {
             fillColor: "transparent"
             strokeColor: gradientColor
             strokeStyle: ShapePath.SolidLine
-            strokeWidth: 8
-            capStyle: control.capStyle
+            strokeWidth: 10
+            capStyle: ShapePath.RoundCap
             pathHints: ShapePath.PathNonIntersecting
 
             PathAngleArc {
                 id: outerArc
-                centerX: parent.width / 2
-                centerY: centerY
-                radiusX: parent.width / 2 - 10
+                centerX: control.width / 2
+                centerY: centerX
+                radiusX: (control.width / 2) - 10
                 radiusY: radiusX
                 startAngle: control.startAngle - 90
-                sweepAngle: control.currentAngle - control.startAngle
+                sweepAngle: currentAngle + control.endAngle
 
                 Behavior on sweepAngle {
-                    NumberAnimation { duration: 200; easing.type: Easing.InOutQuad }
+                    NumberAnimation {
+                        duration: 200
+                        easing.type: Easing.InOutQuad
+                    }
                 }
             }
         }
