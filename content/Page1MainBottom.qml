@@ -205,17 +205,7 @@ Item {
                     width: parent.width
                     height: parent.height
 
-                    CountdownTimer {
-                        width: parent.width
-                        height: parent.height
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        remainingTime: BreweryValues.breweryTimer
 
-                        onRemainingTimeChanged: () => {
-                            BreweryValues.breweryTimer = remainingTime;
-                        }
-                    }
                 }
             }
         }

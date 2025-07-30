@@ -10,7 +10,6 @@ Dial {
     id: control
     property color color: '#000000'
     property alias dialColor: control.color
-    property real rawCurrentTemp: 0.0
     property real currentTemp: 0.0
     property string labelText: ''
     property bool setManualMode: false
@@ -29,13 +28,8 @@ Dial {
 
     signal valueChangedAndReleased(real setpointValue)
 
-    onRawCurrentTempChanged: {
-        tempUpdateTimer.restart()
-    }
-
     onSetManualModeChanged: {
         suppressAnimation = true
-        control.currentTemp = control.rawCurrentTemp
         canvas.requestPaint()
         Qt.callLater(function() { suppressAnimation = false })
     }
@@ -43,14 +37,6 @@ Dial {
     onPressedChanged: {
         if (!pressed) {
             valueChangedAndReleased(setpointValue)
-        }
-    }
-
-    Timer {
-        id: tempUpdateTimer
-        interval: 500
-        onTriggered: {
-            control.currentTemp = control.rawCurrentTemp
         }
     }
 
@@ -100,22 +86,8 @@ Dial {
                     useLargeArc: true
                 }
                 // Upward-pointing trapezoidal cutout with outward-angled sides
-                PathLine {
-                    x: shell.width / 2 + 70 // Intermediate right, up and to the right (30° from horizontal)
-                    y: shell.height - 40
-                }
-                PathLine {
-                    x: shell.width / 2 + 60 // Top right, 45° up and to the right
-                    y: shell.height - 55
-                }
-                PathLine {
-                    x: shell.width / 2 - 60 // Top left, flat
-                    y: shell.height - 55
-                }
-                PathLine {
-                    x: shell.width / 2 - 70 // Intermediate left, 45° down and to the right
-                    y: shell.height - 40
-                }
+
+
                 PathLine {
                     x: shell.width / 2 + ((shell.width - shellShapePath.strokeWidth) / 2) * Math.cos(((startAngle - 10) - 90) * Math.PI / 180)
                     y: shell.height / 2 + ((shell.height - shellShapePath.strokeWidth) / 2) * Math.sin(((startAngle - 10) - 90) * Math.PI / 180)
@@ -130,8 +102,8 @@ Dial {
             shadowColor: Qt.rgba(0, 0, 0, 0.6) // Darker shadow for stronger contrast
             shadowOpacity: 1.0 // Full opacity for prominence
             shadowBlur: 1.0 // Increased blur for softer, elevated look
-            shadowHorizontalOffset: -8 // Top-left lighting
-            shadowVerticalOffset: -8
+            shadowHorizontalOffset: 8 // Top-left lighting
+            shadowVerticalOffset: 8
             shadowScale: 0.95 // Tighter shadow for pop-out effect
             blurEnabled: true
             blur: 0.6 // Slightly increased for smoothness
@@ -387,13 +359,27 @@ Dial {
         anchors.bottomMargin: 30
 
         Label {
+            id: label
             height: parent.height
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             text: control.labelText
-            color: Constants.textColor
+            color: Qt.lighter(Constants.textColor, 1.6)
             font.bold: true
             font.pixelSize: height
+
+            MultiEffect {
+                    anchors.fill: label
+                    source: label
+                    shadowEnabled: true
+                    shadowColor: Qt.rgba(0, 0, 0, 0.6)
+                    shadowOpacity: 0.9
+                    shadowBlur: 2.0
+                    shadowHorizontalOffset: 2
+                    shadowVerticalOffset: 2
+
+                    blurEnabled: false
+                }
         }
     }
 }

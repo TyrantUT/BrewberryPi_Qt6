@@ -36,7 +36,7 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.top: parent.top
                         anchors.topMargin: 10
-                        rawCurrentTemp: BreweryValues.currentTemp_HLT
+                        currentTemp: BreweryValues.currentTemp_HLT
                         setpointValue: setManualMode ? BreweryValues.setpointPercent_HLT : BreweryValues.setpointTemp_HLT
                         color: Constants.textColor
                         labelText: qsTr("Hot Liquor Tank")
@@ -80,7 +80,7 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.top: parent.top
                         anchors.topMargin: 10
-                        rawCurrentTemp: BreweryValues.currentTemp_Mash
+                        currentTemp: BreweryValues.currentTemp_Mash
                         setpointValue: setManualMode ? BreweryValues.setpointPercent_Mash : BreweryValues.setpointTemp_Mash
                         color: Constants.textColor
                         labelText: qsTr("Mash")
@@ -124,7 +124,7 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.top: parent.top
                         anchors.topMargin: 10
-                        rawCurrentTemp: BreweryValues.currentTemp_Boil
+                        currentTemp: BreweryValues.currentTemp_Boil
                         setpointValue: setManualMode ? BreweryValues.setpointPercent_Boil : BreweryValues.setpointTemp_Boil
                         setManualMode: BreweryValues.setpointManual_Boil
                         color: Constants.textColor
