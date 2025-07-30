@@ -37,13 +37,13 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
+
+    QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
+
     if (QSysInfo::productType() != "macos") {
         QCursor cursor(Qt::BlankCursor);
         QApplication::setOverrideCursor(cursor);
         QApplication::changeOverrideCursor(cursor);
-        QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
-    } else {
-        QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
     }
 
     const QUrl url(u"qrc:/qt/qml/Main/main.qml"_qs);

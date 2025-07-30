@@ -5,7 +5,6 @@ import BrewberryPiCustomControls
 
 Item {
     id: root
-    property int headerHeight: 0
 
     Column {
         anchors.fill: parent
@@ -19,7 +18,7 @@ Item {
         Rectangle {
             id: top
             width: parent.width - parent.spacing
-            height: parent.height - root.headerHeight - 1
+            height: parent.height
             color: Constants.backgroundColor
 
             Row {
@@ -35,8 +34,9 @@ Item {
                         width: Math.min(parent.width, parent.height)
                         height: Math.min(parent.width, parent.height)
                         anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        currentTemp: BreweryValues.currentTemp_HLT
+                        anchors.top: parent.top
+                        anchors.topMargin: 10
+                        rawCurrentTemp: BreweryValues.currentTemp_HLT
                         setpointValue: setManualMode ? BreweryValues.setpointPercent_HLT : BreweryValues.setpointTemp_HLT
                         color: Constants.textColor
                         labelText: qsTr("Hot Liquor Tank")
@@ -78,8 +78,9 @@ Item {
                         width: Math.min(parent.width, parent.height)
                         height: Math.min(parent.width, parent.height)
                         anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        currentTemp: BreweryValues.currentTemp_Mash
+                        anchors.top: parent.top
+                        anchors.topMargin: 10
+                        rawCurrentTemp: BreweryValues.currentTemp_Mash
                         setpointValue: setManualMode ? BreweryValues.setpointPercent_Mash : BreweryValues.setpointTemp_Mash
                         color: Constants.textColor
                         labelText: qsTr("Mash")
@@ -121,8 +122,9 @@ Item {
                         width: Math.min(parent.width, parent.height)
                         height: Math.min(parent.width, parent.height)
                         anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        currentTemp: BreweryValues.currentTemp_Boil
+                        anchors.top: parent.top
+                        anchors.topMargin: 10
+                        rawCurrentTemp: BreweryValues.currentTemp_Boil
                         setpointValue: setManualMode ? BreweryValues.setpointPercent_Boil : BreweryValues.setpointTemp_Boil
                         setManualMode: BreweryValues.setpointManual_Boil
                         color: Constants.textColor
@@ -152,6 +154,7 @@ Item {
                         timeWindow: 30
                         currentTemperature: BreweryValues.currentTemp_Boil
                         running: true
+                        z: 25
                     }
                 }
             }

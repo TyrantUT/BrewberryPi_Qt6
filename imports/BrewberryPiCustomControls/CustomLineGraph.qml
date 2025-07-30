@@ -6,12 +6,13 @@ Item {
     id: root
 
     // Public properties
-    property real maxTemperature: 215 // Maximum temperature for scaling
+    property real maxTemperature: 215 // Maximum temperature for reference
     property real timeWindow: 30 // Visible time window in seconds
     property int maxPoints: root.width
     property alias running: timer.running // Control whether the graph is updating
     property real currentTemperature: 0 // Bindable property for external temperature
-    property real bufferTime: .1 // Seconds to place new points beyond visible window
+    property real bufferTime: 0.1 // Seconds to place new points beyond visible window
+    property real yAxisPadding: 0.1 // 10% padding for y-axis scaling
 
     // Canvas for drawing the graph
     Canvas {
@@ -28,16 +29,27 @@ Item {
 
             var currentTime = Date.now() / 1000 // Current time in seconds
             var visibleTimeSpan = root.timeWindow
-            var yScale = height / root.maxTemperature
+
+            // Find the maximum temperature in the visible window for dynamic scaling
+            var extendedTimeSpan = visibleTimeSpan + root.bufferTime
+            var maxTempInWindow = root.maxTemperature
+            for (var i = 0; i < internal.temperatures.length; i++) {
+                if (internal.timestamps[i] >= currentTime - extendedTimeSpan) {
+                    maxTempInWindow = Math.max(maxTempInWindow, internal.temperatures[i])
+                }
+            }
+            // Add padding to the maximum temperature
+            maxTempInWindow = maxTempInWindow * (1 + root.yAxisPadding)
+
+            var yScale = height / maxTempInWindow
             var xScale = width / visibleTimeSpan
 
             ctx.lineWidth = 2
             ctx.beginPath()
 
             // Start at the first valid point within the extended time window
-            var extendedTimeSpan = visibleTimeSpan + root.bufferTime
             var firstValidIndex = 0
-            for (var i = 0; i < internal.temperatures.length; i++) {
+            for (i = 0; i < internal.temperatures.length; i++) {
                 if (internal.timestamps[i] >= currentTime - extendedTimeSpan) {
                     firstValidIndex = i
                     break
@@ -53,14 +65,14 @@ Item {
             if (internal.temperatures.length == 1) {
                 // Single point: draw a dot
                 ctx.arc(x0, y0, 2, 0, 2 * Math.PI)
-                ctx.fillStyle = Qt.rgba(internal.temperatures[firstValidIndex] / root.maxTemperature, 0, 1 - internal.temperatures[firstValidIndex] / root.maxTemperature, 1)
+                ctx.fillStyle = Qt.rgba(internal.temperatures[firstValidIndex] / maxTempInWindow, 0, 1 - internal.temperatures[firstValidIndex] / maxTempInWindow, 1)
                 ctx.fill()
             } else if (internal.temperatures.length == 2) {
                 // Two points: draw a straight line
                 var x1 = (internal.timestamps[firstValidIndex + 1] - (currentTime - visibleTimeSpan)) * xScale
                 var y1 = height - internal.temperatures[firstValidIndex + 1] * yScale
                 ctx.lineTo(x1, y1)
-                ctx.strokeStyle = Qt.rgba(internal.temperatures[firstValidIndex] / root.maxTemperature, 0, 1 - internal.temperatures[firstValidIndex] / root.maxTemperature, 1)
+                ctx.strokeStyle = Qt.rgba(internal.temperatures[firstValidIndex] / maxTempInWindow, 0, 1 - internal.temperatures[firstValidIndex] / maxTempInWindow, 1)
                 ctx.stroke()
             } else {
                 // Three or more points: draw quadratic curves
@@ -83,7 +95,7 @@ Item {
                     ctx.quadraticCurveTo(x0, y0, xc, yc)
 
                     // Color based on starting point's temperature
-                    ctx.strokeStyle = Qt.rgba(internal.temperatures[i] / root.maxTemperature, 0, 1 - internal.temperatures[i] / root.maxTemperature, 1)
+                    ctx.strokeStyle = Qt.rgba(internal.temperatures[i] / maxTempInWindow, 0, 1 - internal.temperatures[i] / maxTempInWindow, 1)
                 }
 
                 // Connect to the last point

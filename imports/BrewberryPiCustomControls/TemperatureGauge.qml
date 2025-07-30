@@ -10,6 +10,7 @@ Dial {
     id: control
     property color color: '#000000'
     property alias dialColor: control.color
+    property real rawCurrentTemp: 0.0
     property real currentTemp: 0.0
     property string labelText: ''
     property bool setManualMode: false
@@ -24,70 +25,32 @@ Dial {
     property color currentColorSetPoint: Qt.rgba((currentAngleSetPoint - startAngle) / (endAngle - startAngle), 0, 1 - (currentAngleSetPoint - startAngle) / (endAngle - startAngle), 1)
     property int outerHandleSize: Math.max(control.handle.width, control.handle.height)
     readonly property string suffixText: setManualMode ? "%" : "°"
+    property bool suppressAnimation: false
 
     signal valueChangedAndReleased(real setpointValue)
 
-    visible: true
-    antialiasing: true
-    from: 0
-    to: setManualMode ? 100 : 220
-    stepSize: 1
-    startAngle: -140
-    endAngle: 140
-    inputMode: Dial.Circular
-    wrap: false
+    onRawCurrentTempChanged: {
+        tempUpdateTimer.restart()
+    }
 
-    background: Item {
-        width: control.width - 2
-        height: control.height - 2
-        anchors.centerIn: parent
+    onSetManualModeChanged: {
+        suppressAnimation = true
+        control.currentTemp = control.rawCurrentTemp
+        canvas.requestPaint()
+        Qt.callLater(function() { suppressAnimation = false })
+    }
 
-        Rectangle {
-            id: shell
-            width: parent.width
-            height: parent.height
-            radius: width / 2
-            anchors.centerIn: parent
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: Qt.lighter(Constants.backgroundColor, 1.6) } // Brighter for metallic rim
-                GradientStop { position: 0.5; color: Qt.lighter(Constants.backgroundColor, 1.3) }
-                GradientStop { position: 1.0; color: Qt.darker(Constants.backgroundColor, 1.4) } // Darker inner edge
-            }
-            border.color: Qt.lighter(Constants.backgroundColor, 1.8) // Very light for strong metallic edge
-            border.width: 3 // Thicker for bolder edge
+    onPressedChanged: {
+        if (!pressed) {
+            valueChangedAndReleased(setpointValue)
         }
+    }
 
-        MultiEffect {
-            anchors.fill: shell
-            source: shell
-            shadowEnabled: true
-            shadowColor: Qt.lighter(Constants.backgroundColor, 1.15) // Slightly lighter for inner shadow
-            shadowOpacity: 0.9 // Stronger for pronounced effect
-            shadowBlur: 0.7 // Softer blur for depth
-            shadowHorizontalOffset: -5 // Stronger inward shadow
-            shadowVerticalOffset: -5
-            shadowScale: 0.97 // Scale down for recessed center
-            blurEnabled: true
-            blur: 0.5 // Enhanced blur for smoothness
-            maskEnabled: true
-            maskSource: Rectangle {
-                width: shell.width
-                height: shell.height
-                radius: shell.radius
-                color: "white"
-            }
-            // Subtle outer shadow for raised edge
-            MultiEffect {
-                anchors.fill: parent
-                source: shell
-                shadowEnabled: true
-                shadowColor: Qt.rgba(0, 0, 0, 0.4)
-                shadowOpacity: 0.3
-                shadowBlur: 0.8
-                shadowHorizontalOffset: 3
-                shadowVerticalOffset: 3
-                shadowScale: 1.03 // Slight scale up for outer rim
-            }
+    Timer {
+        id: tempUpdateTimer
+        interval: 500
+        onTriggered: {
+            control.currentTemp = control.rawCurrentTemp
         }
     }
 
@@ -98,13 +61,80 @@ Dial {
         }
     }
 
-    onSetManualModeChanged: {
-        canvas.requestPaint()
-    }
+    visible: true
+    antialiasing: true
+    from: 0
+    to: setManualMode ? 100 : 220
+    stepSize: 10
+    startAngle: -140
+    endAngle: 140
+    inputMode: Dial.Circular
+    wrap: false
 
-    onPressedChanged: {
-        if (!pressed) {
-            valueChangedAndReleased(setpointValue)
+    background: Item {
+        width: control.width
+        height: control.height
+        anchors.centerIn: parent
+
+        Shape {
+            id: shell
+            width: parent.width - 5
+            height: parent.height - 5
+            anchors.centerIn: parent
+
+            ShapePath {
+                id: shellShapePath
+                fillColor: Constants.isDarkTheme ? Qt.darker(Constants.backgroundColor, 1.6) : Qt.lighter(Constants.backgroundColor, 1.6)
+                strokeColor: Constants.isDarkTheme ? Qt.lighter(Constants.backgroundColor, 2.0) : Qt.darker(Constants.backgroundColor, 1.6)
+                strokeWidth: 3
+                capStyle: Qt.RoundCap
+
+                // Start before startAngle at -150°
+                startX: shell.width / 2 + ((shell.width - shellShapePath.strokeWidth) / 2) * Math.cos(((startAngle - 10) - 90) * Math.PI / 180)
+                startY: shell.height / 2 + ((shell.height - strokeWidth) / 2) * Math.sin(((startAngle - 10) - 90) * Math.PI / 180)
+                PathArc {
+                    x: shell.width / 2 + ((shell.width - shellShapePath.strokeWidth) / 2) * Math.cos(((endAngle + 10) - 90) * Math.PI / 180)
+                    y: shell.height / 2 + ((shell.height - shellShapePath.strokeWidth) / 2) * Math.sin(((endAngle + 10) - 90) * Math.PI / 180)
+                    radiusX: (shell.width - shellShapePath.strokeWidth) / 2
+                    radiusY: (shell.height - shellShapePath.strokeWidth) / 2
+                    useLargeArc: true
+                }
+                // Upward-pointing trapezoidal cutout with outward-angled sides
+                PathLine {
+                    x: shell.width / 2 + 70 // Intermediate right, up and to the right (30° from horizontal)
+                    y: shell.height - 40
+                }
+                PathLine {
+                    x: shell.width / 2 + 60 // Top right, 45° up and to the right
+                    y: shell.height - 55
+                }
+                PathLine {
+                    x: shell.width / 2 - 60 // Top left, flat
+                    y: shell.height - 55
+                }
+                PathLine {
+                    x: shell.width / 2 - 70 // Intermediate left, 45° down and to the right
+                    y: shell.height - 40
+                }
+                PathLine {
+                    x: shell.width / 2 + ((shell.width - shellShapePath.strokeWidth) / 2) * Math.cos(((startAngle - 10) - 90) * Math.PI / 180)
+                    y: shell.height / 2 + ((shell.height - shellShapePath.strokeWidth) / 2) * Math.sin(((startAngle - 10) - 90) * Math.PI / 180)
+                }
+            }
+        }
+
+        MultiEffect {
+            anchors.fill: shell
+            source: shell
+            shadowEnabled: true
+            shadowColor: Qt.rgba(0, 0, 0, 0.6) // Darker shadow for stronger contrast
+            shadowOpacity: 1.0 // Full opacity for prominence
+            shadowBlur: 1.0 // Increased blur for softer, elevated look
+            shadowHorizontalOffset: -8 // Top-left lighting
+            shadowVerticalOffset: -8
+            shadowScale: 0.95 // Tighter shadow for pop-out effect
+            blurEnabled: true
+            blur: 0.6 // Slightly increased for smoothness
         }
     }
 
@@ -206,44 +236,16 @@ Dial {
                     var xEnd = centerX + radius * Math.cos(rad)
                     var yEnd = centerY + radius * Math.sin(rad)
 
-                    // Draw rounded glow (halo) behind the tick mark, blending with background
-                    ctx.beginPath()
-                    ctx.moveTo(xStart, yStart)
-                    ctx.lineTo(xEnd, yEnd)
-                    ctx.lineWidth = (value % 20 === 0) ? 10 : 9 // Wider for visible glow
-                    ctx.lineCap = "round" // Rounded ends for glow
-                    var glowGradient = ctx.createLinearGradient(xStart, yStart, xEnd, yEnd)
-                    glowGradient.addColorStop(0.0, Qt.lighter(Constants.backgroundColor, 1.3)) // Brighter for visibility
-                    glowGradient.addColorStop(1.0, Qt.lighter(Constants.backgroundColor, 1.05)) // Blend to background
-                    ctx.strokeStyle = glowGradient
-                    ctx.globalAlpha = 0.4 // Increased opacity for visibility
-                    ctx.stroke()
-                    ctx.globalAlpha = 1.0 // Reset alpha
 
-                    // Draw pronounced shadow for stronger raised effect
-                    ctx.beginPath()
-                    ctx.moveTo(xStart, yStart)
-                    ctx.lineTo(xEnd, yEnd)
-                    ctx.lineWidth = (value % 20 === 0) ? 7 : 6
-                    ctx.lineCap = "round"
-                    ctx.strokeStyle = Qt.rgba(0, 0, 0, 0.2) // Stronger shadow
-                    ctx.shadowColor = Qt.rgba(0, 0, 0, 0.4)
-                    ctx.shadowOffsetX = 1.5
-                    ctx.shadowOffsetY = 1.5
-                    ctx.shadowBlur = 4
-                    ctx.stroke()
-                    ctx.shadowColor = "transparent" // Reset shadow
-
-                    // Draw tick mark with gradient on top
                     var gradient = ctx.createLinearGradient(xStart, yStart, xEnd, yEnd)
-                    gradient.addColorStop(0.0, Qt.lighter(control.dialColor, 1.5)) // Stronger highlight
+                    gradient.addColorStop(0.0, Qt.lighter(control.dialColor, 1.5))
                     gradient.addColorStop(0.5, control.dialColor)
-                    gradient.addColorStop(1.0, Qt.darker(control.dialColor, 1.3)) // Deeper shadow
+                    gradient.addColorStop(1.0, Qt.darker(control.dialColor, 1.3))
                     ctx.beginPath()
                     ctx.moveTo(xStart, yStart)
                     ctx.lineTo(xEnd, yEnd)
-                    ctx.lineWidth = (value % 20 === 0) ? 4 : 3 // Thicker for prominence
-                    ctx.lineCap = "round" // Rounded ends for tick mark
+                    ctx.lineWidth = (value % 20 === 0) ? 4 : 3
+                    ctx.lineCap = "butt"
                     ctx.strokeStyle = gradient
                     ctx.stroke()
 
@@ -261,7 +263,6 @@ Dial {
         }
     }
 
-    // Current Temperature (Outer Dial)
     Shape {
         id: outer
         antialiasing: true
@@ -271,20 +272,21 @@ Dial {
             fillColor: "transparent"
             strokeColor: gradientColor
             strokeStyle: ShapePath.SolidLine
-            strokeWidth: 10
-            capStyle: ShapePath.RoundCap
+            strokeWidth: 15
+            capStyle: ShapePath.FlatCap
             pathHints: ShapePath.PathNonIntersecting
 
             PathAngleArc {
                 id: outerArc
                 centerX: control.width / 2
                 centerY: centerX
-                radiusX: (control.width / 2) - 10
+                radiusX: (control.width / 2) - 20
                 radiusY: radiusX
                 startAngle: control.startAngle - 90
-                sweepAngle: currentAngle + control.endAngle
+                sweepAngle: currentAngle - control.startAngle
 
                 Behavior on sweepAngle {
+                    enabled: !control.suppressAnimation
                     NumberAnimation {
                         duration: 200
                         easing.type: Easing.InOutQuad
@@ -302,7 +304,6 @@ Dial {
         onClicked: {}
     }
 
-    // Set Temperature (Inner Dial)
     Shape {
         antialiasing: true
         z: 2
@@ -343,7 +344,6 @@ Dial {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 5
 
-            // Current Temperature Label
             Item {
                 width: parent.width
                 height: parent.height / 2
@@ -360,7 +360,6 @@ Dial {
                 }
             }
 
-            // Setpoint Temperature Label
             Rectangle {
                 width: parent.width
                 height: parent.height / 2
