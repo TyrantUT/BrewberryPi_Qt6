@@ -259,6 +259,7 @@ Dial {
 
                 Behavior on sweepAngle {
                     enabled: !control.suppressAnimation
+
                     NumberAnimation {
                         duration: 200
                         easing.type: Easing.InOutQuad
@@ -319,6 +320,7 @@ Dial {
             Item {
                 width: parent.width
                 height: parent.height / 2
+
                 Label {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalAlignment
@@ -336,6 +338,7 @@ Dial {
                 width: parent.width
                 height: parent.height / 2
                 color: 'transparent'
+
                 Label {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalAlignment

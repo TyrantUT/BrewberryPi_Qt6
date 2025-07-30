@@ -21,6 +21,15 @@ Switch {
         elide: Text.ElideRight
         anchors.centerIn: parent
         z: 10
+
+        transform: Scale {
+            origin.x: pressableInner.width / 2
+            origin.y: pressableInner.height / 2
+            xScale: control.down ? 0.88 : 1.0
+            yScale: control.down ? 0.88 : 1.0
+            Behavior on xScale { NumberAnimation { duration: 80 } }
+            Behavior on yScale { NumberAnimation { duration: 80 } }
+        }
     }
 
     // Drop shadow under entire switch
@@ -79,6 +88,7 @@ Switch {
                 property color baseColor: control.down
                     ? Constants.warningColor
                     : (control.checked ? Constants.dangerColor : Constants.successColor)
+
                 gradient: Gradient {
                     GradientStop { position: 0.0; color: Qt.lighter(inner.baseColor, 1.8) }
                     GradientStop { position: 0.4; color: inner.baseColor }
