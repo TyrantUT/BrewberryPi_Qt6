@@ -62,11 +62,13 @@ Dial {
         height: control.height
         anchors.centerIn: parent
 
+
         Shape {
             id: shell
             width: parent.width - 5
             height: parent.height - 5
             anchors.centerIn: parent
+
 
             ShapePath {
                 id: shellShapePath

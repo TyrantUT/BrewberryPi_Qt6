@@ -80,6 +80,7 @@ Item {
                             anchors.centerIn: parent
                             checked: BreweryValues.elementOn_HLT
                             enabled: !BreweryValues.elementOn_Boil
+                            font.pixelSize: height / 6
                             onCheckedChanged: BreweryValues.elementOn_HLT = checked
                         }
                     }
@@ -93,8 +94,8 @@ Item {
             height: parent.height
 
             Row {
-                width: parent.width / 3
-                height: parent.height / 2.2
+                width: parent.width / 2
+                height: parent.height / 2
 
 
                 Column {
@@ -119,46 +120,13 @@ Item {
                         height: parent.height
 
                         CustomToggleSwitch {
-                            width: parent.width / 2
-                            height: parent.height / 2 + 10
-                            anchors.horizontalCenter: parent.horizontalCenter
+                            width: parent.width / 2 - 25
+                            height: width
+                            anchors.centerIn: parent
                             text: checked ? "On" : "Off"
-                            outerBevelPixelSize: 8
+                            font.pixelSize: height / 6
                             checked: BreweryValues.pumpOn_Water
                             onCheckedChanged: BreweryValues.pumpOn_Water = checked
-                        }
-                    }
-                }
-
-                Column {
-                    width: parent.width
-                    height: parent.height / 2
-
-                    Item {
-                        width: parent.width
-                        height: parent.height - 10
-
-                        Text {
-                            text: 'Mode'
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            color: Constants.textColor
-                            font.pixelSize: height
-                            font.bold: true
-                        }
-                    }
-
-                    Item {
-                        width: parent.width
-                        height: parent.height
-
-                        CustomToggleSwitch {
-                            width: parent.width
-                            height: parent.height / 2 + 10
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            text: checked ? "Mash" : "HLT"
-                            outerBevelPixelSize: 8
-                            checked: BreweryValues.setpointHltOrMash
-                            onCheckedChanged: BreweryValues.setpointHltOrMash = checked
                         }
                     }
                 }
@@ -185,11 +153,11 @@ Item {
                         height: parent.height
 
                         CustomToggleSwitch {
-                            width: parent.width / 2
-                            height: parent.height / 2 + 10
-                            anchors.horizontalCenter: parent.horizontalCenter
+                            width: parent.width / 2 - 25
+                            height: width
+                            anchors.centerIn: parent
                             text: checked ? "On" : "Off"
-                            outerBevelPixelSize: 8
+                            font.pixelSize: height / 6
                             checked: BreweryValues.pumpOn_Wort
                             onCheckedChanged: BreweryValues.pumpOn_Wort = checked
                         }
@@ -208,8 +176,7 @@ Item {
                     CountdownTimer {
                         width: parent.width
                         height: parent.height
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.centerIn: parent
                         remainingTime: BreweryValues.breweryTimer
 
                         onRemainingTimeChanged: () => {
@@ -251,6 +218,7 @@ Item {
                             anchors.centerIn: parent
                             checked: BreweryValues.elementOn_Boil
                             enabled: !BreweryValues.elementOn_HLT
+                            font.pixelSize: height / 6
                             onCheckedChanged: BreweryValues.elementOn_Boil = checked
                         }
                     }

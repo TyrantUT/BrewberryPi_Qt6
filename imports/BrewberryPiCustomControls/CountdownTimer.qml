@@ -100,57 +100,99 @@ Item {
                         width: hourView.width
                         height: 40
 
-                        Item {
+                        Row {
                             id: hourTextContainer
                             anchors.centerIn: parent
-                            width: hourText.paintedWidth + 4
-                            height: hourText.paintedHeight + 4
+                            spacing: 2
 
-                            ShaderEffectSource {
-                                id: hourTextSource
-                                anchors.centerIn: parent
-                                width: hourText.paintedWidth
-                                height: hourText.paintedHeight
-                                sourceItem: hourText
-                                hideSource: true
+                            Item {
+                                width: hourTextLeft.paintedWidth + 4
+                                height: hourTextLeft.paintedHeight + 4
+
+                                ShaderEffectSource {
+                                    id: hourTextSourceLeft
+                                    anchors.centerIn: parent
+                                    width: hourTextLeft.paintedWidth
+                                    height: hourTextLeft.paintedHeight
+                                    sourceItem: hourTextLeft
+                                    hideSource: true
+                                }
+
+                                Text {
+                                    id: hourTextLeft
+                                    text: Math.floor(modelData / 10).toString()
+                                    font.pixelSize: 24
+                                    color: hourView.currentIndex === modelData
+                                        ? (Constants.isDarkTheme ? "white" : "black")
+                                        : (Constants.isDarkTheme ? "gray" : "#888")
+                                    anchors.centerIn: parent
+                                    verticalAlignment: Text.AlignVCenter
+                                    horizontalAlignment: Text.AlignHCenter
+                                }
+
+                                MultiEffect {
+                                    anchors.fill: parent
+                                    source: hourTextSourceLeft
+                                    shadowEnabled: true
+                                    shadowColor: Qt.rgba(0.8, 0.8, 0.8, 0.4)
+                                    shadowBlur: 3
+                                    shadowHorizontalOffset: 0
+                                    shadowVerticalOffset: 0
+                                    shadowOpacity: 0.5
+                                    blurEnabled: true
+                                    blur: 0.15
+                                    autoPaddingEnabled: true
+                                }
                             }
 
-                            Text {
-                                id: hourText
-                                text: modelData.toString().padStart(2, "0")
-                                font.pixelSize: 24
-                                color: hourView.currentIndex === modelData
-                                    ? (Constants.isDarkTheme ? "white" : "black")
-                                    : (Constants.isDarkTheme ? "gray" : "#888")
-                                anchors.centerIn: parent
-                                verticalAlignment: Text.AlignVCenter
-                                horizontalAlignment: Text.AlignHCenter
-                            }
+                            Item {
+                                width: hourTextRight.paintedWidth + 4
+                                height: hourTextRight.paintedHeight + 4
 
-                            MultiEffect {
-                                anchors.fill: hourTextContainer
-                                source: hourTextSource
-                                shadowEnabled: true
-                                shadowColor: Qt.rgba(0.8, 0.8, 0.8, 0.4)
-                                shadowBlur: 2
-                                shadowHorizontalOffset: 0
-                                shadowVerticalOffset: 0
-                                shadowOpacity: 0.6
-                                blurEnabled: true
-                                blur: 0.1
-                                autoPaddingEnabled: true
+                                ShaderEffectSource {
+                                    id: hourTextSourceRight
+                                    anchors.centerIn: parent
+                                    width: hourTextRight.paintedWidth
+                                    height: hourTextRight.paintedHeight
+                                    sourceItem: hourTextRight
+                                    hideSource: true
+                                }
+
+                                Text {
+                                    id: hourTextRight
+                                    text: (modelData % 10).toString()
+                                    font.pixelSize: 24
+                                    color: hourView.currentIndex === modelData
+                                        ? (Constants.isDarkTheme ? "white" : "black")
+                                        : (Constants.isDarkTheme ? "gray" : "#888")
+                                    anchors.centerIn: parent
+                                    verticalAlignment: Text.AlignVCenter
+                                    horizontalAlignment: Text.AlignHCenter
+                                }
+
+                                MultiEffect {
+                                    anchors.fill: parent
+                                    source: hourTextSourceRight
+                                    shadowEnabled: true
+                                    shadowColor: Qt.rgba(0.8, 0.8, 0.8, 0.4)
+                                    shadowBlur: 3
+                                    shadowHorizontalOffset: 0
+                                    shadowVerticalOffset: 0
+                                    shadowOpacity: 0.5
+                                    blurEnabled: true
+                                    blur: 0.15
+                                    autoPaddingEnabled: true
+                                }
                             }
                         }
                     }
                 }
 
-                Text {
-                    id: firstSeparator
-                    text: ":"
-                    font.pixelSize: 24
-                    color: Constants.isDarkTheme ? "white" : "black"
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignHCenter
+                Item {
+                    id: firstSeparatorContainer
+                    width: firstSeparator.paintedWidth + 4
+                    height: firstSeparator.paintedHeight + 4
+                    Layout.alignment: Qt.AlignVCenter
 
                     ShaderEffectSource {
                         id: firstSeparatorSource
@@ -161,17 +203,27 @@ Item {
                         hideSource: true
                     }
 
+                    Text {
+                        id: firstSeparator
+                        text: ":"
+                        font.pixelSize: 24
+                        color: Constants.isDarkTheme ? "white" : "black"
+                        anchors.centerIn: parent
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+
                     MultiEffect {
-                        anchors.fill: firstSeparator
+                        anchors.fill: firstSeparatorContainer
                         source: firstSeparatorSource
                         shadowEnabled: true
                         shadowColor: Qt.rgba(0.8, 0.8, 0.8, 0.4)
-                        shadowBlur: 2
+                        shadowBlur: 3
                         shadowHorizontalOffset: 0
                         shadowVerticalOffset: 0
-                        shadowOpacity: 0.6
+                        shadowOpacity: 0.5
                         blurEnabled: true
-                        blur: 0.1
+                        blur: 0.15
                         autoPaddingEnabled: true
                     }
                 }
@@ -201,57 +253,99 @@ Item {
                         width: minuteView.width
                         height: 40
 
-                        Item {
+                        Row {
                             id: minuteTextContainer
                             anchors.centerIn: parent
-                            width: minuteText.paintedWidth + 4
-                            height: minuteText.paintedHeight + 4
+                            spacing: 2
 
-                            ShaderEffectSource {
-                                id: minuteTextSource
-                                anchors.centerIn: parent
-                                width: minuteText.paintedWidth
-                                height: minuteText.paintedHeight
-                                sourceItem: minuteText
-                                hideSource: true
+                            Item {
+                                width: minuteTextLeft.paintedWidth + 4
+                                height: minuteTextLeft.paintedHeight + 4
+
+                                ShaderEffectSource {
+                                    id: minuteTextSourceLeft
+                                    anchors.centerIn: parent
+                                    width: minuteTextLeft.paintedWidth
+                                    height: minuteTextLeft.paintedHeight
+                                    sourceItem: minuteTextLeft
+                                    hideSource: true
+                                }
+
+                                Text {
+                                    id: minuteTextLeft
+                                    text: Math.floor(modelData / 10).toString()
+                                    font.pixelSize: 24
+                                    color: minuteView.currentIndex === modelData
+                                        ? (Constants.isDarkTheme ? "white" : "black")
+                                        : (Constants.isDarkTheme ? "gray" : "#888")
+                                    anchors.centerIn: parent
+                                    verticalAlignment: Text.AlignVCenter
+                                    horizontalAlignment: Text.AlignHCenter
+                                }
+
+                                MultiEffect {
+                                    anchors.fill: parent
+                                    source: minuteTextSourceLeft
+                                    shadowEnabled: true
+                                    shadowColor: Qt.rgba(0.8, 0.8, 0.8, 0.4)
+                                    shadowBlur: 3
+                                    shadowHorizontalOffset: 0
+                                    shadowVerticalOffset: 0
+                                    shadowOpacity: 0.5
+                                    blurEnabled: true
+                                    blur: 0.15
+                                    autoPaddingEnabled: true
+                                }
                             }
 
-                            Text {
-                                id: minuteText
-                                text: modelData.toString().padStart(2, "0")
-                                font.pixelSize: 24
-                                color: minuteView.currentIndex === modelData
-                                    ? (Constants.isDarkTheme ? "white" : "black")
-                                    : (Constants.isDarkTheme ? "gray" : "#888")
-                                anchors.centerIn: parent
-                                verticalAlignment: Text.AlignVCenter
-                                horizontalAlignment: Text.AlignHCenter
-                            }
+                            Item {
+                                width: minuteTextRight.paintedWidth + 4
+                                height: minuteTextRight.paintedHeight + 4
 
-                            MultiEffect {
-                                anchors.fill: minuteTextContainer
-                                source: minuteTextSource
-                                shadowEnabled: true
-                                shadowColor: Qt.rgba(0.8, 0.8, 0.8, 0.4)
-                                shadowBlur: 2
-                                shadowHorizontalOffset: 0
-                                shadowVerticalOffset: 0
-                                shadowOpacity: 0.6
-                                blurEnabled: true
-                                blur: 0.1
-                                autoPaddingEnabled: true
+                                ShaderEffectSource {
+                                    id: minuteTextSourceRight
+                                    anchors.centerIn: parent
+                                    width: minuteTextRight.paintedWidth
+                                    height: minuteTextRight.paintedHeight
+                                    sourceItem: minuteTextRight
+                                    hideSource: true
+                                }
+
+                                Text {
+                                    id: minuteTextRight
+                                    text: (modelData % 10).toString()
+                                    font.pixelSize: 24
+                                    color: minuteView.currentIndex === modelData
+                                        ? (Constants.isDarkTheme ? "white" : "black")
+                                        : (Constants.isDarkTheme ? "gray" : "#888")
+                                    anchors.centerIn: parent
+                                    verticalAlignment: Text.AlignVCenter
+                                    horizontalAlignment: Text.AlignHCenter
+                                }
+
+                                MultiEffect {
+                                    anchors.fill: parent
+                                    source: minuteTextSourceRight
+                                    shadowEnabled: true
+                                    shadowColor: Qt.rgba(0.8, 0.8, 0.8, 0.4)
+                                    shadowBlur: 3
+                                    shadowHorizontalOffset: 0
+                                    shadowVerticalOffset: 0
+                                    shadowOpacity: 0.5
+                                    blurEnabled: true
+                                    blur: 0.15
+                                    autoPaddingEnabled: true
+                                }
                             }
                         }
                     }
                 }
 
-                Text {
-                    id: secondSeparator
-                    text: ":"
-                    font.pixelSize: 24
-                    color: Constants.isDarkTheme ? "white" : "black"
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignHCenter
+                Item {
+                    id: secondSeparatorContainer
+                    width: secondSeparator.paintedWidth + 4
+                    height: secondSeparator.paintedHeight + 4
+                    Layout.alignment: Qt.AlignVCenter
 
                     ShaderEffectSource {
                         id: secondSeparatorSource
@@ -262,17 +356,27 @@ Item {
                         hideSource: true
                     }
 
+                    Text {
+                        id: secondSeparator
+                        text: ":"
+                        font.pixelSize: 24
+                        color: Constants.isDarkTheme ? "white" : "black"
+                        anchors.centerIn: parent
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+
                     MultiEffect {
-                        anchors.fill: secondSeparator
+                        anchors.fill: secondSeparatorContainer
                         source: secondSeparatorSource
                         shadowEnabled: true
                         shadowColor: Qt.rgba(0.8, 0.8, 0.8, 0.4)
-                        shadowBlur: 2
+                        shadowBlur: 3
                         shadowHorizontalOffset: 0
                         shadowVerticalOffset: 0
-                        shadowOpacity: 0.6
+                        shadowOpacity: 0.5
                         blurEnabled: true
-                        blur: 0.1
+                        blur: 0.15
                         autoPaddingEnabled: true
                     }
                 }
@@ -302,45 +406,89 @@ Item {
                         width: secondView.width
                         height: 40
 
-                        Item {
+                        Row {
                             id: secondTextContainer
                             anchors.centerIn: parent
-                            width: secondText.paintedWidth + 4
-                            height: secondText.paintedHeight + 4
+                            spacing: 2
 
-                            ShaderEffectSource {
-                                id: secondTextSource
-                                anchors.centerIn: parent
-                                width: secondText.paintedWidth
-                                height: secondText.paintedHeight
-                                sourceItem: secondText
-                                hideSource: true
+                            Item {
+                                width: secondTextLeft.paintedWidth + 4
+                                height: secondTextLeft.paintedHeight + 4
+
+                                ShaderEffectSource {
+                                    id: secondTextSourceLeft
+                                    anchors.centerIn: parent
+                                    width: secondTextLeft.paintedWidth
+                                    height: secondTextLeft.paintedHeight
+                                    sourceItem: secondTextLeft
+                                    hideSource: true
+                                }
+
+                                Text {
+                                    id: secondTextLeft
+                                    text: Math.floor(modelData / 10).toString()
+                                    font.pixelSize: 24
+                                    color: secondView.currentIndex === modelData
+                                        ? (Constants.isDarkTheme ? "white" : "black")
+                                        : (Constants.isDarkTheme ? "gray" : "#888")
+                                    anchors.centerIn: parent
+                                    verticalAlignment: Text.AlignVCenter
+                                    horizontalAlignment: Text.AlignHCenter
+                                }
+
+                                MultiEffect {
+                                    anchors.fill: parent
+                                    source: secondTextSourceLeft
+                                    shadowEnabled: true
+                                    shadowColor: Qt.rgba(0.8, 0.8, 0.8, 0.4)
+                                    shadowBlur: 3
+                                    shadowHorizontalOffset: 0
+                                    shadowVerticalOffset: 0
+                                    shadowOpacity: 0.5
+                                    blurEnabled: true
+                                    blur: 0.15
+                                    autoPaddingEnabled: true
+                                }
                             }
 
-                            Text {
-                                id: secondText
-                                text: modelData.toString().padStart(2, "0")
-                                font.pixelSize: 24
-                                color: secondView.currentIndex === modelData
-                                    ? (Constants.isDarkTheme ? "white" : "black")
-                                    : (Constants.isDarkTheme ? "gray" : "#888")
-                                anchors.centerIn: parent
-                                verticalAlignment: Text.AlignVCenter
-                                horizontalAlignment: Text.AlignHCenter
-                            }
+                            Item {
+                                width: secondTextRight.paintedWidth + 4
+                                height: secondTextRight.paintedHeight + 4
 
-                            MultiEffect {
-                                anchors.fill: secondTextContainer
-                                source: secondTextSource
-                                shadowEnabled: true
-                                shadowColor: Qt.rgba(0.8, 0.8, 0.8, 0.4)
-                                shadowBlur: 2
-                                shadowHorizontalOffset: 0
-                                shadowVerticalOffset: 0
-                                shadowOpacity: 0.6
-                                blurEnabled: true
-                                blur: 0.1
-                                autoPaddingEnabled: true
+                                ShaderEffectSource {
+                                    id: secondTextSourceRight
+                                    anchors.centerIn: parent
+                                    width: secondTextRight.paintedWidth
+                                    height: secondTextRight.paintedHeight
+                                    sourceItem: secondTextRight
+                                    hideSource: true
+                                }
+
+                                Text {
+                                    id: secondTextRight
+                                    text: (modelData % 10).toString()
+                                    font.pixelSize: 24
+                                    color: secondView.currentIndex === modelData
+                                        ? (Constants.isDarkTheme ? "white" : "black")
+                                        : (Constants.isDarkTheme ? "gray" : "#888")
+                                    anchors.centerIn: parent
+                                    verticalAlignment: Text.AlignVCenter
+                                    horizontalAlignment: Text.AlignHCenter
+                                }
+
+                                MultiEffect {
+                                    anchors.fill: parent
+                                    source: secondTextSourceRight
+                                    shadowEnabled: true
+                                    shadowColor: Qt.rgba(0.8, 0.8, 0.8, 0.4)
+                                    shadowBlur: 3
+                                    shadowHorizontalOffset: 0
+                                    shadowVerticalOffset: 0
+                                    shadowOpacity: 0.5
+                                    blurEnabled: true
+                                    blur: 0.15
+                                    autoPaddingEnabled: true
+                                }
                             }
                         }
                     }
@@ -351,11 +499,14 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 spacing: 20
 
-                Button {
+                CustomButton {
                     id: startStopButton
                     text: root.running ? "Stop" : "Start"
+                    backgroundColor: root.running
+                        ? (Constants.isDarkTheme ? "#cc3333" : "#ff4444")
+                        : (Constants.isDarkTheme ? "#33aa33" : "#33cc33")
+                    textColor: "white"
                     onClicked: {
-                        scaleAnimation.start()
                         if (!root.running) {
                             root.remainingTime = (hourView.currentIndex * 3600) +
                                                  (minuteView.currentIndex * 60) +
@@ -371,106 +522,20 @@ Item {
                             root.stopped()
                         }
                     }
-                    font.pixelSize: 18
-
-                    Rectangle {
-                        width: parent.width + 2
-                        height: parent.height + 2
-                        radius: height / 2
-                        color: Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor
-                        opacity: 0.1
-                        anchors.centerIn: parent
-                    }
-
-                    background: Rectangle {
-                        id: startBackground
-                        color: root.running
-                            ? (Constants.isDarkTheme ? "#cc3333" : "#ff4444")
-                            : (Constants.isDarkTheme ? "#33aa33" : "#33cc33")
-                        border.color: Constants.isDarkTheme ? Constants.backgroundColor : Qt.darker(Constants.backgroundColor, 1.6)
-                        radius: 12
-
-                        Rectangle {
-                            width: parent.width - 4
-                            height: parent.height - 4
-                            anchors.centerIn: parent
-                            color: 'transparent'
-                            border.color: Constants.darkColor
-                            border.width: 2
-                            opacity: .2
-                            radius: parent.radius
-                            visible: startStopButton.down
-                        }
-                    }
-
-                    contentItem: Text {
-                        text: parent.text
-                        anchors.centerIn: parent
-                        color: "white"
-                        font.pixelSize: 18
-                    }
-
-                    SequentialAnimation {
-                        id: scaleAnimation
-                        PropertyAnimation { target: startStopButton; property: "scale"; to: 0.95; duration: 50 }
-                        PropertyAnimation { target: startStopButton; property: "scale"; to: 1.0; duration: 50 }
-                    }
                 }
 
-                Button {
+                CustomButton {
                     id: resetButton
                     text: "Reset"
                     enabled: !root.running
+                    backgroundColor: Constants.isDarkTheme ? "#888888" : "#dddddd"
+                    textColor: Constants.isDarkTheme ? "white" : "black"
                     onClicked: {
-                        resetScaleAnimation.start()
                         countdownTimer.stop()
                         root.remainingTime = 0
                         hourView.currentIndex = 0
                         minuteView.currentIndex = 0
                         secondView.currentIndex = 0
-                    }
-                    font.pixelSize: 18
-
-                    Rectangle {
-                        width: parent.width + 2
-                        height: parent.height + 2
-                        radius: height / 2
-                        color: Constants.isDarkTheme ? Constants.lightColor : Constants.darkColor
-                        opacity: 0.1
-                        anchors.centerIn: parent
-                    }
-
-                    background: Rectangle {
-                        id: resetBackground
-                        color: Constants.isDarkTheme ? "#888888" : "#dddddd"
-                        radius: 12
-                        border.color: Constants.isDarkTheme ? Constants.backgroundColor : Qt.darker(Constants.backgroundColor, 1.6)
-                        border.width: 1
-
-                        Rectangle {
-                            width: parent.width - 4
-                            height: parent.height - 4
-                            anchors.centerIn: parent
-                            color: 'transparent'
-                            border.color: Constants.darkColor
-                            border.width: 2
-                            opacity: .2
-                            radius: parent.radius
-                            visible: resetButton.down
-                        }
-                    }
-
-                    contentItem: Text {
-                        text: parent.text
-                        anchors.centerIn: parent
-                        color: Constants.isDarkTheme ? "white" : "black"
-                        font.pixelSize: 18
-                    }
-
-                    SequentialAnimation {
-                        id: resetScaleAnimation
-                        PropertyAnimation { target: resetButton; property: "scale"; to: 0.95; duration: 50 }
-                        PropertyAnimation { target: resetButton; property: "scale"; to: 1.0; duration: 50 }
                     }
                 }
             }

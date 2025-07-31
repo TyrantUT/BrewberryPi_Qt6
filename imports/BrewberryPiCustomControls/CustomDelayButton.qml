@@ -9,7 +9,7 @@ DelayButton {
     id: control
     delay: 1000
     font.bold: true
-    font.pointSize: 22
+    font.pixelSize: 22
     text: qsTr("Off")
 
     onProgressChanged: canvas.requestPaint()

@@ -4,6 +4,7 @@
 import QtQuick
 import QtQuick.Controls
 import BrewberryPi
+import BrewberryPiCustomControls
 
 ApplicationWindow {
     title: "BrewberryPi"
@@ -12,19 +13,22 @@ ApplicationWindow {
     visible: true
 
     Button {
-        id: control
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 5
-        anchors.left: parent.left
-        anchors.leftMargin: 5
+        id: displayModeButton
+        anchors {
+            bottom: parent.bottom
+            bottomMargin: 5
+            left: parent.left
+            leftMargin: 5
+        }
         width: 100
         height: 50
         z: 10
-        text: Constants.isDarkTheme ? "Light Mode" : "Dark Mode"
+        text: Constants.isDarkTheme ? "Light" : "Dark"
 
         contentItem: Text {
-            text: control.text
-            font: control.font
+            text: displayModeButton.text
+            font.pixelSize: height / 2
+            font.bold: true
             color: Constants.isDarkTheme ? "#ffffff" : "#000000"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -35,12 +39,48 @@ ApplicationWindow {
         }
 
         background: Rectangle {
-            implicitWidth: control.width
-            implicitHeight: control.height
+            implicitWidth: displayModeButton.width
+            implicitHeight: displayModeButton.height
             color: Constants.isDarkTheme ? "#333333" : "#f6f6f6"
             border.color: Constants.isDarkTheme ? "#ffffff" : "#888888"
             border.width: 1
             radius: 8
+        }
+    }
+
+    Button {
+        id: mashModeButton
+        anchors {
+            bottom: parent.bottom
+            bottomMargin: 5
+            right: parent.right
+            rightMargin: 5
+        }
+        width: 100
+        height: 50
+        text: BreweryValues.setpointHltOrMash ? "Mash" : " HLT"
+        z: 10
+
+        contentItem: Text {
+            text: mashModeButton.text
+            font.pixelSize: height / 2
+            font.bold: true
+            color: Constants.isDarkTheme ? "#ffffff" : "#000000"
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+        }
+
+        background: Rectangle {
+            implicitWidth: mashModeButton.width
+            implicitHeight: mashModeButton.height
+            color: Constants.isDarkTheme ? "#333333" : "#f6f6f6"
+            border.color: Constants.isDarkTheme ? "#ffffff" : "#888888"
+            border.width: 1
+            radius: 8
+        }
+
+        onClicked: {
+            BreweryValues.setpointHltOrMash = !BreweryValues.setpointHltOrMash
         }
     }
 
