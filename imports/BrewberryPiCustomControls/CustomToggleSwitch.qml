@@ -12,6 +12,7 @@ Switch {
     property int outerBevelPixelSize: 16
 
     contentItem: Text {
+        id: contentText
         text: control.text
         font: control.font
         opacity: enabled ? 1.0 : 0.3
@@ -21,15 +22,6 @@ Switch {
         elide: Text.ElideRight
         anchors.centerIn: parent
         z: 10
-
-        transform: Scale {
-            origin.x: pressableInner.width / 2
-            origin.y: pressableInner.height / 2
-            xScale: control.down ? 0.88 : 1.0
-            yScale: control.down ? 0.88 : 1.0
-            Behavior on xScale { NumberAnimation { duration: 80 } }
-            Behavior on yScale { NumberAnimation { duration: 80 } }
-        }
     }
 
     // Drop shadow under entire switch
@@ -70,15 +62,6 @@ Switch {
             height: parent.height * 0.88
             anchors.centerIn: parent
             z: 2
-
-            transform: Scale {
-                origin.x: pressableInner.width / 2
-                origin.y: pressableInner.height / 2
-                xScale: control.down ? 0.88 : 1.0
-                yScale: control.down ? 0.88 : 1.0
-                Behavior on xScale { NumberAnimation { duration: 80 } }
-                Behavior on yScale { NumberAnimation { duration: 80 } }
-            }
 
             // Inner switch face
             Rectangle {
@@ -137,6 +120,30 @@ Switch {
                 color: Qt.rgba(0, 0, 0, 0.15)
                 z: 5
             }
+        }
+    }
+
+    SequentialAnimation {
+        id: scaleAnimation
+        running: control.down
+        NumberAnimation {
+            targets: [contentText, pressableInner]
+            property: "scale"
+            to: 0.88
+            duration: 80
+            easing.type: Easing.InOutQuad
+        }
+    }
+
+    SequentialAnimation {
+        id: resetScaleAnimation
+        running: !control.down
+        NumberAnimation {
+            targets: [contentText, pressableInner]
+            property: "scale"
+            to: 1.0
+            duration: 80
+            easing.type: Easing.InOutQuad
         }
     }
 }

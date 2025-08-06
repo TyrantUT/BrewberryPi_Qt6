@@ -3,6 +3,8 @@ import QtQuick.Controls
 import QtQuick.Effects
 import BrewberryPi
 
+pragma ComponentBehavior: Bound
+
 Button {
     id: root
 

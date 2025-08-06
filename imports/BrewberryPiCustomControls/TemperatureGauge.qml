@@ -271,6 +271,7 @@ Dial {
         }
     }
 
+    // Block touch
     CustomElipse {
         width: control.width
         height: control.height
@@ -368,23 +369,23 @@ Dial {
             height: parent.height
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
+            font.family: "Helvetica"
             text: control.labelText
             color: Qt.lighter(Constants.textColor, 1.6)
             font.bold: true
             font.pixelSize: height
 
             MultiEffect {
-                    anchors.fill: label
-                    source: label
-                    shadowEnabled: true
-                    shadowColor: Qt.rgba(0, 0, 0, 0.6)
-                    shadowOpacity: 0.9
-                    shadowBlur: 2.0
-                    shadowHorizontalOffset: 2
-                    shadowVerticalOffset: 2
-
-                    blurEnabled: false
-                }
+                anchors.fill: label
+                source: label
+                shadowEnabled: true
+                shadowColor: Qt.rgba(0, 0, 0, 0.6)
+                shadowOpacity: 0.9
+                shadowBlur: 2.0
+                shadowHorizontalOffset: 0
+                shadowVerticalOffset: 0
+                blurEnabled: true
+            }
         }
     }
 }
