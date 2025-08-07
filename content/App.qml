@@ -12,10 +12,14 @@ ApplicationWindow {
     height: Constants.height
     visible: true
 
-    TapHandler {
-        anchors.fill: parent
-        onTapped: console.log("Tapped at:", point.position)
-        onPressedChanged: console.log("Pressed:", pressed, "Point ID:", point.id, "Pos:", point.position)
+    Item {
+        width: parent.width
+        height: parent.height
+        anchors.centerIn: parent
+        TapHandler {
+            onTapped: console.log("Tapped at:", point.position)
+            onPressedChanged: console.log("Pressed:", pressed, "Point ID:", point.id, "Pos:", point.position)
+        }
     }
 
     CustomButton {
