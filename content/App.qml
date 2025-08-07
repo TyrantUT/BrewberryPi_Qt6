@@ -8,8 +8,7 @@ import BrewberryPiCustomControls
 
 ApplicationWindow {
     title: "BrewberryPi"
-    width: Constants.width
-    height: Constants.height
+    visibility: Window.FullScreen
     visible: true
 
     Item {
@@ -67,8 +66,10 @@ ApplicationWindow {
     }
 
     // Main container
-    Column {
-        anchors.fill: parent
+    Column {        
+        width: parent.width
+        height: parent.height
+        anchors.centerIn: parent
 
         Page1MainTop {
             width: parent.width
@@ -85,5 +86,10 @@ ApplicationWindow {
             width: parent.width
             height: parent.height * 1/3
         }
+    }
+
+    Component.onCompleted: {
+        console.log("mashModeButton pos:", mashModeButton.x, mashModeButton.y)
+        console.log("resetButton pos:", resetButton.x, resetButton.y)
     }
 }
