@@ -44,10 +44,10 @@ else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wcomment -Wunused-function)
 
     # Find tslib
-    find_library(TSLIB_LIBRARY NAMES ts)
-    find_path(TSLIB_INCLUDE_DIR NAMES tslib.h)
+    find_library(TSLIB_LIBRARY NAMES ts HINTS /usr/lib/aarch64-linux-gnu)
+    find_path(TSLIB_INCLUDE_DIR NAMES tslib.h HINTS /usr/include)
     if (NOT TSLIB_LIBRARY OR NOT TSLIB_INCLUDE_DIR)
-        message(FATAL_ERROR "tslib not found. Install libts-dev on the host and target.")
+        message(FATAL_ERROR "tslib not found. Install libts-dev on the Raspberry Pi and sync to sysroot.")
     endif()
 
     target_include_directories(${PROJECT_NAME} PRIVATE ${TSLIB_INCLUDE_DIR})
