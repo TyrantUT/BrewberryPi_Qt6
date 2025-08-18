@@ -12,16 +12,6 @@ ApplicationWindow {
     height: Constants.height
     visible: true
 
-    Item {
-        width: parent.width
-        height: parent.height
-        anchors.centerIn: parent
-        TapHandler {
-            onTapped: console.log("Tapped at:", point.position)
-            onPressedChanged: console.log("Pressed:", pressed, "Point ID:", point.id, "Pos:", point.position)
-        }
-    }
-
     CustomButton {
         id: resetButton
 
@@ -90,7 +80,6 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        console.log("mashModeButton pos:", mashModeButton.x, mashModeButton.y)
-        console.log("resetButton pos:", resetButton.x, resetButton.y)
+        console.log('Brewberry Pi App Started...');
     }
 }

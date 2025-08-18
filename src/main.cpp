@@ -32,11 +32,19 @@ int main(int argc, char *argv[]) {
     // Allow file reads inside the qrc files
     //qputenv("QML_XHR_ALLOW_FILE_READ", QByteArray("1"));
 
+    // Set OPenGL ES context attributes for Raspberry Pi
+#ifndef PLATFORM_APPLE
+    QSurfaceFormat format;
+    format.setDepthBufferSize(16);
+    format.setStencilBufferSize(8);
+    format.setRenderableType(QSurfaceFormat::OpenGLES);
+    QSurfaceFormat::setDefaultFormat(format);
+#endif
+
     set_qt_environment();
 
     QApplication app(argc, argv);
     QQmlApplicationEngine engine;
-
 
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 
@@ -46,7 +54,9 @@ int main(int argc, char *argv[]) {
         QApplication::changeOverrideCursor(cursor);
     }
 
-    const QUrl url(u"qrc:/qt/qml/Main/main.qml"_qs);
+    using namespace Qt::StringLiterals;
+
+    const QUrl url(u"qrc:/qt/qml/Main/main.qml"_s);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
         &app, [url](QObject *obj, const QUrl &objUrl) {
             if (!obj && url == objUrl)

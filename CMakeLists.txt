@@ -2,6 +2,13 @@ cmake_minimum_required(VERSION 3.19)
 
 project(BrewberryPiApp LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
 find_package(Qt6 REQUIRED COMPONENTS
             Core
             Gui
@@ -13,7 +20,7 @@ find_package(Qt6 REQUIRED COMPONENTS
 
 qt_standard_project_setup(REQUIRES 6.8)
 
-qt_add_executable(BrewberryPiApp
+qt_add_executable(${PROJECT_NAME}
     src/main.cpp
 )
 
@@ -26,17 +33,28 @@ qt_add_resources(BrewberryPiApp "configuration"
 # Detect if the target architecture is ARM
 if (APPLE)
     message(STATUS "Skipping pigpio files.")
-    add_definitions(-DUSE_QUOTED_PIGPIO_INCLUDE)
+    add_definitions(-DPLATFORM_APPLE)
     set(PIGPIO_LIBRARY "")
+    set(TSLIB_LIBRARY "")
 else()
     message(STATUS "Adding pigpio related directories and libraries")
     set(PIGPIO_LIBRARY pigpio pthread)
-    target_include_directories(BrewberryPiApp PRIVATE /sysroot/usr /sysroot/usr/include)
-    target_link_directories(BrewberryPiApp PRIVATE /sysroot/usr/lib)
-    target_compile_options(BrewberryPiApp PRIVATE -Wall -Wcomment -Wunused-function)
+    target_include_directories(${PROJECT_NAME} PRIVATE /sysroot/usr /sysroot/usr/include)
+    target_link_directories(${PROJECT_NAME} PRIVATE /sysroot/usr/lib)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wcomment -Wunused-function)
+
+    # Find tslib
+    find_library(TSLIB_LIBRARY NAMES ts)
+    find_path(TSLIB_INCLUDE_DIR NAMES tslib.h)
+    if (NOT TSLIB_LIBRARY OR NOT TSLIB_INCLUDE_DIR)
+        message(FATAL_ERROR "tslib not found. Install libts-dev on the host and target.")
+    endif()
+
+    target_include_directories(${PROJECT_NAME} PRIVATE ${TSLIB_INCLUDE_DIR})
+
 endif()
 
-target_link_libraries(BrewberryPiApp PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Core
     Qt6::Gui
     Qt6::Qml
@@ -45,6 +63,7 @@ target_link_libraries(BrewberryPiApp PRIVATE
     Qt6::QuickControls2
     Qt6::Charts
     ${PIGPIO_LIBRARY}
+    ${TSLIB_LIBRARY}
 )
 
 set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/qml)
@@ -58,7 +77,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/qmlmodules)
 
 
 #include(GNUInstallDirs)
-install(TARGETS BrewberryPiApp
+install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

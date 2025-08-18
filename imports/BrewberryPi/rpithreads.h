@@ -18,11 +18,8 @@ public slots:
     void processTemps(void);
     void processPidHlt(void);
     void processPidBoil(void);
-    //void processPwmHLT(void);
-    //void processPwmBoil(void);
 
 private:
-    // Pointer to the shared RPiData instance
     RPiData *m_rpiData;
 
     // PID Initial values

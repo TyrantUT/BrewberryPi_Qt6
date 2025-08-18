@@ -4,7 +4,7 @@
 #include <QThread>
 #include <QDebug>
 
-#ifdef USE_QUOTED_PIGPIO_INCLUDE
+#ifdef PLATFORM_APPLE
 #include "pigpio.h"
 #else
 #include "/sysroot/usr/include/pigpio.h"
