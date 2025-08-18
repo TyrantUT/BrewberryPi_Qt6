@@ -8,7 +8,8 @@ import BrewberryPiCustomControls
 
 ApplicationWindow {
     title: "BrewberryPi"
-    visibility: Window.FullScreen
+    width: Constants.width
+    height: Constants.height
     visible: true
 
     Item {
