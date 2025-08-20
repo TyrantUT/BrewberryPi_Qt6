@@ -14,10 +14,6 @@ Dial {
     property string labelText: ''
     property bool setManualMode: false
     property alias setpointValue: control.value
-    property int capStyle: Qt.RoundCap
-    property color trackColor: "#505050"
-    property color progressColor: "#3a4ec4"
-    property color handleColor: "#fefefe"
     property real currentAngle: startAngle + (endAngle - startAngle) * (currentTemp - from) / (to - from)
     property color gradientColor: Qt.rgba((currentAngle - startAngle) / (endAngle - startAngle), 0, 1 - (currentAngle - startAngle) / (endAngle - startAngle), 1)
     property real currentAngleSetPoint: startAngle + (endAngle - startAngle) * (value - from) / (to - from)
@@ -62,13 +58,11 @@ Dial {
         height: control.height
         anchors.centerIn: parent
 
-
         Shape {
             id: shell
             width: parent.width - 5
             height: parent.height - 5
             anchors.centerIn: parent
-
 
             ShapePath {
                 id: shellShapePath
@@ -87,9 +81,6 @@ Dial {
                     radiusY: (shell.height - shellShapePath.strokeWidth) / 2
                     useLargeArc: true
                 }
-                // Upward-pointing trapezoidal cutout with outward-angled sides
-
-
                 PathLine {
                     x: shell.width / 2 + ((shell.width - shellShapePath.strokeWidth) / 2) * Math.cos(((startAngle - 10) - 90) * Math.PI / 180)
                     y: shell.height / 2 + ((shell.height - shellShapePath.strokeWidth) / 2) * Math.sin(((startAngle - 10) - 90) * Math.PI / 180)
@@ -293,7 +284,7 @@ Dial {
             strokeColor: control.currentColorSetPoint
             strokeStyle: ShapePath.SolidLine
             strokeWidth: 5
-            capStyle: control.capStyle
+            capStyle: Qt.RoundCap
             pathHints: ShapePath.PathNonIntersecting
 
             PathAngleArc {

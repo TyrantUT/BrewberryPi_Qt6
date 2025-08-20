@@ -16,14 +16,20 @@ find_package(Qt6 REQUIRED COMPONENTS
             Quick
             Widgets
             QuickControls2
-            Charts)
+            Charts
+            WebSockets
+        )
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(${PROJECT_NAME}
     src/main.cpp
+    src/websocketmanager.h src/websocketmanager.cpp
 )
 
+
+target_link_libraries(BrewberryPiApp PRIVATE Qt6::Core)
 qt_add_resources(BrewberryPiApp "configuration"
     PREFIX "/"
     FILES
@@ -62,6 +68,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Widgets
     Qt6::QuickControls2
     Qt6::Charts
+    Qt6::WebSockets
     ${PIGPIO_LIBRARY}
     ${TSLIB_LIBRARY}
 )
