@@ -24,30 +24,73 @@ void ConnectionManager::setupConnections(RPiData *RPiDataGlobal) {
     });
 
     QObject::connect(RPiDataGlobal, &RPiData::elementOn_HLTChanged, [RPiDataGlobal](bool value) {
-        qDebug() << "HLT Element On Value Changed: Value is now" << value;     
+        if (value) {
+            qDebug() << "HLT Element: On";
+        } else {
+            qDebug() << "HLT Element: Off";
+        }
+
         QThreadPool::globalInstance()->start([value]() {
             gpioWriteValue(ELEMENT_HLT, value);
         });
     });
 
     QObject::connect(RPiDataGlobal, &RPiData::elementOn_BoilChanged, [RPiDataGlobal](bool value) {
-        qDebug() << "Boil Element On Value Changed: Value is now" << value; 
+        if (value) {
+            qDebug() << "Boil Element: On";
+        } else {
+            qDebug() << "Boil Element: Off";
+        }
+
         QThreadPool::globalInstance()->start([value]() {
             gpioWriteValue(ELEMENT_BOIL, value);
         });
     });
 
     QObject::connect(RPiDataGlobal, &RPiData::pumpOn_WortChanged, [&RPiDataGlobal](bool value) {
-        qDebug() << "Wort Pump Value Changed: Value is now" << value;
+        if (value) {
+            qDebug() << "Wort Pump: On";
+        } else {
+            qDebug() << "Wort Pump: Off";
+        }
+
         QThreadPool::globalInstance()->start([value]() {
             gpioWriteValue(PUMP_WORT, value);
         });
     });
 
     QObject::connect(RPiDataGlobal, &RPiData::pumpOn_WaterChanged, [RPiDataGlobal](bool value) {
-        qDebug() << "Water Pump Value Changed: Value is now" << value;
+        if (value) {
+            qDebug() << "Water Pump: On";
+        } else {
+            qDebug() << "Water Pump: Off";
+        }
         QThreadPool::globalInstance()->start([value]() {
             gpioWriteValue(PUMP_WATER, value);
         });
+    });
+
+    QObject::connect(RPiDataGlobal, &RPiData::setpointHltOrMashChanged, [RPiDataGlobal](bool value) {
+        if (value) {
+            qDebug() << "Brewery Mode is now: HLT Mode";
+        } else {
+            qDebug() << "Brewery Mode is now: Mash Mode";
+        }
+    });
+
+    QObject::connect(RPiDataGlobal, &RPiData::setpointManual_HLTChanged, [RPiDataGlobal](bool value) {
+        if (value) {
+            qDebug() << "HLT Element Mode set to: Manual";
+        } else {
+            qDebug() << "HLT Element Mode set to: Automatic";
+        }
+    });
+
+    QObject::connect(RPiDataGlobal, &RPiData::setpointManual_BoilChanged, [RPiDataGlobal](bool value) {
+        if (value) {
+            qDebug() << "Boil Element Mode set to: Manual";
+        } else {
+            qDebug() << "Boil Element Mode set to: Automatic";
+        }
     });
 }

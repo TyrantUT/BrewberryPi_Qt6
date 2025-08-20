@@ -42,6 +42,9 @@ typedef struct RPiData_t {
     float pwmDutyCycle_HLT = 0.0f;
     float pwmDutyCycle_Boil = 0.0f;
 
+    // Brewery Timer
+    int breweryTimer = 0;
+
 } RPiData_t;
 
 class RPiData : public QObject {
@@ -71,6 +74,8 @@ class RPiData : public QObject {
     Q_PROPERTY (bool pumpOn_Wort READ getPumpOn_Wort WRITE setPumpOn_Wort NOTIFY pumpOn_WortChanged)
     Q_PROPERTY (bool pumpOn_Water READ getPumpOn_Water WRITE setPumpOn_Water NOTIFY pumpOn_WaterChanged)
 
+    Q_PROPERTY (int breweryTimer READ getBreweryTimer WRITE setBreweryTimer NOTIFY breweryTimerChanged)
+
 public:
     explicit RPiData(QObject *parent = nullptr);
     virtual ~RPiData() {};
@@ -94,6 +99,7 @@ public:
     bool getPumpOn_Water(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.pumpOn_Water;}
     float getPwmDutyCycle_HLT(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.pwmDutyCycle_HLT;}
     float getPwmDutyCycle_Boil(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.pwmDutyCycle_Boil;}
+    int getBreweryTimer(void) const { QReadLocker locker(&rpiDataMutex); return RPiDataStruct.breweryTimer;}
 
     void setCurrentTemp_HLT(float value);
     void setCurrentTemp_Mash(float value);
@@ -120,9 +126,10 @@ public slots:
     void setElementOn_Boil(bool value);
     void setPumpOn_Wort(bool value);
     void setPumpOn_Water(bool value);
+    void setBreweryTimer(int value);
 
 signals:
-    void setpointHltOrMashChanged();
+    void setpointHltOrMashChanged(bool value);
     void currentTemp_HLTChanged();
     void currentTemp_MashChanged();
     void currentTemp_BoilChanged();
@@ -133,14 +140,15 @@ signals:
     void setpointPercent_HLTChanged();
     void setpointPercent_MashChanged();
     void setpointPercent_BoilChanged();
-    void setpointManual_HLTChanged();
-    void setpointManual_BoilChanged();
+    void setpointManual_HLTChanged(bool value);
+    void setpointManual_BoilChanged(bool value);
     void elementOn_HLTChanged(bool value);
     void elementOn_BoilChanged(bool value);
     void pumpOn_WortChanged(bool value);
     void pumpOn_WaterChanged(bool value);
     void pwmDutyCycle_HLTChanged(float value);
     void pwmDutyCycle_BoilChanged(float value);
+    void breweryTimerChanged(int value);
 
 private:
     // Data

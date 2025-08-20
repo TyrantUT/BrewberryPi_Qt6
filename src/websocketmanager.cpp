@@ -1,12 +1,39 @@
 #include "websocketmanager.h"
 #include <QJsonObject>
+#include <QJsonDocument>
 #include <QDebug>
+#include <QFile>
+#include <QSslKey>
+#include <QSslCertificate>
+#include <QSslConfiguration>
 #include <utility>
 
-WebSocketManager::WebSocketManager(QObject *parent)
-    : QObject(parent), m_server(new QWebSocketServer(QStringLiteral("BrewberryPi Server"), QWebSocketServer::NonSecureMode, this)),
-    m_rpiData(nullptr), m_messageCounter(0)
-{
+WebSocketManager::WebSocketManager(QObject *parent) : QObject(parent), m_server(nullptr), m_rpiData(nullptr) {
+    m_server = new QWebSocketServer(QStringLiteral("Brewberry Pi Server"), QWebSocketServer::SecureMode, this);
+
+    QSslConfiguration sslConfig;
+    QFile certFile(":/ssl/server.crt");
+    QFile keyFile(":/ssl/server.key");
+
+    if (!certFile.open(QIODevice::ReadOnly) || !keyFile.open(QIODevice::ReadOnly)) {
+        qDebug() << "Failed to open SSL certificate or key file";
+        return;
+    }
+
+    QSslCertificate certificate(&certFile, QSsl::Pem);
+    QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem);
+    certFile.close();
+    keyFile.close();
+
+    if (certificate.isNull() || key.isNull()) {
+        qDebug() << "Invalid SSL certificate or key";
+        return;
+    }
+
+    sslConfig.setLocalCertificate(certificate);
+    sslConfig.setPrivateKey(key);
+    sslConfig.setProtocol(QSsl::TlsV1_2OrLater);
+    m_server->setSslConfiguration(sslConfig);
 }
 
 WebSocketManager::~WebSocketManager()
@@ -49,6 +76,7 @@ void WebSocketManager::setRPiData(RPiData *rpiData)
         connect(m_rpiData, &RPiData::pumpOn_WaterChanged, this, &WebSocketManager::broadcastData);
         connect(m_rpiData, &RPiData::pwmDutyCycle_HLTChanged, this, &WebSocketManager::broadcastData);
         connect(m_rpiData, &RPiData::pwmDutyCycle_BoilChanged, this, &WebSocketManager::broadcastData);
+        connect(m_rpiData, &RPiData::breweryTimerChanged, this, &WebSocketManager::broadcastData);
     }
 }
 
@@ -65,6 +93,7 @@ QJsonObject WebSocketManager::serializeRPiData(bool includeRateLimited)
     json["pumpOn_Water"] = m_rpiData->getPumpOn_Water();
     json["pwmDutyCycle_HLT"] = m_rpiData->getPwmDutyCycle_HLT();
     json["pwmDutyCycle_Boil"] = m_rpiData->getPwmDutyCycle_Boil();
+    json["breweryTimer"] = m_rpiData->getBreweryTimer();
 
     // Include rate-limited fields only every 5th message
     if (includeRateLimited) {

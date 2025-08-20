@@ -15,7 +15,7 @@ void RPiData::setSetpointHltOrMash(bool value) {
     QWriteLocker locker(&rpiDataMutex);
     if (RPiDataStruct.setpointHltOrMash != value) {        
         RPiDataStruct.setpointHltOrMash = value;
-        emit setpointHltOrMashChanged();
+        emit setpointHltOrMashChanged(value);
     }
 };
 
@@ -103,7 +103,7 @@ void RPiData::setSetpointManual_HLT(bool value) {
     QWriteLocker locker(&rpiDataMutex);
     if (RPiDataStruct.setpointManual_HLT != value) {
         RPiDataStruct.setpointManual_HLT = value;
-        emit setpointManual_HLTChanged();
+        emit setpointManual_HLTChanged(value);
     }
 };
 
@@ -111,7 +111,7 @@ void RPiData::setSetpointManual_Boil(bool value) {
     QWriteLocker locker(&rpiDataMutex);
     if (RPiDataStruct.setpointManual_Boil != value) {
         RPiDataStruct.setpointManual_Boil = value;
-        emit setpointManual_BoilChanged();
+        emit setpointManual_BoilChanged(value);
     };
 }
 
@@ -163,3 +163,10 @@ void RPiData::setPwmDutyCycle_Boil(float value) {
     }
 }
 
+void RPiData::setBreweryTimer(int value) {
+    QWriteLocker locker(&rpiDataMutex);
+    if (RPiDataStruct.breweryTimer != value) {
+        RPiDataStruct.breweryTimer = value;
+        emit breweryTimerChanged(value);
+    }
+}

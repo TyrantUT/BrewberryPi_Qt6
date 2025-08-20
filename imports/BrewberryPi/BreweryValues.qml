@@ -49,5 +49,7 @@ QtObject {
     onPumpOn_WaterChanged: RPiDataGlobal.pumpOn_Water = pumpOn_Water;
 
     // Brewery Timer
-    property int breweryTimer: 0
+    property int breweryTimer: RPiDataGlobal ? RPiDataGlobal.breweryTimer  : 0
+
+    onBreweryTimerChanged: RPiDataGlobal.breweryTimer = breweryTimer;
 }
