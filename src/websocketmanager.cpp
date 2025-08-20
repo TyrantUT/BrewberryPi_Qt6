@@ -131,7 +131,6 @@ void WebSocketManager::broadcastData()
             client->sendTextMessage(jsonString);
         }
     }
-    qDebug() << "Broadcast data (rate-limited:" << includeRateLimited << "):" << jsonString;
 }
 
 void WebSocketManager::onNewConnection()
