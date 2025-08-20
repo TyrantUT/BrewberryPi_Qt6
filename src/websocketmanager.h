@@ -32,7 +32,6 @@ private:
     QList<QWebSocket*> m_clients;
     QMutex m_clientsMutex;
     RPiData *m_rpiData;
-    int m_messageCounter;
     QJsonObject serializeRPiData(bool includeRateLimited);
 };
 
