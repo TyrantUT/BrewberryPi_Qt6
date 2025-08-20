@@ -4,16 +4,11 @@
 #include <QQuickWindow>
 #include "app_environment.h"
 #include "import_qml_plugins.h"
-#include <QWebSocketServer>
-#include <QWebSocket>
-#include <QUrl>
-#include <QJsonDocument>
-#include <QJsonObject>
+#include "websocketmanager.h"
 #include "imports/BrewberryPi/rpidata.h"
 #include "imports/BrewberryPi/rpithreads.h"
 #include "imports/BrewberryPi/rpihelper.h"
 #include "imports/BrewberryPi/connectionmanager.h"
-#include "websocketmanager.h"
 #include <csignal>
 
 // Enable to remove debug outputs throughout code
@@ -35,6 +30,15 @@ int main(int argc, char *argv[])
     if (!freopen(nullStream, "a", stderr)) assert(false);
 #endif
 
+    // Set OpenGL ES context attributes for Raspberry Pi
+#ifndef PLATFORM_APPLE
+    QSurfaceFormat format;
+    format.setDepthBufferSize(16);
+    format.setStencilBufferSize(8);
+    format.setRenderableType(QSurfaceFormat::OpenGLES);
+    QSurfaceFormat::setDefaultFormat(format);
+#endif
+
     set_qt_environment();
 
     QApplication app(argc, argv);
@@ -42,17 +46,11 @@ int main(int argc, char *argv[])
 
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 
-    // Set context attributes for Raspberry Pi
-#ifndef PLATFORM_APPLE
-    QSurfaceFormat format;
-    format.setDepthBufferSize(16);
-    format.setStencilBufferSize(8);
-    format.setRenderableType(QSurfaceFormat::OpenGLES);
-    QSurfaceFormat::setDefaultFormat(format);
-    QCursor cursor(Qt::BlankCursor);
-    QApplication::setOverrideCursor(cursor);
-    QApplication::changeOverrideCursor(cursor);
-#endif
+    if (QSysInfo::productType() != "macos") {
+        QCursor cursor(Qt::BlankCursor);
+        QApplication::setOverrideCursor(cursor);
+        QApplication::changeOverrideCursor(cursor);
+    }
 
     using namespace Qt::StringLiterals;
 
@@ -98,32 +96,16 @@ int main(int argc, char *argv[])
     // WebSocket server setup
     WebSocketManager *webSocketManager = new WebSocketManager(&app);
     webSocketManager->setRPiData(&RPiDataGlobal);
-    if (!webSocketManager->startServer(8443)) {
+    if (!webSocketManager->startServer(1234)) { // Replace 1234 with your desired port
+        qDebug() << "Failed to start WebSocket server";
         return -1;
     }
 
-    // Connect all RPiData signals to broadcast data
-    QObject::connect(&RPiDataGlobal, &RPiData::setpointHltOrMashChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::currentTemp_HLTChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::currentTemp_MashChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::currentTemp_BoilChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::currentTemp_Mash2Changed, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::setpointTemp_HLTChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::setpointTemp_MashChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::setpointTemp_BoilChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::setpointPercent_HLTChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::setpointPercent_MashChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::setpointPercent_BoilChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::setpointManual_HLTChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::setpointManual_BoilChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::elementOn_HLTChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::elementOn_BoilChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::pumpOn_WortChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::pumpOn_WaterChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::pwmDutyCycle_HLTChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
-    QObject::connect(&RPiDataGlobal, &RPiData::pwmDutyCycle_BoilChanged, webSocketManager, &WebSocketManager::broadcastData, Qt::QueuedConnection);
+    // Clean up WebSocketManager on application quit
+    QObject::connect(&app, &QCoreApplication::aboutToQuit, [webSocketManager]() {)
+        webSocketManager->deleteLater();
+    });
 
-    // Clean up threads on application quit
     QObject::connect(&app, &QCoreApplication::aboutToQuit, temperatureThread, [temperatureThread]() {
         temperatureThread->requestInterruption();
         temperatureThread->quit();
