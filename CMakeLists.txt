@@ -33,7 +33,6 @@ qt_add_executable(${PROJECT_NAME}
     resources/ssl/server.crt
 )
 
-
 target_link_libraries(BrewberryPiApp PRIVATE Qt6::Core)
 qt_add_resources(BrewberryPiApp "configuration"
     PREFIX "/"
