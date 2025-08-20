@@ -20,6 +20,7 @@ public:
 
 public slots:
     void broadcastData();
+    void closeServer();
 
 private slots:
     void onNewConnection();

@@ -1,6 +1,7 @@
 #include "websocketmanager.h"
 #include <QJsonObject>
 #include <QDebug>
+#include <utility>
 
 WebSocketManager::WebSocketManager(QObject *parent)
     : QObject(parent), m_server(new QWebSocketServer(QStringLiteral("BrewberryPi Server"), QWebSocketServer::NonSecureMode, this)),
@@ -10,10 +11,7 @@ WebSocketManager::WebSocketManager(QObject *parent)
 
 WebSocketManager::~WebSocketManager()
 {
-    m_server->close();
-    QMutexLocker locker(&m_clientsMutex);
-    qDeleteAll(m_clients);
-    m_clients.clear();
+    closeServer();
 }
 
 bool WebSocketManager::startServer(quint16 port)
@@ -100,7 +98,7 @@ void WebSocketManager::broadcastData()
 
     // Broadcast to all clients
     QMutexLocker locker(&m_clientsMutex);
-    for (QWebSocket *client : qAsConst(m_clients)) {
+    for (QWebSocket *client : std::as_const(m_clients)) {
         if (client->state() == QAbstractSocket::ConnectedState) {
             client->sendTextMessage(jsonString);
         }
@@ -139,4 +137,17 @@ void WebSocketManager::onClientError(QAbstractSocket::SocketError error)
     if (client) {
         qDebug() << "Client error:" << client->errorString();
     }
+}
+
+void WebSocketManager::closeServer()
+{
+    m_server->close();
+    QMutexLocker locker(&m_clientsMutex);
+    for (QWebSocket *client : std::as_const(m_clients)) {
+        disconnect(client, nullptr, this, nullptr);
+        client->close();
+        client->deleteLater();
+    }
+    m_clients.clear();
+    qDebug() << "WebSocket server closed and clients disconnected";
 }

@@ -101,10 +101,8 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    // Clean up WebSocketManager on application quit
-    QObject::connect(&app, &QCoreApplication::aboutToQuit, [webSocketManager]() {)
-        webSocketManager->deleteLater();
-    });
+    // Clean up on application quit
+    QObject::connect(&app, &QCoreApplication::aboutToQuit, webSocketManager, &WebSocketManager::closeServer, Qt::DirectConnection);
 
     QObject::connect(&app, &QCoreApplication::aboutToQuit, temperatureThread, [temperatureThread]() {
         temperatureThread->requestInterruption();
