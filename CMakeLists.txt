@@ -29,6 +29,8 @@ qt_add_executable(${PROJECT_NAME}
     src/websocketmanager.h
     src/websocketmanager.cpp
     resources/resources.qrc
+    resources/ssl/server.key
+    resources/ssl/server.crt
 )
 
 
