@@ -18,6 +18,7 @@ find_package(Qt6 REQUIRED COMPONENTS
             QuickControls2
             Charts
             WebSockets
+            Network
         )
 find_package(Qt6 REQUIRED COMPONENTS Core)
 
@@ -27,6 +28,7 @@ qt_add_executable(${PROJECT_NAME}
     src/main.cpp
     src/websocketmanager.h
     src/websocketmanager.cpp
+    resources/resources.qrc
 )
 
 
@@ -70,6 +72,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::QuickControls2
     Qt6::Charts
     Qt6::WebSockets
+    Qt6::Network
     ${PIGPIO_LIBRARY}
     ${TSLIB_LIBRARY}
 )

@@ -2,9 +2,37 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QDebug>
+#include <QFile>
+#include <QSslKey>
+#include <QSslCertificate>
+#include <QSslConfiguration>
 
 WebSocketManager::WebSocketManager(QObject *parent) : QObject(parent), m_server(nullptr), m_rpiData(nullptr) {
-    m_server = new QWebSocketServer(QStringLiteral("Brewberry Pi Server"), QWebSocketServer::NonSecureMode, this);
+    m_server = new QWebSocketServer(QStringLiteral("Brewberry Pi Server"), QWebSocketServer::SecureMode, this);
+
+    QSslConfiguration sslConfig;
+    QFile certFile(":/ssl/server.crt");
+    QFile keyFile(":/ssl/server.key");
+
+    if (!certFile.open(QIODevice::ReadOnly) || !keyFile.open(QIODevice::ReadOnly)) {
+        qDebug() << "Failed to open SSL certificate or key file";
+        return;
+    }
+
+    QSslCertificate certificate(&certFile, QSsl::Pem);
+    QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem);
+    certFile.close();
+    keyFile.close();
+
+    if (certificate.isNull() || key.isNull()) {
+        qDebug() << "Invalid SSL certificate or key";
+        return;
+    }
+
+    sslConfig.setLocalCertificate(certificate);
+    sslConfig.setPrivateKey(key);
+    sslConfig.setProtocol(QSsl::TlsV1_2OrLater); // Enforce secure protocol
+    m_server->setSslConfiguration(sslConfig);
 }
 
 WebSocketManager::~WebSocketManager() {
@@ -24,7 +52,7 @@ bool WebSocketManager::startServer(quint16 port) {
         qDebug() << "Failed to start WebSocket server on port" << port << ":" << m_server->errorString();
         return false;
     }
-    qDebug() << "WebSocket server started on ws://0.0.0.0:" << port;
+    qDebug() << "Secure WebSocket server started on wss://0.0.0.0:" << port;
     connect(m_server, &QWebSocketServer::newConnection, this, &WebSocketManager::onNewConnection);
     return true;
 }
@@ -63,8 +91,10 @@ void WebSocketManager::onNewConnection() {
         json["pumpOn_Water"] = m_rpiData->getPumpOn_Water();
         json["pwmDutyCycle_HLT"] = m_rpiData->getPwmDutyCycle_HLT();
         json["pwmDutyCycle_Boil"] = m_rpiData->getPwmDutyCycle_Boil();
+
         QJsonDocument doc(json);
         QString jsonString = QString(doc.toJson(QJsonDocument::Compact));
+
         client->sendTextMessage(jsonString);
     }
 
@@ -74,6 +104,7 @@ void WebSocketManager::onNewConnection() {
 
 void WebSocketManager::onClientDisconnected() {
     QWebSocket *client = qobject_cast<QWebSocket*>(sender());
+
     if (client) {
         QMutexLocker locker(&m_clientsMutex);
         m_clients.removeAll(client);
@@ -84,6 +115,7 @@ void WebSocketManager::onClientDisconnected() {
 
 void WebSocketManager::onClientError(QAbstractSocket::SocketError error) {
     QWebSocket *client = qobject_cast<QWebSocket*>(sender());
+
     if (client) {
         qDebug() << "Client error:" << client->errorString();
     }
@@ -112,13 +144,15 @@ void WebSocketManager::broadcastData() {
     json["pumpOn_Water"] = m_rpiData->getPumpOn_Water();
     json["pwmDutyCycle_HLT"] = m_rpiData->getPwmDutyCycle_HLT();
     json["pwmDutyCycle_Boil"] = m_rpiData->getPwmDutyCycle_Boil();
+
     QJsonDocument doc(json);
     QString jsonString = QString(doc.toJson(QJsonDocument::Compact));
 
     QMutexLocker locker(&m_clientsMutex);
+
     for (QWebSocket *client : m_clients) {
         if (client->state() == QAbstractSocket::ConnectedState) {
-            // Ensure sendTextMessage is called in the client's thread
+
             QMetaObject::invokeMethod(client, [client, jsonString]() {
                 client->sendTextMessage(jsonString);
             }, Qt::QueuedConnection);
