@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
     // WebSocket server setup
     WebSocketManager *webSocketManager = new WebSocketManager(&app);
     webSocketManager->setRPiData(&RPiDataGlobal);
-    if (!webSocketManager->startServer(1234)) { // Replace 1234 with your desired port
+    if (!webSocketManager->startServer(8443)) {
         qDebug() << "Failed to start WebSocket server";
         return -1;
     }
