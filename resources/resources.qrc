@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/ssl">
-        <file>ssl/server.crt</file>
-        <file>ssl/server.key</file>
+        <file>server.crt</file>
+        <file>server.key</file>
     </qresource>
 </RCC>
