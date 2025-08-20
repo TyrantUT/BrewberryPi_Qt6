@@ -11,7 +11,6 @@ WebSocketManager::WebSocketManager(QObject *parent)
 
 WebSocketManager::~WebSocketManager()
 {
-    closeServer();
 }
 
 bool WebSocketManager::startServer(quint16 port)
