@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
     // WebSocket server setup
     WebSocketManager *webSocketManager = new WebSocketManager(&app);
     webSocketManager->setRPiData(&RPiDataGlobal);
-    if (!webSocketManager->startServer(8080)) {
+    if (!webSocketManager->startServer(8443)) {
         return -1;
     }
 
