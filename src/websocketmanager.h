@@ -19,7 +19,6 @@ public:
     void setRPiData(RPiData *rpiData);
 
 public slots:
-    void extracted(QString &jsonString);
     void broadcastData();
 
 private slots:

@@ -4,7 +4,7 @@
 #include <QDebug>
 
 WebSocketManager::WebSocketManager(QObject *parent) : QObject(parent), m_server(nullptr), m_rpiData(nullptr) {
-    m_server = new QWebSocketServer(QStringLiteral("Brewberry Pi Server"), QWebSocketServer::NonSecureMode, this);
+    m_server = new QWebSocketServer(QStringLiteral("BrewPi Server"), QWebSocketServer::NonSecureMode, this);
 }
 
 WebSocketManager::~WebSocketManager() {

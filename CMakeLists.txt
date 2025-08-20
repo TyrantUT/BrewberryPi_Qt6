@@ -25,7 +25,8 @@ qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(${PROJECT_NAME}
     src/main.cpp
-    src/websocketmanager.h src/websocketmanager.cpp
+    src/websocketmanager.h
+    src/websocketmanager.cpp
 )
 
 

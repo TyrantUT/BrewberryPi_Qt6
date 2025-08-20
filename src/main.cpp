@@ -13,7 +13,7 @@
 #include "imports/BrewberryPi/rpithreads.h"
 #include "imports/BrewberryPi/rpihelper.h"
 #include "imports/BrewberryPi/connectionmanager.h"
-#include "websocketmanager.h"
+#include "WebSocketManager.h"
 #include <csignal>
 
 // Enable to remove debug outputs throughout code
@@ -35,7 +35,6 @@ int main(int argc, char *argv[])
     if (!freopen(nullStream, "a", stderr)) assert(false);
 #endif
 
-
     set_qt_environment();
 
     QApplication app(argc, argv);
@@ -43,7 +42,7 @@ int main(int argc, char *argv[])
 
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 
-    // Set ontext attributes for Raspberry Pi
+    // Set context attributes for Raspberry Pi
 #ifndef PLATFORM_APPLE
     QSurfaceFormat format;
     format.setDepthBufferSize(16);
