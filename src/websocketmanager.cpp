@@ -115,18 +115,13 @@ QString WebSocketManager::serializeData(bool includeRateLimited) {
         QJsonObject json;
 
         json["setpointHltOrMash"] = m_rpiData->getSetpointHltOrMash();
-        json["currentTemp_HLT"] = m_rpiData->getCurrentTemp_HLT();
-        json["currentTemp_Mash"] = m_rpiData->getCurrentTemp_Mash();
-        json["currentTemp_Boil"] = m_rpiData->getCurrentTemp_Boil();
-        json["currentTemp_Mash2"] = m_rpiData->getCurrentTemp_Mash2();
-        json["setpointTemp_HLT"] = m_rpiData->getSetpointTemp_HLT();
-        json["setpointTemp_Mash"] = m_rpiData->getSetpointTemp_Mash();
-        json["setpointTemp_Boil"] = m_rpiData->getSetpointTemp_Boil();
-        json["setpointPercent_HLT"] = m_rpiData->getSetpointPercent_HLT();
-        json["setpointPercent_Mash"] = m_rpiData->getSetpointPercent_Mash();
-        json["setpointPercent_Boil"] = m_rpiData->getSetpointPercent_Boil();
         json["setpointManual_HLT"] = m_rpiData->getSetpointManual_HLT();
         json["setpointManual_Boil"] = m_rpiData->getSetpointManual_Boil();
+        json["setpointManual_Boil"] = m_rpiData->getSetpointManual_Boil();
+        json["elementOn_HLT"] = m_rpiData->getElementOn_HLT();
+        json["elementOn_Boil"] = m_rpiData->getElementOn_Boil();
+        json["pumpOn_Wort"] = m_rpiData->getPumpOn_Wort();
+        json["pumpOn_Water"] = m_rpiData->getPumpOn_Water();
         json["breweryTimer"] = m_rpiData->getBreweryTimer();
 
         if (includeRateLimited) {
@@ -140,6 +135,8 @@ QString WebSocketManager::serializeData(bool includeRateLimited) {
             json["setpointPercent_HLT"] = m_rpiData->getSetpointPercent_HLT();
             json["setpointPercent_Mash"] = m_rpiData->getSetpointPercent_Mash();
             json["setpointPercent_Boil"] = m_rpiData->getSetpointPercent_Boil();
+            json["pwmDutyCycle_HLT"] = m_rpiData->getPwmDutyCycle_HLT();
+            json["pwmDutyCycle_Boil"] = m_rpiData->getPwmDutyCycle_Boil();
         }
 
         QJsonDocument doc(json);
@@ -153,7 +150,6 @@ QString WebSocketManager::serializeData(bool includeRateLimited) {
 
 void WebSocketManager::broadcastData() {
     if (!m_rpiData || m_clients.isEmpty()) return;
-
 
     m_messageCounter = (m_messageCounter + 1) % 5;
     bool includeRateLimited = (m_messageCounter == 0);
