@@ -26,13 +26,13 @@ private slots:
     void onNewConnection();
     void onClientDisconnected();
     void onClientError(QAbstractSocket::SocketError error);
+    QString serializeData();
 
 private:
     QWebSocketServer *m_server;
     QList<QWebSocket*> m_clients;
     QMutex m_clientsMutex;
     RPiData *m_rpiData;
-    QJsonObject serializeRPiData(bool includeRateLimited);
 };
 
 #endif // WEBSOCKETMANAGER_H
