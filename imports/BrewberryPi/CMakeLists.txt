@@ -16,8 +16,10 @@ set_source_files_properties(BreweryValues.qml
 if (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm")
     message(STATUS "Including pigpio related directories and libraries")
     set(PIGPIO_SOURCES "")
-    target_include_directories(BrewberryPi PRIVATE /sysroot/usr /sysroot/usr/include)
-    target_link_directories(BrewberryPi PRIVATE /sysroot/usr/lib)
+    set(PIGPIO_LIBRARY pigpio pthread)
+    target_include_directories(BrewberryPi PRIVATE /sysroot/usr/include)
+    target_link_directories(BrewberryPi PRIVATE /sysroot/usr/lib /sysroot/usr/lib/aarch64-linux-gnu)
+    target_compile_options(BrewberryPi PRIVATE -Wall -Wno-comment -Wunused-function)
 else()
     message(STATUS "Skipping pigpio files.")
     set(PIGPIO_SOURCES pigpio.h pigpio.cpp)
@@ -44,4 +46,10 @@ qt6_add_qml_module(BrewberryPi
         connectionmanager.h
         connectionmanager.cpp
         ${PIGPIO_SOURCES}
+)
+
+target_link_libraries(BrewberryPi PRIVATE
+    Qt6::Core
+    Qt6::Qml
+    ${PIGPIO_LIBRARY}
 )
