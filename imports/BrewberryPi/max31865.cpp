@@ -62,8 +62,7 @@ void MAX31865::MAX31865_readTemp(void) {
     }
 
     if (MAX31865_fault() != MAX31865_FAULT_NONE) {
-        qDebug() << "[MAX31865] Fault detected: " << MAX31865_fault();
-        MAX31865_compareFault();
+        //MAX31865_compareFault();
         quint8 config = MAX31865_buildConfigByte() | MAX31865_CONFIG_FAULTSTAT;
         MAX31865_writeRegister(MAX31865_CONFIG_REG, config);
         return;
@@ -127,6 +126,7 @@ void MAX31865::MAX31865_calculateTempF(void) {
 }
 
 void MAX31865::MAX31865_compareFault(void) {
+    /**
     quint8 fault = MAX31865_fault();
     if (fault & MAX31865_FAULT_HIGHTHRESH) {
         qDebug() << "[MAX31865 Fault] RTD High Threshold";
@@ -146,6 +146,7 @@ void MAX31865::MAX31865_compareFault(void) {
     if (fault & MAX31865_FAULT_OVUV) {
         qDebug() << "[MAX31865 Fault] Under/Over voltage";
     }
+    **/
 }
 
 float MAX31865::MAX31865_normalizeTemp(float temp) {
