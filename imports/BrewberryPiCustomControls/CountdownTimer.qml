@@ -9,9 +9,6 @@ pragma ComponentBehavior: Bound
 Item {
     id: root
 
-    implicitWidth: 240
-    implicitHeight: 300
-
     signal started()
     signal stopped()
     signal finished()
@@ -55,8 +52,8 @@ Item {
 
     Rectangle {
         id: timerContainer
-        width: parent.width
-        height: parent.height
+        width: root.width
+        height: root.height
         radius: 16
         gradient: Gradient {
             GradientStop { position: 0.0; color: Constants.isDarkTheme ? "#1C2526" : "#F5F5F7" }

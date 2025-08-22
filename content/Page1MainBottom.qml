@@ -97,7 +97,6 @@ Item {
                 width: parent.width / 2
                 height: parent.height / 2
 
-
                 Column {
                     width: parent.width
                     height: parent.height / 2

@@ -7,15 +7,18 @@
 #include <QSslCertificate>
 #include <QSslConfiguration>
 
-WebSocketManager::WebSocketManager(QObject *parent) : QObject(parent), m_server(nullptr), m_rpiData(nullptr), m_messageCounter(0) {
-    m_server = new QWebSocketServer(QStringLiteral("Brewberry Pi Server"), QWebSocketServer::SecureMode, this);
+WebSocketManager::WebSocketManager(QObject *parent)
+    : QObject(parent),
+    m_server(new QWebSocketServer(QStringLiteral("Brewberry Pi Server"), QWebSocketServer::SecureMode, this)),
+    m_rpiData(nullptr),
+    m_messageCounter(0)
+{
 }
 
 WebSocketManager::~WebSocketManager() {
 }
 
 bool WebSocketManager::startServer(quint16 port) {
-
     QSslConfiguration sslConfig;
     QFile certFile(":/ssl/server.crt");
     QFile keyFile(":/ssl/server.key");
@@ -51,7 +54,6 @@ bool WebSocketManager::startServer(quint16 port) {
 
 void WebSocketManager::setRPiData(RPiData *rpiData) {
     m_rpiData = rpiData;
-
     if (m_rpiData) {
         connect(m_rpiData, &RPiData::setpointHltOrMashChanged, this, &WebSocketManager::broadcastData);
         connect(m_rpiData, &RPiData::currentTemp_HLTChanged, this, &WebSocketManager::broadcastData);
@@ -84,8 +86,7 @@ void WebSocketManager::onNewConnection() {
     }
     qDebug() << "New client connected:" << client->peerAddress().toString();
 
-    // Send current RPiData to new client
-    client->sendTextMessage(this->serializeData(0));
+    client->sendTextMessage(this->serializeData(true)); // Send full data to new client
 
     connect(client, &QWebSocket::disconnected, this, &WebSocketManager::onClientDisconnected);
     connect(client, &QWebSocket::errorOccurred, this, &WebSocketManager::onClientError);
@@ -93,7 +94,6 @@ void WebSocketManager::onNewConnection() {
 
 void WebSocketManager::onClientDisconnected() {
     QWebSocket *client = qobject_cast<QWebSocket*>(sender());
-
     if (client) {
         QMutexLocker locker(&m_clientsMutex);
         m_clients.removeAll(client);
@@ -104,48 +104,44 @@ void WebSocketManager::onClientDisconnected() {
 
 void WebSocketManager::onClientError(QAbstractSocket::SocketError error) {
     QWebSocket *client = qobject_cast<QWebSocket*>(sender());
-
     if (client) {
         qDebug() << "Client error:" << client->errorString();
     }
 }
 
 QString WebSocketManager::serializeData(bool includeRateLimited) {
-    if (m_rpiData) {
-        QJsonObject json;
-
-        json["setpointHltOrMash"] = m_rpiData->getSetpointHltOrMash();
-        json["setpointManual_HLT"] = m_rpiData->getSetpointManual_HLT();
-        json["setpointManual_Boil"] = m_rpiData->getSetpointManual_Boil();
-        json["setpointManual_Boil"] = m_rpiData->getSetpointManual_Boil();
-        json["elementOn_HLT"] = m_rpiData->getElementOn_HLT();
-        json["elementOn_Boil"] = m_rpiData->getElementOn_Boil();
-        json["pumpOn_Wort"] = m_rpiData->getPumpOn_Wort();
-        json["pumpOn_Water"] = m_rpiData->getPumpOn_Water();
-        json["breweryTimer"] = m_rpiData->getBreweryTimer();
-
-        if (includeRateLimited) {
-            json["currentTemp_HLT"] = m_rpiData->getCurrentTemp_HLT();
-            json["currentTemp_Mash"] = m_rpiData->getCurrentTemp_Mash();
-            json["currentTemp_Boil"] = m_rpiData->getCurrentTemp_Boil();
-            json["currentTemp_Mash2"] = m_rpiData->getCurrentTemp_Mash2();
-            json["setpointTemp_HLT"] = m_rpiData->getSetpointTemp_HLT();
-            json["setpointTemp_Mash"] = m_rpiData->getSetpointTemp_Mash();
-            json["setpointTemp_Boil"] = m_rpiData->getSetpointTemp_Boil();
-            json["setpointPercent_HLT"] = m_rpiData->getSetpointPercent_HLT();
-            json["setpointPercent_Mash"] = m_rpiData->getSetpointPercent_Mash();
-            json["setpointPercent_Boil"] = m_rpiData->getSetpointPercent_Boil();
-            json["pwmDutyCycle_HLT"] = m_rpiData->getPwmDutyCycle_HLT();
-            json["pwmDutyCycle_Boil"] = m_rpiData->getPwmDutyCycle_Boil();
-        }
-
-        QJsonDocument doc(json);
-        QString jsonString = QString(doc.toJson(QJsonDocument::Compact));
-
-        return jsonString;
+    if (!m_rpiData) {
+        qDebug() << "[WebSocketManager] serializeData: RPiData is null";
+        return QString("{}");
     }
 
-    return QString("{}");
+    QJsonObject json;
+    json["setpointHltOrMash"] = m_rpiData->getSetpointHltOrMash();
+    json["setpointManual_HLT"] = m_rpiData->getSetpointManual_HLT();
+    json["setpointManual_Boil"] = m_rpiData->getSetpointManual_Boil();
+    json["elementOn_HLT"] = m_rpiData->getElementOn_HLT();
+    json["elementOn_Boil"] = m_rpiData->getElementOn_Boil();
+    json["pumpOn_Wort"] = m_rpiData->getPumpOn_Wort();
+    json["pumpOn_Water"] = m_rpiData->getPumpOn_Water();
+    json["breweryTimer"] = m_rpiData->getBreweryTimer();
+
+    if (includeRateLimited) {
+        json["currentTemp_HLT"] = m_rpiData->getCurrentTemp_HLT();
+        json["currentTemp_Mash"] = m_rpiData->getCurrentTemp_Mash();
+        json["currentTemp_Boil"] = m_rpiData->getCurrentTemp_Boil();
+        json["currentTemp_Mash2"] = m_rpiData->getCurrentTemp_Mash2();
+        json["setpointTemp_HLT"] = m_rpiData->getSetpointTemp_HLT();
+        json["setpointTemp_Mash"] = m_rpiData->getSetpointTemp_Mash();
+        json["setpointTemp_Boil"] = m_rpiData->getSetpointTemp_Boil();
+        json["setpointPercent_HLT"] = m_rpiData->getSetpointPercent_HLT();
+        json["setpointPercent_Mash"] = m_rpiData->getSetpointPercent_Mash();
+        json["setpointPercent_Boil"] = m_rpiData->getSetpointPercent_Boil();
+        json["pwmDutyCycle_HLT"] = m_rpiData->getPwmDutyCycle_HLT();
+        json["pwmDutyCycle_Boil"] = m_rpiData->getPwmDutyCycle_Boil();
+    }
+
+    QJsonDocument doc(json);
+    return QString(doc.toJson(QJsonDocument::Compact));
 }
 
 void WebSocketManager::broadcastData() {
@@ -155,10 +151,8 @@ void WebSocketManager::broadcastData() {
     bool includeRateLimited = (m_messageCounter == 0);
 
     QMutexLocker locker(&m_clientsMutex);
-
     for (QWebSocket *client : m_clients) {
         if (client->state() == QAbstractSocket::ConnectedState) {
-
             QMetaObject::invokeMethod(client, [client, this, includeRateLimited]() {
                 client->sendTextMessage(this->serializeData(includeRateLimited));
             }, Qt::QueuedConnection);
@@ -166,8 +160,7 @@ void WebSocketManager::broadcastData() {
     }
 }
 
-void WebSocketManager::closeServer()
-{
+void WebSocketManager::closeServer() {
     m_server->close();
     QMutexLocker locker(&m_clientsMutex);
     for (QWebSocket *client : std::as_const(m_clients)) {

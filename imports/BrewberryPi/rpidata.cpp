@@ -1,23 +1,16 @@
-/**
-  ******************************************************************************
-  * File Name          : rpidata.cpp
-  * Description        : Raspberry Pi / QT Data class
-  ******************************************************************************
-  * @attention
-**/
-
 #include "rpidata.h"
+#include <QDebug>
 
 RPiData::RPiData(QObject *parent) : QObject(parent)
 {}
 
 void RPiData::setSetpointHltOrMash(bool value) {
     QWriteLocker locker(&rpiDataMutex);
-    if (RPiDataStruct.setpointHltOrMash != value) {        
+    if (RPiDataStruct.setpointHltOrMash != value) {
         RPiDataStruct.setpointHltOrMash = value;
         emit setpointHltOrMashChanged(value);
     }
-};
+}
 
 void RPiData::setCurrentTemp_HLT(float value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -25,7 +18,7 @@ void RPiData::setCurrentTemp_HLT(float value) {
         RPiDataStruct.currentTemp_HLT = value;
         emit currentTemp_HLTChanged();
     }
-};
+}
 
 void RPiData::setCurrentTemp_Mash(float value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -33,7 +26,7 @@ void RPiData::setCurrentTemp_Mash(float value) {
         RPiDataStruct.currentTemp_Mash = value;
         emit currentTemp_MashChanged();
     }
-};
+}
 
 void RPiData::setCurrentTemp_Boil(float value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -41,7 +34,7 @@ void RPiData::setCurrentTemp_Boil(float value) {
         RPiDataStruct.currentTemp_Boil = value;
         emit currentTemp_BoilChanged();
     }
-};
+}
 
 void RPiData::setCurrentTemp_Mash2(float value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -49,7 +42,7 @@ void RPiData::setCurrentTemp_Mash2(float value) {
         RPiDataStruct.currentTemp_Mash2 = value;
         emit currentTemp_Mash2Changed();
     }
-};
+}
 
 void RPiData::setSetpointTemp_HLT(float value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -57,15 +50,15 @@ void RPiData::setSetpointTemp_HLT(float value) {
         RPiDataStruct.setpointTemp_HLT = value;
         emit setpointTemp_HLTChanged();
     }
-};
+}
 
-void RPiData::setSetpointTemp_Hash(float value) {
+void RPiData::setSetpointTemp_Mash(float value) {
     QWriteLocker locker(&rpiDataMutex);
     if (RPiDataStruct.setpointTemp_Mash != value) {
         RPiDataStruct.setpointTemp_Mash = value;
         emit setpointTemp_MashChanged();
     }
-};
+}
 
 void RPiData::setSetpointTemp_Boil(float value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -73,7 +66,7 @@ void RPiData::setSetpointTemp_Boil(float value) {
         RPiDataStruct.setpointTemp_Boil = value;
         emit setpointTemp_BoilChanged();
     }
-};
+}
 
 void RPiData::setSetpointPercent_HLT(int value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -81,7 +74,7 @@ void RPiData::setSetpointPercent_HLT(int value) {
         RPiDataStruct.setpointPercent_HLT = value;
         emit setpointPercent_HLTChanged();
     }
-};
+}
 
 void RPiData::setSetpointPercent_Mash(int value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -89,7 +82,7 @@ void RPiData::setSetpointPercent_Mash(int value) {
         RPiDataStruct.setpointPercent_Mash = value;
         emit setpointPercent_MashChanged();
     }
-};
+}
 
 void RPiData::setSetpointPercent_Boil(int value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -97,7 +90,7 @@ void RPiData::setSetpointPercent_Boil(int value) {
         RPiDataStruct.setpointPercent_Boil = value;
         emit setpointPercent_BoilChanged();
     }
-};
+}
 
 void RPiData::setSetpointManual_HLT(bool value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -105,14 +98,14 @@ void RPiData::setSetpointManual_HLT(bool value) {
         RPiDataStruct.setpointManual_HLT = value;
         emit setpointManual_HLTChanged(value);
     }
-};
+}
 
 void RPiData::setSetpointManual_Boil(bool value) {
     QWriteLocker locker(&rpiDataMutex);
     if (RPiDataStruct.setpointManual_Boil != value) {
         RPiDataStruct.setpointManual_Boil = value;
         emit setpointManual_BoilChanged(value);
-    };
+    }
 }
 
 void RPiData::setElementOn_HLT(bool value) {
@@ -121,7 +114,7 @@ void RPiData::setElementOn_HLT(bool value) {
         RPiDataStruct.elementOn_HLT = value;
         emit elementOn_HLTChanged(value);
     }
-};
+}
 
 void RPiData::setElementOn_Boil(bool value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -129,7 +122,7 @@ void RPiData::setElementOn_Boil(bool value) {
         RPiDataStruct.elementOn_Boil = value;
         emit elementOn_BoilChanged(value);
     }
-};
+}
 
 void RPiData::setPumpOn_Wort(bool value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -137,7 +130,7 @@ void RPiData::setPumpOn_Wort(bool value) {
         RPiDataStruct.pumpOn_Wort = value;
         emit pumpOn_WortChanged(value);
     }
-};
+}
 
 void RPiData::setPumpOn_Water(bool value) {
     QWriteLocker locker(&rpiDataMutex);
@@ -145,7 +138,7 @@ void RPiData::setPumpOn_Water(bool value) {
         RPiDataStruct.pumpOn_Water = value;
         emit pumpOn_WaterChanged(value);
     }
-};
+}
 
 void RPiData::setPwmDutyCycle_HLT(float value) {
     QWriteLocker locker(&rpiDataMutex);

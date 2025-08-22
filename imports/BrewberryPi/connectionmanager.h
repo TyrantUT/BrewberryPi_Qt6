@@ -4,7 +4,11 @@
 #include <QObject>
 #include <QDebug>
 #include <QThreadPool>
+#include <QThread>
 #include "rpidata.h"
+#include "rpithreads.h"
+
+class QApplication;
 
 class ConnectionManager : public QObject
 {
@@ -12,9 +16,19 @@ class ConnectionManager : public QObject
 
 public:
     explicit ConnectionManager(QObject *parent = nullptr);
+    ~ConnectionManager();
 
-    // This method will be used to set up the connections
-    void setupConnections(RPiData *RPiDataGlobal);
+    void setupConnections(QApplication *app, RPiData *rpiData);
+
+private:
+    void setupRPiDataConnections(RPiData *rpiData);
+
+    QThread *temperatureThread;
+    QThread *pidHLTThread;
+    QThread *pidBoilThread;
+    RPiThreads *temperatureWorker;
+    RPiThreads *pidHLTWorker;
+    RPiThreads *pidBoilWorker;
 };
 
 #endif // CONNECTIONMANAGER_H
