@@ -32,8 +32,7 @@ qt_add_executable(${PROJECT_NAME}
     MANUAL_FINALIZATION
 )
 
-
-target_link_libraries(BrewberryPiApp PRIVATE Qt6::Core)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core)
 qt_add_resources(BrewberryPiApp "configuration"
     PREFIX "/"
     FILES
@@ -49,7 +48,7 @@ if (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm")
 
     # pigpio
     set(PIGPIO_LIBRARY pigpio pthread)
-    target_include_directories(${PROJECT_NAME} PRIVATE /sysroot/usr /sysroot/usr/include)
+    target_include_directories(${PROJECT_NAME} PRIVATE /sysroot/usr/include)
     target_link_directories(${PROJECT_NAME} PRIVATE /sysroot/usr/lib)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wno-comment -Wunused-function)
 

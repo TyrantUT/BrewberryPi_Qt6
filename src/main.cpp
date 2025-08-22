@@ -36,8 +36,8 @@ int main(int argc, char *argv[])
 
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 
-    // Set OpenGL ES context attributes for Raspberry Pi
-#ifndef PLATFORM_ARM
+    // Set context attributes for Raspberry Pi
+#ifdef PLATFORM_ARM
     QSurfaceFormat format;
     format.setDepthBufferSize(16);
     format.setStencilBufferSize(8);
@@ -47,7 +47,6 @@ int main(int argc, char *argv[])
     QApplication::setOverrideCursor(cursor);
     QApplication::changeOverrideCursor(cursor);
 #endif
-
 
     using namespace Qt::StringLiterals;
 
