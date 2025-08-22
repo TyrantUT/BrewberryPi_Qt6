@@ -44,7 +44,7 @@ message(STATUS "CMAKE System Processor: ${CMAKE_SYSTEM_PROCESSOR}")
 # Detect if the target architecture is Apple / ARM
 if (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm")
     add_definitions(-DPLATFORM_ARM)
-    message(STATUS "Linking pigpio and tslib libraries")
+    message(STATUS "Linking pigpio and tslib libraries.")
 
     # pigpio
     set(PIGPIO_LIBRARY pigpio pthread)
