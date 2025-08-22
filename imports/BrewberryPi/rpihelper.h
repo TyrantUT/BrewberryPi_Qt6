@@ -4,7 +4,7 @@
 #include <QThread>
 #include <QDebug>
 
-#ifdef PLATFORM_APPLE
+#ifdef PLATFORM_ARM
 #include "pigpio.h"
 #else
 #include "/sysroot/usr/include/pigpio.h"
@@ -37,6 +37,7 @@
 
 float mapPWM(float input);
 void piSetup(void);
+void piDestroy(void);
 void gpioWriteValue(unsigned pin, unsigned value);
 void pwmWriteValue(unsigned pin, unsigned value);
 void spiSendBytes(quint8 byte);

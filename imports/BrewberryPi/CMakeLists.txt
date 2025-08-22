@@ -17,7 +17,7 @@ if (APPLE)
     message(STATUS "Skipping pigpio files.")
     set(PIGPIO_SOURCES pigpio.h pigpio.cpp)
 else()
-    message(STATUS "Adding pigpio related directories and libraries")
+    message(STATUS "Including pigpio related directories and libraries")
     set(PIGPIO_SOURCES "")
     target_include_directories(BrewberryPi PRIVATE /sysroot/usr /sysroot/usr/include)
     target_link_directories(BrewberryPi PRIVATE /sysroot/usr/lib)
@@ -34,6 +34,7 @@ qt6_add_qml_module(BrewberryPi
         max31865.h
         max31865.cpp
         rpihelper.h
+        rpihelper.cpp
         pidcontroller.h
         pidcontroller.cpp
         rpithreads.h

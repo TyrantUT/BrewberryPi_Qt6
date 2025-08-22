@@ -82,6 +82,8 @@ void ConnectionManager::setupConnections(QApplication *app, RPiData *rpiData)
             pidBoilThread->quit();
             pidBoilThread->wait();
         }
+
+        piDestroy();
     }, Qt::DirectConnection);
 
     // Setup RPiData signal connections

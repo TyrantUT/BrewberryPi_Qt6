@@ -29,6 +29,7 @@ qt_add_executable(${PROJECT_NAME}
     src/websocketmanager.h
     src/websocketmanager.cpp
     resources/resources.qrc
+    MANUAL_FINALIZATION
 )
 
 
@@ -39,28 +40,34 @@ qt_add_resources(BrewberryPiApp "configuration"
         qtquickcontrols2.conf
 )
 
-# Detect if the target architecture is ARM
-if (APPLE)
-    message(STATUS "Skipping pigpio files.")
-    add_definitions(-DPLATFORM_APPLE)
-    set(PIGPIO_LIBRARY "")
-    set(TSLIB_LIBRARY "")
-else()
+message(STATUS "Architecture detected: ${ARCHITECTURE}")
+
+# Detect if the target architecture is Apple / ARM
+if (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm")
     message(STATUS "Linking pigpio and tslib libraries")
+
+    # pigpio
     set(PIGPIO_LIBRARY pigpio pthread)
     target_include_directories(${PROJECT_NAME} PRIVATE /sysroot/usr /sysroot/usr/include)
     target_link_directories(${PROJECT_NAME} PRIVATE /sysroot/usr/lib)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wcomment -Wunused-function)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wno-comment -Wunused-function)
 
-    # Find tslib
+    # tslib
     find_library(TSLIB_LIBRARY NAMES ts HINTS /usr/lib/aarch64-linux-gnu)
     find_path(TSLIB_INCLUDE_DIR NAMES tslib.h HINTS /usr/include)
+
     if (NOT TSLIB_LIBRARY OR NOT TSLIB_INCLUDE_DIR)
         message(FATAL_ERROR "tslib not found. Install libts-dev on the Raspberry Pi and sync to sysroot.")
+    else()
+        message(STATUS "tslib found, linking libraries.")
     endif()
 
     target_include_directories(${PROJECT_NAME} PRIVATE ${TSLIB_INCLUDE_DIR})
-
+else()
+    message(STATUS "Skipping pigpio and tslib.")
+    add_definitions(-DPLATFORM_ARM)
+    set(PIGPIO_LIBRARY "")
+    set(TSLIB_LIBRARY "")
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
@@ -98,11 +105,4 @@ install(TARGETS ${PROJECT_NAME}
 set(QML_IMPORT_PATH ${PROJECT_BINARY_DIR}/qml CACHE PATH
     "Path to the custom QML components defined by the project")
 
-qt_generate_deploy_qml_app_script(
-    TARGET BrewberryPiApp
-    OUTPUT_SCRIPT deploy_script
-    MACOS_BUNDLE_POST_BUILD
-    NO_UNSUPPORTED_PLATFORM_ERROR
-    DEPLOY_USER_QML_MODULES_ON_UNSUPPORTED_PLATFORM
-)
-install(SCRIPT ${deploy_script})
+qt_finalize_target(${PROJECT_NAME})

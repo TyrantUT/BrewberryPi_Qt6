@@ -36,6 +36,12 @@ void piSetup(void) {
     gpioPWM(PWM_BOIL, PI_LOW);
 }
 
+void piDestroy(void) {
+    qDebug() << "Shutting down GPIO";
+
+    gpioTerminate();
+}
+
 void gpioWriteValue(unsigned pin, unsigned value) {
     gpioWrite(pin, value);
 }

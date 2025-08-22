@@ -29,15 +29,6 @@ int main(int argc, char *argv[])
     if (!freopen(nullStream, "a", stderr)) assert(false);
 #endif
 
-    // Set OpenGL ES context attributes for Raspberry Pi
-#ifndef PLATFORM_APPLE
-    QSurfaceFormat format;
-    format.setDepthBufferSize(16);
-    format.setStencilBufferSize(8);
-    format.setRenderableType(QSurfaceFormat::OpenGLES);
-    QSurfaceFormat::setDefaultFormat(format);
-#endif
-
     set_qt_environment();
 
     QApplication app(argc, argv);
@@ -45,11 +36,18 @@ int main(int argc, char *argv[])
 
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 
-    if (QSysInfo::productType() != "macos") {
-        QCursor cursor(Qt::BlankCursor);
-        QApplication::setOverrideCursor(cursor);
-        QApplication::changeOverrideCursor(cursor);
-    }
+    // Set OpenGL ES context attributes for Raspberry Pi
+#ifndef PLATFORM_ARM
+    QSurfaceFormat format;
+    format.setDepthBufferSize(16);
+    format.setStencilBufferSize(8);
+    format.setRenderableType(QSurfaceFormat::OpenGLES);
+    QSurfaceFormat::setDefaultFormat(format);
+    QCursor cursor(Qt::BlankCursor);
+    QApplication::setOverrideCursor(cursor);
+    QApplication::changeOverrideCursor(cursor);
+#endif
+
 
     using namespace Qt::StringLiterals;
 

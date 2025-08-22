@@ -29,7 +29,6 @@ MAX31865::MAX31865(qint8 spi_cs) {
 }
 
 MAX31865::~MAX31865() {
-    gpioTerminate();
 }
 
 quint8 MAX31865::MAX31865_buildConfigByte(void) {
