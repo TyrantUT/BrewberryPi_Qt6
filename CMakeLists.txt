@@ -30,6 +30,7 @@ qt_add_executable(BrewberryPiApp
     resources/resources.qrc
     resources/server.key
     resources/server.crt
+    MANUAL_FINALIZATION
 )
 
 qt_add_resources(BrewberryPiApp "configuration"
