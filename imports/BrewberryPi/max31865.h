@@ -20,9 +20,8 @@ public:
     virtual ~MAX31865();
 
     void MAX31865_readTemp(void);
-    float MAX31865_tempC(void);
-    float MAX31865_tempF(void);
-    quint8 MAX31865_fault(void);
+    float MAX31865_tempF() const;
+    quint8 MAX31865_fault() const;
     void MAX31865_writeRegister(quint8 regNum, quint8 data);
     void MAX31865_readRegister(quint8 regNumStart, quint8 count, quint8 buffer[]);
     void MAX31865_calculateTempC(quint16 rtd_response);
@@ -35,7 +34,7 @@ private:
 
 private:
     max31865 MAX31865_handle;
-    QReadWriteLock temperatureLocker;
+    mutable QReadWriteLock temperatureLocker;
     std::deque<float> tempBuffer;
     const int bufferSize = 16;
     static constexpr float PT100_RESISTANCE = 100.0f;

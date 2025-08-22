@@ -48,17 +48,18 @@ quint8 MAX31865::MAX31865_buildConfigByte(void) {
 
 void MAX31865::MAX31865_readTemp(void) {
     quint8 outBuf[8];
-
     MAX31865_readRegister(0, 8, outBuf);
-
     quint8 rtd_msb = outBuf[1];
     quint8 rtd_lsb = outBuf[2];
-
     quint16 rtd_response = ((rtd_msb << 8) | rtd_lsb) >> 1;
-
     {
         QWriteLocker locker(&temperatureLocker);
         MAX31865_handle.fault = outBuf[7];
+    }
+    qint8 spi_cs;
+    {
+        QReadLocker locker(&temperatureLocker);
+        spi_cs = MAX31865_handle.spi_cs;
     }
 
     if (MAX31865_fault() != MAX31865_FAULT_NONE) {
@@ -71,28 +72,34 @@ void MAX31865::MAX31865_readTemp(void) {
 
     MAX31865_calculateTempC(rtd_response);
     MAX31865_calculateTempF();
-
     QThread::msleep(100);
 }
 
 void MAX31865::MAX31865_writeRegister(quint8 regNum, quint8 data) {
-    gpioWrite(MAX31865_handle.spi_cs, PI_LOW);
+    qint8 spi_cs;
+    {
+        QReadLocker locker(&temperatureLocker);
+        spi_cs = MAX31865_handle.spi_cs;
+    }
+    gpioWrite(spi_cs, PI_LOW);
     quint8 address = MAX31865_CONFIG_WRITE | regNum;
     spiSendBytes(address);
     spiSendBytes(data);
-    gpioWrite(MAX31865_handle.spi_cs, PI_HIGH);
+    gpioWrite(spi_cs, PI_HIGH);
 }
 
 void MAX31865::MAX31865_readRegister(quint8 regNumStart, quint8 count, quint8 buffer[]) {
-    gpioWrite(MAX31865_handle.spi_cs, PI_LOW);
-
+    qint8 spi_cs;
+    {
+        QReadLocker locker(&temperatureLocker);
+        spi_cs = MAX31865_handle.spi_cs;
+    }
+    gpioWrite(spi_cs, PI_LOW);
     spiSendBytes(regNumStart);
-
     for (int i = 0; i < count; i++) {
         buffer[i] = spiReceiveBytes();
     }
-
-    gpioWrite(MAX31865_handle.spi_cs, PI_HIGH);
+    gpioWrite(spi_cs, PI_HIGH);
 }
 
 void MAX31865::MAX31865_calculateTempC(quint16 rtd_response) {
@@ -168,12 +175,12 @@ float MAX31865::MAX31865_normalizeTemp(float temp) {
     return average;
 }
 
-float MAX31865::MAX31865_tempF(void) {
+float MAX31865::MAX31865_tempF() const {
     QReadLocker locker(&temperatureLocker);
     return MAX31865_handle.tempF;
 }
 
-quint8 MAX31865::MAX31865_fault(void) {
+quint8 MAX31865::MAX31865_fault() const {
     QReadLocker locker(&temperatureLocker);
     return MAX31865_handle.fault;
 }
