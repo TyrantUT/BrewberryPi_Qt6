@@ -70,6 +70,8 @@ void RPiThreads::processTemps() {
             }
             m_rpiData->setCurrentTemp_Mash2(tempMash2Temp); // Thread-safe via RPiData's mutex
         }
+
+        QThread::msleep(1000); // Delay for 1000msec second to slow down temperature reads
     }
 
     QThread::currentThread()->quit();
