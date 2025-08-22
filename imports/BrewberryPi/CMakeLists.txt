@@ -13,7 +13,7 @@ set_source_files_properties(BreweryValues.qml
 )
 
 # Detect if the target architecture is ARM
-if (PLATFORM_ARM)
+if (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm")
     message(STATUS "Including pigpio related directories and libraries")
     set(PIGPIO_SOURCES "")
     target_include_directories(BrewberryPi PRIVATE /sysroot/usr /sysroot/usr/include)
