@@ -5,9 +5,9 @@
 #include <QDebug>
 
 #ifdef PLATFORM_ARM
-#include "pigpio.h"
-#else
 #include "/sysroot/usr/include/pigpio.h"
+#else
+#include "pigpio.h"
 #endif
 
 #define QT_DEBUG_ON         (bool)      true

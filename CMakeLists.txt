@@ -40,10 +40,11 @@ qt_add_resources(BrewberryPiApp "configuration"
         qtquickcontrols2.conf
 )
 
-message(STATUS "Architecture detected: ${ARCHITECTURE}")
+message(STATUS "CMAKE System Processor: ${CMAKE_SYSTEM_PROCESSOR}")
 
 # Detect if the target architecture is Apple / ARM
 if (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm")
+    add_definitions(-DPLATFORM_ARM)
     message(STATUS "Linking pigpio and tslib libraries")
 
     # pigpio
@@ -65,7 +66,6 @@ if (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm")
     target_include_directories(${PROJECT_NAME} PRIVATE ${TSLIB_INCLUDE_DIR})
 else()
     message(STATUS "Skipping pigpio and tslib.")
-    add_definitions(-DPLATFORM_ARM)
     set(PIGPIO_LIBRARY "")
     set(TSLIB_LIBRARY "")
 endif()
