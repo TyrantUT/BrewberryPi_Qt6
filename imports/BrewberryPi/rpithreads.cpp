@@ -1,4 +1,3 @@
-#include <chrono>
 #include "rpithreads.h"
 #include "rpihelper.h"
 #include "max31865.h"
@@ -32,7 +31,6 @@ void RPiThreads::processTemps() {
     MAX31865 MAX31865_mash2(MAX31865_MASH2_GPIO);
 
     while (!QThread::currentThread()->isInterruptionRequested()) {
-        auto start = std::chrono::steady_clock::now();
 
         // HLT
         MAX31865_hlt.MAX31865_readTemp();
