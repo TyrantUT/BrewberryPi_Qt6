@@ -31,9 +31,9 @@ private slots:
 private:
     QWebSocketServer *m_server;
     QList<QWebSocket*> m_clients;
+    RPiData *m_rpiData;
     int m_messageCounter = 0;
     QMutex m_clientsMutex;
-    RPiData *m_rpiData;
 };
 
 #endif // WEBSOCKETMANAGER_H

@@ -48,7 +48,7 @@ if(APPLE)
 else()
     message(STATUS "Adding pigpio related directories and libraries")
     set(PIGPIO_LIBRARY pigpio pthread)
-    target_include_directories(BrewberryPiApp PRIVATE /sysroot/usr /sysroot/usr/include)
+    target_include_directories(BrewberryPiApp PUBLIC /sysroot/usr /sysroot/usr/include)
     target_link_directories(BrewberryPiApp PRIVATE /sysroot/usr/lib)
     target_compile_options(BrewberryPiApp PRIVATE -Wall -Wcomment -Wunused-function)
 

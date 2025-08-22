@@ -19,7 +19,7 @@ if (APPLE)
 else()
     message(STATUS "Adding pigpio related directories and libraries")
     set(PIGPIO_SOURCES "")
-    target_include_directories(BrewberryPi PRIVATE /sysroot/usr /sysroot/usr/include)
+    target_include_directories(BrewberryPi PUBLIC /sysroot/usr /sysroot/usr/include)
     target_link_directories(BrewberryPi PRIVATE /sysroot/usr/lib)
 endif()
 
@@ -31,17 +31,11 @@ qt6_add_qml_module(BrewberryPi
         BreweryValues.qml
         BreweryFunctions.js
     SOURCES
-        max31865.h
-        max31865.cpp
-        rpihelper.h
-        rpihelper.cpp
-        pidcontroller.h
-        pidcontroller.cpp
-        rpithreads.h
-        rpithreads.cpp
-        rpidata.h
-        rpidata.cpp
-        connectionmanager.h
-        connectionmanager.cpp
+        max31865.h max31865.cpp
+        rpihelper.h rpihelper.cpp
+        pidcontroller.h pidcontroller.cpp
+        rpithreads.h rpithreads.cpp
+        rpidata.h rpidata.cpp
+        connectionmanager.h connectionmanager.cpp
         ${PIGPIO_SOURCES}
 )
