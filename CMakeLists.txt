@@ -10,29 +10,29 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS
-    Core
-    Gui
-    Qml
-    Quick
-    Widgets
-    QuickControls2
-    Charts
-    WebSockets
-    Network
-)
+            Core
+            Gui
+            Qml
+            Quick
+            Widgets
+            QuickControls2
+            Charts
+            WebSockets
+            Network
+        )
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
-qt_add_executable(BrewberryPiApp
+qt_add_executable(${PROJECT_NAME}
     src/main.cpp
     src/websocketmanager.h
     src/websocketmanager.cpp
     resources/resources.qrc
-    resources/server.key
-    resources/server.crt
-    MANUAL_FINALIZATION
 )
 
+
+target_link_libraries(BrewberryPiApp PRIVATE Qt6::Core)
 qt_add_resources(BrewberryPiApp "configuration"
     PREFIX "/"
     FILES
@@ -40,7 +40,7 @@ qt_add_resources(BrewberryPiApp "configuration"
 )
 
 # Detect if the target architecture is ARM
-if(APPLE)
+if (APPLE)
     message(STATUS "Skipping pigpio files.")
     add_definitions(-DPLATFORM_APPLE)
     set(PIGPIO_LIBRARY "")
@@ -48,23 +48,22 @@ if(APPLE)
 else()
     message(STATUS "Adding pigpio related directories and libraries")
     set(PIGPIO_LIBRARY pigpio pthread)
-    target_include_directories(BrewberryPiApp PUBLIC /sysroot/usr /sysroot/usr/include)
-    target_link_directories(BrewberryPiApp PRIVATE /sysroot/usr/lib)
-    target_compile_options(BrewberryPiApp PRIVATE -Wall -Wcomment -Wunused-function)
+    target_include_directories(${PROJECT_NAME} PRIVATE /sysroot/usr /sysroot/usr/include)
+    target_link_directories(${PROJECT_NAME} PRIVATE /sysroot/usr/lib)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wcomment -Wunused-function)
 
+    # Find tslib
     find_library(TSLIB_LIBRARY NAMES ts HINTS /usr/lib/aarch64-linux-gnu)
     find_path(TSLIB_INCLUDE_DIR NAMES tslib.h HINTS /usr/include)
-    if(NOT TSLIB_LIBRARY OR NOT TSLIB_INCLUDE_DIR)
+    if (NOT TSLIB_LIBRARY OR NOT TSLIB_INCLUDE_DIR)
         message(FATAL_ERROR "tslib not found. Install libts-dev on the Raspberry Pi and sync to sysroot.")
     endif()
-    target_include_directories(BrewberryPiApp PRIVATE ${TSLIB_INCLUDE_DIR})
+
+    target_include_directories(${PROJECT_NAME} PRIVATE ${TSLIB_INCLUDE_DIR})
+
 endif()
 
-# Add imports/BrewberryPi/ to include directories for BrewberryPiApp
-target_include_directories(BrewberryPiApp PRIVATE ${CMAKE_SOURCE_DIR}/imports/BrewberryPi)
-
-# Link Qt libraries and QML modules
-target_link_libraries(BrewberryPiApp PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Core
     Qt6::Gui
     Qt6::Qml
@@ -85,20 +84,20 @@ set(QML_IMPORT_PATH ${QT_QML_OUTPUT_DIRECTORY}
 )
 set(QT_QML_GENERATE_QMLLS_INI ON)
 
-# Include QML module subdirectories
-add_subdirectory(content)
-add_subdirectory(imports)
+include(${CMAKE_CURRENT_SOURCE_DIR}/qmlmodules)
 
-# Finalize target to include QML plugins and dependencies
-qt_finalize_target(BrewberryPiApp)
 
-install(TARGETS BrewberryPiApp
+#include(GNUInstallDirs)
+install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# Generate deployment script
+# make IDEs aware of the QML import path
+set(QML_IMPORT_PATH ${PROJECT_BINARY_DIR}/qml CACHE PATH
+    "Path to the custom QML components defined by the project")
+
 qt_generate_deploy_qml_app_script(
     TARGET BrewberryPiApp
     OUTPUT_SCRIPT deploy_script
@@ -106,9 +105,4 @@ qt_generate_deploy_qml_app_script(
     NO_UNSUPPORTED_PLATFORM_ERROR
     DEPLOY_USER_QML_MODULES_ON_UNSUPPORTED_PLATFORM
 )
-
 install(SCRIPT ${deploy_script})
-
-# Make IDEs aware of the QML import path
-set(QML_IMPORT_PATH ${PROJECT_BINARY_DIR}/qml CACHE PATH
-    "Path to the custom QML components defined by the project")
