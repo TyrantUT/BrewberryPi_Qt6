@@ -7,7 +7,18 @@
 #ifdef PLATFORM_ARM
 #include "/sysroot/usr/include/pigpio.h"
 #else
-#include "pigpio.h"
+// Define stubs for pigpio
+#define PI_INPUT 0
+#define PI_OUTPUT 1
+#define PI_LOW 0
+#define PI_HIGH 1
+inline void gpioInitialise() {}
+inline void gpioSetMode(unsigned, unsigned) {}
+inline void gpioWrite(unsigned, unsigned) {}
+inline void gpioPWM(unsigned, unsigned) {}
+inline void gpioSetPWMrange(unsigned, unsigned) {}
+inline void gpioTerminate() {}
+inline int gpioRead(unsigned) { return 0; }
 #endif
 
 #define QT_DEBUG_ON         (bool)      true
