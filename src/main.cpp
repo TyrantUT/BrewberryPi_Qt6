@@ -5,9 +5,9 @@
 #include "app_environment.h"
 #include "import_qml_plugins.h"
 #include "websocketmanager.h"
-#include "rpidata.h"
-#include "rpihelper.h"
-#include "connectionmanager.h"
+#include "imports/BrewberryPi/rpidata.h"
+#include "imports/BrewberryPi/rpihelper.h"
+#include "imports/BrewberryPi/connectionmanager.h"
 #include <csignal>
 
 // Enable to remove debug outputs throughout code

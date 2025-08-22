@@ -7,7 +7,7 @@
 #include <QList>
 #include <QMutex>
 #include <QJsonDocument>
-#include "rpidata.h"
+#include "imports/BrewberryPi/rpidata.h"
 
 class WebSocketManager : public QObject {
     Q_OBJECT
