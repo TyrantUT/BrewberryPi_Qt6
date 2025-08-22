@@ -46,6 +46,23 @@ int main(int argc, char *argv[])
     QCursor cursor(Qt::BlankCursor);
     QApplication::setOverrideCursor(cursor);
     QApplication::changeOverrideCursor(cursor);
+
+    // Set environment variables for eglfs and tslib touch input
+    qputenv("QT_QPA_PLATFORM", "eglfs");
+    qputenv("QT_PLUGIN_PATH", "/usr/local/qt6/plugins");
+    qputenv("QT_QPA_EGLFS_PHYSICAL_WIDTH", "1024");
+    qputenv("QT_QPA_EGLFS_PHYSICAL_HEIGHT", "600");
+    qputenv("QT_QPA_EGLFS_HIDECURSOR", "1");
+    qputenv("QT_QPA_GENERIC_PLUGINS", "tslib");
+    qputenv("QT_QPA_EGLFS_NO_LIBINPUT", "1");
+    qputenv("QT_QPA_EVDEV_MOUSE_PARAMETERS", "grab=1");
+    qputenv("TSLIB_TSEVENTTYPE", "INPUT");
+    qputenv("TSLIB_CALIBFILE", "/etc/pointercal");
+    qputenv("TSLIB_CONFFILE", "/etc/ts.conf");
+    qputenv("TSLIB_CONSOLEDEVICE", "none");
+    qputenv("TSLIB_FBDEVICE", "/dev/fb0");
+    qputenv("TSLIB_TSDEVICE", "/dev/input/event0");
+    qputenv("TSLIB_PLUGINDIR", "/usr/lib/aarch64-linux-gnu/ts0");
 #endif
 
     using namespace Qt::StringLiterals;
