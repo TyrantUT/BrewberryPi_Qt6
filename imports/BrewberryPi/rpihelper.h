@@ -35,89 +35,11 @@
 #define PUMP_WORT           2
 #define PUMP_WATER          3
 
-static float mapPWM(float input) {
-    return 1.0 * OUTPUT_MIN + \
-        ((OUTPUT_MAX - OUTPUT_MIN) / (INPUT_MAX - INPUT_MIN)) \
-        * (input - INPUT_MIN);
-};
-
-static void piSetup(void) {
-
-    gpioInitialise();
-
-    // Set MISI to Input
-    gpioSetMode(MISO, PI_INPUT);
-
-    // Set MOSI to Output ands set Low
-    gpioSetMode(MOSI, PI_OUTPUT);
-    gpioWrite(MOSI, PI_LOW);
-
-    // Set SCLK to Output and set to Low
-    gpioSetMode(SCLK, PI_OUTPUT);
-    gpioWrite(SCLK, PI_LOW);
-
-    // Set Element Output to High
-    gpioSetMode(ELEMENT_HLT, PI_OUTPUT);
-    gpioSetMode(ELEMENT_BOIL, PI_OUTPUT);
-    gpioWrite(ELEMENT_HLT, PI_LOW);
-    gpioWrite(ELEMENT_BOIL, PI_LOW);
-
-    // Set Pump Output to High
-    gpioSetMode(PUMP_WORT, PI_OUTPUT);
-    gpioSetMode(PUMP_WATER, PI_OUTPUT);
-    gpioWrite(PUMP_WORT, PI_HIGH);
-    gpioWrite(PUMP_WATER, PI_HIGH);
-
-    // Set PWM Modes
-    gpioSetMode(PWM_HLT, PI_OUTPUT);
-    gpioSetMode(PWM_BOIL, PI_OUTPUT);
-    gpioSetPWMrange(PWM_HLT, OUTPUT_MAX);
-    gpioSetPWMrange(PWM_BOIL, OUTPUT_MAX);
-
-    // Default PWM to 0
-    gpioPWM(PWM_HLT, PI_LOW);
-    gpioPWM(PWM_BOIL, PI_LOW);
-}
-
-static void gpioWriteValue(unsigned pin, unsigned value) {
-    gpioWrite(pin, value);
-};
-
-static void pwmWriteValue(unsigned pin, unsigned value) {
-    gpioPWM(pin, value);
-};
-
-static void spiSendBytes(quint8 byte) {
-
-    for (int i = 0; i < 8; i++) {
-        gpioWrite(SCLK, PI_HIGH);
-        if (byte & 0x80) {
-            gpioWrite(MOSI, PI_HIGH);
-        } else {
-            gpioWrite(MOSI, PI_LOW);
-        }
-        byte <<= 1;
-        gpioWrite(SCLK, PI_LOW);
-
-        QThread::usleep(500);
-    }
-}
-
-static quint8 spiReceiveBytes(void) {
-    quint8 byte = 0x00;
-
-    for (int i = 0; i < 8; i++) {
-        gpioWrite(SCLK, PI_HIGH);
-        byte <<= 1;
-        if (gpioRead(MISO)) {
-            byte |= 0x1;
-        }
-        gpioWrite(SCLK, PI_LOW);
-
-        QThread::usleep(500);
-    }
-
-    return byte;
-}
+float mapPWM(float input);
+void piSetup(void);
+void gpioWriteValue(unsigned pin, unsigned value);
+void pwmWriteValue(unsigned pin, unsigned value);
+void spiSendBytes(quint8 byte);
+quint8 spiReceiveBytes(void);
 
 #endif // RPIHELPER_H

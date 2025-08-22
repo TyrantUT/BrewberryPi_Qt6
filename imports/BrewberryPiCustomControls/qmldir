@@ -1,4 +1,4 @@
-Module BrewberryPiCustomControls
+module BrewberryPiCustomControls
 CountdownTimer 1.0 CountdownTimer.qml
 CustomButton 1.0 CustomButton.qml
 CustomDelayButton 1.0 CustomDelayButton.qml

@@ -1,0 +1,4 @@
+module content
+App 1.0 App.qml
+Page1MainTop 1.0 Page1MainTop.qml
+Page1MainBottom 1.0 Page1MainBottom.qml

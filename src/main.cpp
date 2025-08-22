@@ -5,9 +5,9 @@
 #include "app_environment.h"
 #include "import_qml_plugins.h"
 #include "websocketmanager.h"
-#include "imports/BrewberryPi/rpidata.h"
-#include "imports/BrewberryPi/rpihelper.h"
-#include "imports/BrewberryPi/connectionmanager.h"
+#include "rpidata.h"
+#include "rpihelper.h"
+#include "connectionmanager.h"
 #include <csignal>
 
 // Enable to remove debug outputs throughout code
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 
     using namespace Qt::StringLiterals;
 
-    const QUrl url(u"qrc:/qt/qml/Main/main.qml"_s);
+    const QUrl url(QStringLiteral("qrc:/qt/qml/content/App.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
                          if (!obj && url == objUrl)

@@ -62,3 +62,4 @@ build/
 # Ignore pigpio files
 pigpio.h
 pigpio.cpp
+build

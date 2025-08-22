@@ -146,7 +146,7 @@ void RPiThreads::processPidHlt() {
             m_rpiData->setPwmDutyCycle_HLT(0.0);
         }
 
-        QThread::msleep(500);
+        QThread::msleep(1000);
     }
 
     QThread::currentThread()->quit();
@@ -202,7 +202,7 @@ void RPiThreads::processPidBoil() {
             m_rpiData->setPwmDutyCycle_Boil(0.0);
         }
 
-        QThread::msleep(500);
+        QThread::msleep(1000);
     }
 
     QThread::currentThread()->quit();
