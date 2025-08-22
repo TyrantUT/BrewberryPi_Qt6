@@ -50,10 +50,9 @@ if (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm")
     target_include_directories(${PROJECT_NAME} PRIVATE /sysroot/usr/include)
     target_link_directories(${PROJECT_NAME} PRIVATE /sysroot/usr/lib /sysroot/usr/lib/aarch64-linux-gnu)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wno-comment -Wunused-function)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${PIGPIO_LIBRARY} ${TSLIB_LIBRARY})
 else()
     message(STATUS "Skipping pigpio and tslib.")
-    set(PIGPIO_LIBRARY "")
-    set(TSLIB_LIBRARY "")
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
@@ -66,9 +65,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Charts
     Qt6::WebSockets
     Qt6::Network
-    BrewberryPi
-    ${PIGPIO_LIBRARY}
-    ${TSLIB_LIBRARY}
 )
 
 set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/qml)
