@@ -116,16 +116,16 @@ QString WebSocketManager::serializeData(bool includeRateLimited) {
     }
 
     QJsonObject json;
+    json["setpointHltOrMash"] = m_rpiData->getSetpointHltOrMash();
+    json["setpointManual_HLT"] = m_rpiData->getSetpointManual_HLT();
+    json["setpointManual_Boil"] = m_rpiData->getSetpointManual_Boil();
+    json["elementOn_HLT"] = m_rpiData->getElementOn_HLT();
+    json["elementOn_Boil"] = m_rpiData->getElementOn_Boil();
+    json["pumpOn_Wort"] = m_rpiData->getPumpOn_Wort();
+    json["pumpOn_Water"] = m_rpiData->getPumpOn_Water();
+    json["breweryTimer"] = m_rpiData->getBreweryTimer();
 
     if (includeRateLimited) {
-        json["setpointHltOrMash"] = m_rpiData->getSetpointHltOrMash();
-        json["setpointManual_HLT"] = m_rpiData->getSetpointManual_HLT();
-        json["setpointManual_Boil"] = m_rpiData->getSetpointManual_Boil();
-        json["elementOn_HLT"] = m_rpiData->getElementOn_HLT();
-        json["elementOn_Boil"] = m_rpiData->getElementOn_Boil();
-        json["pumpOn_Wort"] = m_rpiData->getPumpOn_Wort();
-        json["pumpOn_Water"] = m_rpiData->getPumpOn_Water();
-        json["breweryTimer"] = m_rpiData->getBreweryTimer();
         json["currentTemp_HLT"] = m_rpiData->getCurrentTemp_HLT();
         json["currentTemp_Mash"] = m_rpiData->getCurrentTemp_Mash();
         json["currentTemp_Boil"] = m_rpiData->getCurrentTemp_Boil();
@@ -138,14 +138,10 @@ QString WebSocketManager::serializeData(bool includeRateLimited) {
         json["setpointPercent_Boil"] = m_rpiData->getSetpointPercent_Boil();
         json["pwmDutyCycle_HLT"] = m_rpiData->getPwmDutyCycle_HLT();
         json["pwmDutyCycle_Boil"] = m_rpiData->getPwmDutyCycle_Boil();
-    } else {
-        return QString("{}");
     }
 
     QJsonDocument doc(json);
-    QString result = QString(doc.toJson(QJsonDocument::Compact));
-
-    return result;
+    return QString(doc.toJson(QJsonDocument::Compact));
 }
 
 void WebSocketManager::broadcastData() {
@@ -155,16 +151,10 @@ void WebSocketManager::broadcastData() {
     bool includeRateLimited = (m_messageCounter == 0);
 
     QMutexLocker locker(&m_clientsMutex);
-    QString serializedData = this->serializeData(includeRateLimited);
-
-    if (serializedData == "{}") {
-        return;
-    }
-
     for (QWebSocket *client : m_clients) {
         if (client->state() == QAbstractSocket::ConnectedState) {
-            QMetaObject::invokeMethod(client, [client, serializedData]() {
-                client->sendTextMessage(serializedData);
+            QMetaObject::invokeMethod(client, [client, this, includeRateLimited]() {
+                client->sendTextMessage(this->serializeData(includeRateLimited));
             }, Qt::QueuedConnection);
         }
     }
