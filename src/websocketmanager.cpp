@@ -138,10 +138,14 @@ QString WebSocketManager::serializeData(bool includeRateLimited) {
         json["setpointPercent_Boil"] = m_rpiData->getSetpointPercent_Boil();
         json["pwmDutyCycle_HLT"] = m_rpiData->getPwmDutyCycle_HLT();
         json["pwmDutyCycle_Boil"] = m_rpiData->getPwmDutyCycle_Boil();
+    } else {
+        return QString("{}");
     }
 
     QJsonDocument doc(json);
-    return QString(doc.toJson(QJsonDocument::Compact));
+    QString result = QString(doc.toJson(QJsonDocument::Compact));
+
+    return result;
 }
 
 void WebSocketManager::broadcastData() {
@@ -151,10 +155,16 @@ void WebSocketManager::broadcastData() {
     bool includeRateLimited = (m_messageCounter == 0);
 
     QMutexLocker locker(&m_clientsMutex);
-    for (QWebSocket *client : m_clients) {
+    QString serializedData = this->serializeData(includeRateLimited);
+
+    if (serializedData == "{}") {
+        return;
+    }
+
+    for (QWebSocket *client : std::as_const(m_clients)) {
         if (client->state() == QAbstractSocket::ConnectedState) {
-            QMetaObject::invokeMethod(client, [client, this, includeRateLimited]() {
-                client->sendTextMessage(this->serializeData(includeRateLimited));
+            QMetaObject::invokeMethod(client, [client, serializedData]() {
+                client->sendTextMessage(serializedData);
             }, Qt::QueuedConnection);
         }
     }
