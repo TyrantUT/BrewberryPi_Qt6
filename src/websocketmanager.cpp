@@ -116,16 +116,16 @@ QString WebSocketManager::serializeData(bool includeRateLimited) {
     }
 
     QJsonObject json;
-    json["setpointHltOrMash"] = m_rpiData->getSetpointHltOrMash();
-    json["setpointManual_HLT"] = m_rpiData->getSetpointManual_HLT();
-    json["setpointManual_Boil"] = m_rpiData->getSetpointManual_Boil();
-    json["elementOn_HLT"] = m_rpiData->getElementOn_HLT();
-    json["elementOn_Boil"] = m_rpiData->getElementOn_Boil();
-    json["pumpOn_Wort"] = m_rpiData->getPumpOn_Wort();
-    json["pumpOn_Water"] = m_rpiData->getPumpOn_Water();
-    json["breweryTimer"] = m_rpiData->getBreweryTimer();
 
     if (includeRateLimited) {
+        json["setpointHltOrMash"] = m_rpiData->getSetpointHltOrMash();
+        json["setpointManual_HLT"] = m_rpiData->getSetpointManual_HLT();
+        json["setpointManual_Boil"] = m_rpiData->getSetpointManual_Boil();
+        json["elementOn_HLT"] = m_rpiData->getElementOn_HLT();
+        json["elementOn_Boil"] = m_rpiData->getElementOn_Boil();
+        json["pumpOn_Wort"] = m_rpiData->getPumpOn_Wort();
+        json["pumpOn_Water"] = m_rpiData->getPumpOn_Water();
+        json["breweryTimer"] = m_rpiData->getBreweryTimer();
         json["currentTemp_HLT"] = m_rpiData->getCurrentTemp_HLT();
         json["currentTemp_Mash"] = m_rpiData->getCurrentTemp_Mash();
         json["currentTemp_Boil"] = m_rpiData->getCurrentTemp_Boil();
