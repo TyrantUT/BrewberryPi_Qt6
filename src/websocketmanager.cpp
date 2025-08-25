@@ -161,7 +161,7 @@ void WebSocketManager::broadcastData() {
         return;
     }
 
-    for (QWebSocket *client : std::as_const(m_clients)) {
+    for (QWebSocket *client : m_clients) {
         if (client->state() == QAbstractSocket::ConnectedState) {
             QMetaObject::invokeMethod(client, [client, serializedData]() {
                 client->sendTextMessage(serializedData);
