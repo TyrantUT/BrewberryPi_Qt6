@@ -36,8 +36,6 @@ int main(int argc, char *argv[])
 
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 
-    qDebug() << "Input Devices:" << QInputDevice::devices();
-
     // Set context attributes for Raspberry Pi
 #ifdef PLATFORM_ARM
     qDebug() << "Input Devices:" << QInputDevice::devices();
@@ -73,12 +71,14 @@ int main(int argc, char *argv[])
     connectionManager.setupConnections(&app, &RPiDataGlobal);
 
     // WebSocket server setup
+/* Temporarily disabling for testing
     WebSocketManager webSocketManager(&app);
     webSocketManager.setRPiData(&RPiDataGlobal);
     if (!webSocketManager.startServer(8443)) {
         qDebug() << "Failed to start WebSocket server";
         return -1;
     }
+*/
 
     engine.load(url);
     if (engine.rootObjects().isEmpty()) return -1;
