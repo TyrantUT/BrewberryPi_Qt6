@@ -36,8 +36,12 @@ int main(int argc, char *argv[])
 
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 
+    qDebug() << "Input Devices:" << QInputDevice::devices();
+
     // Set context attributes for Raspberry Pi
 #ifdef PLATFORM_ARM
+    qDebug() << "Input Devices:" << QInputDevice::devices();
+
     QSurfaceFormat format;
     format.setDepthBufferSize(16);
     format.setStencilBufferSize(8);
