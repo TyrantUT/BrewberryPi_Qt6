@@ -40,6 +40,10 @@ int main(int argc, char *argv[])
 #ifdef PLATFORM_ARM
     qDebug() << "Input Devices:" << QInputDevice::devices();
 
+    QObject::connect(QInputDevice::devicesChanged, &app, []() {
+        qDebug() << "Input devices changed:" << QInputDevice::devices();
+    });
+
     QSurfaceFormat format;
     format.setDepthBufferSize(16);
     format.setStencilBufferSize(8);
@@ -71,14 +75,12 @@ int main(int argc, char *argv[])
     connectionManager.setupConnections(&app, &RPiDataGlobal);
 
     // WebSocket server setup
-/* Temporarily disabling for testing
     WebSocketManager webSocketManager(&app);
     webSocketManager.setRPiData(&RPiDataGlobal);
     if (!webSocketManager.startServer(8443)) {
         qDebug() << "Failed to start WebSocket server";
         return -1;
     }
-*/
 
     engine.load(url);
     if (engine.rootObjects().isEmpty()) return -1;
