@@ -40,10 +40,6 @@ int main(int argc, char *argv[])
 #ifdef PLATFORM_ARM
     qDebug() << "Input Devices:" << QInputDevice::devices();
 
-    QObject::connect(QInputDevice::devicesChanged, &app, []() {
-        qDebug() << "Input devices changed:" << QInputDevice::devices();
-    });
-
     QSurfaceFormat format;
     format.setDepthBufferSize(16);
     format.setStencilBufferSize(8);
