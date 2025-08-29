@@ -9,14 +9,14 @@ QtObject {
     onSetpointHltOrMashChanged: RPiDataGlobal.setpointHltOrMash = setpointHltOrMash;
 
     // Current Temperature Values
-    readonly property real currentTemp_HLT: RPiDataGlobal ? RPiDataGlobal.currentTemp_HLT : false
-    readonly property real currentTemp_Mash: RPiDataGlobal ? RPiDataGlobal.currentTemp_Mash : false
-    readonly property real currentTemp_Boil: RPiDataGlobal ? RPiDataGlobal.currentTemp_Boil : false
+    readonly property real currentTemp_HLT: RPiDataGlobal ? RPiDataGlobal.currentTemp_HLT : 0.0
+    readonly property real currentTemp_Mash: RPiDataGlobal ? RPiDataGlobal.currentTemp_Mash : 0.0
+    readonly property real currentTemp_Boil: RPiDataGlobal ? RPiDataGlobal.currentTemp_Boil : 0.0
 
     // Setpoint Values
-    property real setpointTemp_HLT: RPiDataGlobal ? RPiDataGlobal.setpointTemp_HLT : false
-    property real setpointTemp_Mash: RPiDataGlobal ? RPiDataGlobal.setpointTemp_Mash : false
-    property real setpointTemp_Boil: RPiDataGlobal ? RPiDataGlobal.setpointTemp_Boil : false
+    property real setpointTemp_HLT: RPiDataGlobal ? RPiDataGlobal.setpointTemp_HLT : 0.0
+    property real setpointTemp_Mash: RPiDataGlobal ? RPiDataGlobal.setpointTemp_Mash : 0.0
+    property real setpointTemp_Boil: RPiDataGlobal ? RPiDataGlobal.setpointTemp_Boil : 0.0
     property int setpointPercent_HLT: RPiDataGlobal ? RPiDataGlobal.setpointPercent_HLT : false
     property int setpointPercent_Mash: RPiDataGlobal ? RPiDataGlobal.setpointPercent_Mash : false
     property int setpointPercent_Boil: RPiDataGlobal ? RPiDataGlobal.setpointPercent_Boil : false

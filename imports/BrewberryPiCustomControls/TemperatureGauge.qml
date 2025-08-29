@@ -26,6 +26,7 @@ Dial {
 
     onSetManualModeChanged: {
         suppressAnimation = true
+        control.to = setManualMode ? 100 : 220
         canvas.requestPaint()
         Qt.callLater(function() { suppressAnimation = false })
     }
@@ -46,7 +47,7 @@ Dial {
     visible: true
     antialiasing: true
     from: 0
-    to: setManualMode ? 100 : 220
+    to: 220
     stepSize: 10
     startAngle: -140
     endAngle: 140
